@@ -1,0 +1,1532 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>X3COM — Solutions Connectées & Durables</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800;900&family=Barlow+Condensed:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   PALETTE PRINCIPALE X3COM — 3 couleurs dominantes partout
+   #00D4AA  Vert Émeraude Vibrant   → accent 1, CTAs, icônes
+   #00B4D8  Bleu Cyan Électrique    → accent 2, hover, lignes
+   #0077B6  Teal Profond            → accent 3, fonds colorés
+============================================================ */
+:root {
+  --em:  #00D4AA;   /* Vert Émeraude Vibrant  */
+  --cy:  #00B4D8;   /* Bleu Cyan Électrique   */
+  --te:  #0077B6;   /* Teal Profond           */
+  --ma:  #003566;   /* Bleu Marine            */
+  --da:  #1A202C;   /* Noir Profond           */
+  --li:  #7CB342;   /* Vert Lime              */
+  --wh:  #ffffff;
+  --mu:  #a0c4d8;   /* muted text             */
+  --bg:  #071420;   /* fond page              */
+  --ca:  rgba(0,35,60,0.85);  /* fond carte  */
+
+  /* Bordures avec les 3 couleurs */
+  --b1: rgba(0,212,170,0.25);
+  --b2: rgba(0,180,216,0.25);
+  --b3: rgba(0,119,182,0.3);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Barlow',sans-serif;
+  background:var(--bg);
+  color:var(--wh);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* barre animée tricolore en haut */
+body::before{
+  content:'';position:fixed;top:0;left:0;right:0;height:4px;z-index:9999;
+  background:linear-gradient(90deg,var(--em),var(--cy),var(--te),var(--cy),var(--em));
+  background-size:300% 100%;
+  animation:bar 5s linear infinite;
+}
+@keyframes bar{0%{background-position:0%}100%{background-position:300%}}
+
+.page{display:none}
+.page.active{display:block}
+
+/* ── TOPBAR ── */
+.topbar{
+  background:linear-gradient(90deg,rgba(0,119,182,0.15),rgba(0,35,60,0.95),rgba(0,180,216,0.12));
+  border-bottom:1px solid var(--b2);
+  padding:8px 48px;
+  display:flex;justify-content:space-between;align-items:center;
+  font-size:12px;color:var(--mu);
+}
+.topbar a{color:var(--mu);text-decoration:none;transition:color .2s}
+.topbar a:hover{color:var(--em)}
+.topbar-l,.topbar-r{display:flex;gap:20px;align-items:center}
+
+/* ── NAV ── */
+nav{
+  position:sticky;top:4px;z-index:200;
+  background:rgba(5,18,32,0.97);
+  backdrop-filter:blur(20px);
+  border-bottom:2px solid transparent;
+  border-image:linear-gradient(90deg,var(--em),var(--cy),var(--te)) 1;
+  padding:0 48px;
+  display:flex;align-items:center;justify-content:space-between;
+  height:68px;
+}
+.logo{display:flex;align-items:center;gap:10px;cursor:pointer;text-decoration:none}
+.logo-hex{
+  width:40px;height:40px;flex-shrink:0;
+  background:linear-gradient(135deg,var(--em),var(--cy),var(--te));
+  clip-path:polygon(50% 0%,93% 25%,93% 75%,50% 100%,7% 75%,7% 25%);
+  display:flex;align-items:center;justify-content:center;
+}
+.logo-hex svg{width:22px;height:22px}
+.logo-txt{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:28px;font-weight:900;color:var(--wh);letter-spacing:2px;
+}
+.logo-txt b{color:var(--em)}
+.nav-links{display:flex;gap:2px}
+.nav-links a{
+  color:var(--mu);padding:8px 14px;border-radius:6px;
+  font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;
+  transition:all .2s;border:none;background:none;letter-spacing:.02em;
+}
+.nav-links a:hover{color:var(--wh);background:rgba(0,212,170,0.12)}
+.nav-links a.active{
+  color:var(--em);
+  background:rgba(0,212,170,0.1);
+  border-bottom:2px solid var(--em);
+  border-radius:6px 6px 0 0;
+}
+.btn-nav{
+  background:linear-gradient(90deg,var(--em),var(--cy));
+  color:var(--da);padding:9px 22px;border-radius:8px;
+  font-size:13px;font-weight:900;cursor:pointer;border:none;
+  letter-spacing:.06em;text-transform:uppercase;
+  transition:all .2s;font-family:'Barlow',sans-serif;
+}
+.btn-nav:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,212,170,0.4)}
+
+/* ── BOUTONS ── */
+.btn1{
+  background:linear-gradient(90deg,var(--em),var(--cy));
+  color:var(--da);padding:13px 30px;border-radius:8px;
+  font-size:14px;font-weight:900;cursor:pointer;border:none;
+  letter-spacing:.06em;text-transform:uppercase;
+  transition:all .2s;display:inline-flex;align-items:center;gap:8px;
+  font-family:'Barlow',sans-serif;
+}
+.btn1:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,212,170,0.45)}
+.btn2{
+  background:transparent;color:var(--cy);
+  padding:12px 28px;border-radius:8px;
+  font-size:14px;font-weight:700;cursor:pointer;
+  border:2px solid var(--cy);letter-spacing:.05em;text-transform:uppercase;
+  transition:all .2s;font-family:'Barlow',sans-serif;
+}
+.btn2:hover{background:rgba(0,180,216,0.12);border-color:var(--cy);transform:translateY(-1px)}
+.btn3{
+  background:transparent;color:var(--te);
+  padding:10px 22px;border-radius:8px;font-size:13px;font-weight:700;
+  cursor:pointer;border:2px solid var(--te);letter-spacing:.04em;text-transform:uppercase;
+  transition:all .2s;font-family:'Barlow',sans-serif;
+}
+.btn3:hover{background:rgba(0,119,182,0.12)}
+
+/* ── HELPERS ── */
+.lbl{
+  font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--em);font-weight:700;margin-bottom:10px;
+  display:flex;align-items:center;gap:10px;
+}
+.lbl::before,.lbl::after{
+  content:'';flex:1;height:1px;max-width:40px;
+}
+.lbl::before{background:linear-gradient(90deg,transparent,var(--em))}
+.lbl::after{background:linear-gradient(270deg,transparent,var(--em))}
+h1.big,h2.big{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:clamp(30px,4vw,58px);font-weight:900;
+  text-transform:uppercase;letter-spacing:-.5px;
+  color:var(--wh);line-height:1.05;margin-bottom:14px;
+}
+.hl{color:var(--em)}
+.hl2{color:var(--cy)}
+.hl3{color:var(--te)}
+.sub{font-size:15px;color:var(--mu);line-height:1.75;max-width:600px;margin-bottom:36px}
+.tc{text-align:center}.tc .sub{margin-left:auto;margin-right:auto}
+.sec{padding:80px 48px}
+.sec-alt{
+  padding:80px 48px;
+  background:linear-gradient(135deg,rgba(0,119,182,0.08),rgba(0,30,55,0.6),rgba(0,180,216,0.06));
+  border-top:1px solid var(--b2);border-bottom:1px solid var(--b3);
+}
+
+/* ── HERO ── */
+.hero{
+  position:relative;min-height:640px;
+  display:flex;align-items:center;justify-content:center;
+  text-align:center;padding:80px 48px;overflow:hidden;
+}
+.hbg{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 0%,rgba(0,212,170,0.12) 0%,transparent 60%),
+    radial-gradient(ellipse 60% 40% at 100% 60%,rgba(0,180,216,0.1) 0%,transparent 60%),
+    radial-gradient(ellipse 50% 40% at 0% 80%,rgba(0,119,182,0.1) 0%,transparent 60%),
+    linear-gradient(160deg,#001a12 0%,#002830 30%,#001828 60%,var(--bg) 100%);
+}
+/* grille circuit */
+.hgrid{
+  position:absolute;inset:0;opacity:.06;
+  background-image:
+    linear-gradient(var(--em) 1px,transparent 1px),
+    linear-gradient(90deg,var(--cy) 1px,transparent 1px);
+  background-size:64px 64px;
+}
+/* lignes animées */
+.hlines{position:absolute;inset:0;overflow:hidden}
+.hl-{position:absolute;height:2px;opacity:0;animation:scan 5s ease-in-out infinite}
+.hl-:nth-child(1){top:22%;width:55%;left:22%;background:linear-gradient(90deg,transparent,var(--em),transparent);animation-delay:0s}
+.hl-:nth-child(2){top:48%;width:70%;left:15%;background:linear-gradient(90deg,transparent,var(--cy),transparent);animation-delay:1.7s}
+.hl-:nth-child(3){top:72%;width:45%;left:30%;background:linear-gradient(90deg,transparent,var(--te),transparent);animation-delay:3.2s}
+@keyframes scan{0%{opacity:0;transform:scaleX(0)}35%{opacity:.8;transform:scaleX(1)}70%{opacity:.8;transform:scaleX(1)}100%{opacity:0;transform:scaleX(0)}}
+/* hexagones déco */
+.hhex{position:absolute;z-index:0}
+.hglow{
+  position:absolute;top:-120px;left:50%;transform:translateX(-50%);
+  width:900px;height:500px;
+  background:radial-gradient(ellipse,rgba(0,212,170,0.1) 0%,rgba(0,180,216,0.06) 30%,transparent 70%);
+  z-index:0;
+}
+.hcnt{position:relative;z-index:2;max-width:860px}
+.hbadge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:linear-gradient(90deg,rgba(0,212,170,0.1),rgba(0,180,216,0.1));
+  border:1px solid rgba(0,212,170,0.35);
+  padding:6px 20px;border-radius:100px;
+  font-size:11px;color:var(--em);letter-spacing:.12em;
+  text-transform:uppercase;margin-bottom:24px;font-weight:700;
+}
+.hbadge::before{
+  content:'';width:7px;height:7px;border-radius:50%;
+  background:var(--em);
+  animation:pulse 2s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(0,212,170,.7)}50%{box-shadow:0 0 0 8px rgba(0,212,170,0)}}
+.hero h1{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:clamp(40px,6.5vw,88px);
+  font-weight:900;line-height:1.0;letter-spacing:-1px;
+  text-transform:uppercase;margin-bottom:22px;
+}
+.hero-sub{font-size:16px;color:var(--mu);max-width:560px;margin:0 auto 36px;line-height:1.75}
+.hbtns{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+.htag{
+  margin-top:44px;
+  display:flex;align-items:center;justify-content:center;
+}
+.htag-i{
+  font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+  padding:0 22px;border-right:1px solid rgba(0,180,216,0.25);
+}
+.htag-i:nth-child(1){color:var(--em)}
+.htag-i:nth-child(2){color:var(--cy)}
+.htag-i:nth-child(3){color:var(--te);border-right:none}
+
+/* ── STRIP ── */
+.strip{
+  background:linear-gradient(90deg,rgba(0,119,182,0.15),rgba(0,30,55,0.9),rgba(0,119,182,0.15));
+  border-top:2px solid var(--b2);border-bottom:2px solid var(--b3);
+  padding:18px 48px;
+  display:flex;align-items:center;justify-content:center;gap:0;flex-wrap:wrap;
+}
+.si{
+  display:flex;align-items:center;gap:10px;
+  padding:0 26px;font-size:11px;font-weight:800;
+  letter-spacing:.1em;text-transform:uppercase;
+  border-right:1px solid var(--b2);
+}
+.si:last-child{border-right:none}
+.si:nth-child(odd)  .sd{background:var(--em);box-shadow:0 0 8px rgba(0,212,170,.6)}
+.si:nth-child(even) .sd{background:var(--cy);box-shadow:0 0 8px rgba(0,180,216,.6)}
+.si:nth-child(3n)   .sd{background:var(--te);box-shadow:0 0 8px rgba(0,119,182,.6)}
+.si:nth-child(odd)  {color:rgba(0,212,170,.75)}
+.si:nth-child(even) {color:rgba(0,180,216,.75)}
+.si:nth-child(3n)   {color:rgba(0,180,216,.75)}
+.sd{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+
+/* ── DOMAIN CARDS ── */
+.dg{display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:900px;margin:0 auto}
+.dc{
+  border-radius:16px;padding:38px;position:relative;overflow:hidden;
+  transition:all .3s;backdrop-filter:blur(10px);
+}
+.dc:nth-child(1){
+  background:linear-gradient(135deg,rgba(0,212,170,0.1),rgba(0,50,40,0.6));
+  border:1px solid var(--b1);
+}
+.dc:nth-child(2){
+  background:linear-gradient(135deg,rgba(0,180,216,0.1),rgba(0,40,70,0.6));
+  border:1px solid var(--b2);
+}
+.dc::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:4px;
+}
+.dc:nth-child(1)::before{background:linear-gradient(90deg,var(--em),var(--cy))}
+.dc:nth-child(2)::before{background:linear-gradient(90deg,var(--cy),var(--te))}
+.dc::after{
+  content:'';position:absolute;
+  bottom:-50px;right:-50px;width:160px;height:160px;border-radius:50%;
+}
+.dc:nth-child(1)::after{background:radial-gradient(circle,rgba(0,212,170,0.08),transparent)}
+.dc:nth-child(2)::after{background:radial-gradient(circle,rgba(0,180,216,0.08),transparent)}
+.dc:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,.3)}
+.dic{
+  width:54px;height:54px;border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:18px;font-size:26px;
+}
+.dc:nth-child(1) .dic{background:rgba(0,212,170,0.15);border:1px solid rgba(0,212,170,.3)}
+.dc:nth-child(2) .dic{background:rgba(0,180,216,0.15);border:1px solid rgba(0,180,216,.3)}
+.dc h3{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:22px;font-weight:800;color:var(--wh);
+  margin-bottom:12px;text-transform:uppercase;
+}
+.dc p{color:var(--mu);font-size:14px;line-height:1.75}
+
+/* ── SERVICES ── */
+.sg{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:1100px;margin:0 auto}
+.sc{
+  border-radius:16px;padding:28px;
+  transition:all .3s;cursor:pointer;
+  backdrop-filter:blur(10px);position:relative;overflow:hidden;
+}
+.sc:nth-child(1){background:linear-gradient(160deg,rgba(0,212,170,0.08),rgba(0,30,50,0.8));border:1px solid var(--b1)}
+.sc:nth-child(2){background:linear-gradient(160deg,rgba(0,180,216,0.08),rgba(0,25,50,0.8));border:1px solid var(--b2)}
+.sc:nth-child(3){background:linear-gradient(160deg,rgba(0,119,182,0.08),rgba(0,20,45,0.8));border:1px solid var(--b3)}
+.sc::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:3px;
+  transform:scaleX(0);transition:transform .3s;
+}
+.sc:nth-child(1)::after{background:linear-gradient(90deg,var(--em),var(--cy))}
+.sc:nth-child(2)::after{background:linear-gradient(90deg,var(--cy),var(--te))}
+.sc:nth-child(3)::after{background:linear-gradient(90deg,var(--te),var(--cy))}
+.sc:hover::after{transform:scaleX(1)}
+.sc:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,.35)}
+.sic{
+  width:50px;height:50px;border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:24px;margin-bottom:18px;
+}
+.sc:nth-child(1) .sic{background:rgba(0,212,170,0.15);border:1px solid rgba(0,212,170,.25)}
+.sc:nth-child(2) .sic{background:rgba(0,180,216,0.15);border:1px solid rgba(0,180,216,.25)}
+.sc:nth-child(3) .sic{background:rgba(0,119,182,0.15);border:1px solid rgba(0,119,182,.3)}
+.sc h3{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:17px;font-weight:800;text-transform:uppercase;
+  letter-spacing:.04em;margin-bottom:14px;
+}
+.sc:nth-child(1) h3{color:var(--em)}
+.sc:nth-child(2) h3{color:var(--cy)}
+.sc:nth-child(3) h3{color:var(--te)}
+.sli{list-style:none;padding:0}
+.sli li{
+  font-size:13px;color:var(--mu);padding:5px 0;
+  display:flex;gap:8px;align-items:flex-start;line-height:1.55;
+  border-bottom:1px solid rgba(0,180,216,0.07);
+}
+.sli li:last-child{border-bottom:none}
+.sd2{width:14px;height:2px;margin-top:6px;flex-shrink:0}
+.sc:nth-child(1) .sd2{background:var(--em)}
+.sc:nth-child(2) .sd2{background:var(--cy)}
+.sc:nth-child(3) .sd2{background:var(--te)}
+.sm{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:11px;font-weight:800;margin-top:18px;
+  cursor:pointer;background:none;border:none;padding:0;
+  letter-spacing:.08em;text-transform:uppercase;
+  transition:gap .2s;
+}
+.sc:nth-child(1) .sm{color:var(--em)}
+.sc:nth-child(2) .sm{color:var(--cy)}
+.sc:nth-child(3) .sm{color:var(--te)}
+.sm:hover{gap:10px}
+
+/* ── ABOUT ── */
+.aw{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;max-width:1100px;margin:0 auto}
+.at{color:var(--mu);font-size:14px;line-height:1.85;margin-bottom:16px}
+.sr{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:28px}
+.sb{text-align:center;padding:18px;border-radius:12px}
+.sb:nth-child(1){background:rgba(0,212,170,0.08);border:1px solid rgba(0,212,170,.2)}
+.sb:nth-child(2){background:rgba(0,180,216,0.08);border:1px solid rgba(0,180,216,.2)}
+.sb:nth-child(3){background:rgba(0,119,182,0.08);border:1px solid rgba(0,119,182,.25)}
+.sn{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:34px;font-weight:900;display:block;line-height:1;
+}
+.sb:nth-child(1) .sn{color:var(--em)}
+.sb:nth-child(2) .sn{color:var(--cy)}
+.sb:nth-child(3) .sn{color:var(--te)}
+.sl{font-size:10px;color:var(--mu);text-transform:uppercase;letter-spacing:.1em;margin-top:5px;font-weight:600}
+.av2{
+  border-radius:20px;overflow:hidden;position:relative;
+  background:linear-gradient(135deg,#001a12,#001525,#002018);
+  border:1px solid var(--b1);min-height:320px;
+  display:flex;align-items:center;justify-content:center;
+}
+
+/* ── TESTI ── */
+.tg{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:1100px;margin:0 auto 56px}
+.tc2{border-radius:16px;padding:26px;backdrop-filter:blur(10px)}
+.tc2:nth-child(1){background:linear-gradient(135deg,rgba(0,212,170,0.07),rgba(0,30,50,.7));border:1px solid var(--b1)}
+.tc2:nth-child(2){background:linear-gradient(135deg,rgba(0,180,216,0.07),rgba(0,25,50,.7));border:1px solid var(--b2)}
+.tc2:nth-child(3){background:linear-gradient(135deg,rgba(0,119,182,0.07),rgba(0,20,45,.7));border:1px solid var(--b3)}
+.stars{font-size:14px;margin-bottom:12px;letter-spacing:2px}
+.tc2:nth-child(1) .stars{color:var(--em)}
+.tc2:nth-child(2) .stars{color:var(--cy)}
+.tc2:nth-child(3) .stars{color:var(--te)}
+.tc2 p{font-size:13px;color:var(--mu);line-height:1.75;margin-bottom:16px}
+.ta{display:flex;align-items:center;gap:12px}
+.av3{
+  width:38px;height:38px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:800;color:var(--da);flex-shrink:0;
+}
+.tc2:nth-child(1) .av3{background:linear-gradient(135deg,var(--em),var(--cy))}
+.tc2:nth-child(2) .av3{background:linear-gradient(135deg,var(--cy),var(--te))}
+.tc2:nth-child(3) .av3{background:linear-gradient(135deg,var(--te),var(--cy))}
+.an strong{font-size:13px;color:var(--wh);font-weight:700;display:block}
+.an span{font-size:11px;color:var(--mu)}
+
+/* ── CTA BAND ── */
+.ctab{
+  background:linear-gradient(135deg,rgba(0,212,170,0.1),rgba(0,119,182,0.15),rgba(0,180,216,0.08));
+  border:1px solid var(--b2);
+  border-radius:20px;padding:64px 48px;
+  text-align:center;max-width:800px;margin:0 auto;
+  position:relative;overflow:hidden;
+}
+.ctab::before{
+  content:'';position:absolute;
+  top:-80px;left:-80px;width:280px;height:280px;
+  background:radial-gradient(circle,rgba(0,212,170,0.1),transparent);
+  border-radius:50%;
+}
+.ctab::after{
+  content:'';position:absolute;
+  bottom:-60px;right:-60px;width:220px;height:220px;
+  background:radial-gradient(circle,rgba(0,119,182,0.1),transparent);
+  border-radius:50%;
+}
+.ctab h2{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:38px;font-weight:900;color:var(--wh);
+  margin-bottom:12px;text-transform:uppercase;
+  position:relative;z-index:1;
+}
+.ctab p{color:var(--mu);margin-bottom:30px;font-size:15px;position:relative;z-index:1}
+
+/* ── PAGE HERO ── */
+.ph{padding:80px 48px 56px;text-align:center;max-width:900px;margin:0 auto}
+
+/* ── METHODES ── */
+.mg{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:1100px;margin:0 auto 56px}
+.mc{border-radius:16px;overflow:hidden;transition:all .3s}
+.mc:nth-child(1){background:linear-gradient(160deg,rgba(0,212,170,0.08),rgba(0,25,45,.85));border:1px solid var(--b1)}
+.mc:nth-child(2){background:linear-gradient(160deg,rgba(0,180,216,0.08),rgba(0,22,45,.85));border:1px solid var(--b2)}
+.mc:nth-child(3){background:linear-gradient(160deg,rgba(0,119,182,0.08),rgba(0,18,40,.85));border:1px solid var(--b3)}
+.mc:hover{transform:translateY(-3px)}
+.mt{
+  height:140px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:48px;border-bottom:1px solid;
+  position:relative;overflow:hidden;
+}
+.mc:nth-child(1) .mt{background:linear-gradient(135deg,rgba(0,212,170,0.1),rgba(0,25,45,.8));border-color:var(--b1)}
+.mc:nth-child(2) .mt{background:linear-gradient(135deg,rgba(0,180,216,0.1),rgba(0,22,45,.8));border-color:var(--b2)}
+.mc:nth-child(3) .mt{background:linear-gradient(135deg,rgba(0,119,182,0.1),rgba(0,18,40,.8));border-color:var(--b3)}
+.mb{padding:22px}
+.mb h3{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:15px;font-weight:800;text-transform:uppercase;
+  letter-spacing:.04em;margin-bottom:8px;
+}
+.mc:nth-child(1) .mb h3{color:var(--em)}
+.mc:nth-child(2) .mb h3{color:var(--cy)}
+.mc:nth-child(3) .mb h3{color:var(--te)}
+.mb p{font-size:12px;color:var(--mu);line-height:1.65}
+.mtag{
+  display:inline-block;margin-top:10px;
+  font-size:10px;font-weight:800;padding:3px 10px;
+  border-radius:4px;letter-spacing:.06em;text-transform:uppercase;
+}
+.mc:nth-child(1) .mtag{background:rgba(0,212,170,.12);color:var(--em);border:1px solid rgba(0,212,170,.25)}
+.mc:nth-child(2) .mtag{background:rgba(0,180,216,.12);color:var(--cy);border:1px solid rgba(0,180,216,.25)}
+.mc:nth-child(3) .mtag{background:rgba(0,119,182,.12);color:var(--te);border:1px solid rgba(0,119,182,.3)}
+
+/* ── NORMES ── */
+.nb{max-width:1100px;margin:0 auto;border-radius:16px;padding:48px;
+  background:linear-gradient(135deg,rgba(0,212,170,0.05),rgba(0,119,182,0.08),rgba(0,180,216,0.05));
+  border:1px solid var(--b2)}
+.ng{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;max-width:720px;margin:0 auto}
+.ni2{border-radius:12px;padding:20px;text-align:center}
+.ni2:nth-child(1){background:rgba(0,212,170,0.08);border:1px solid rgba(0,212,170,.2)}
+.ni2:nth-child(2){background:rgba(0,180,216,0.08);border:1px solid rgba(0,180,216,.2)}
+.ni2:nth-child(3){background:rgba(0,119,182,0.08);border:1px solid rgba(0,119,182,.25)}
+.ni2:nth-child(4){background:rgba(0,212,170,0.06);border:1px solid rgba(0,212,170,.15)}
+.ni2 .ic{font-size:26px;margin-bottom:8px}
+.ni2 p{font-size:11px;color:var(--mu);line-height:1.6}
+
+/* ── PRICING ── */
+.pg{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;max-width:1100px;margin:0 auto}
+.pc{
+  border-radius:16px;padding:30px;position:relative;
+  display:flex;flex-direction:column;transition:all .3s;backdrop-filter:blur(10px);
+}
+.pc:nth-child(1){background:linear-gradient(160deg,rgba(0,212,170,0.06),rgba(0,25,45,.85));border:1px solid var(--b1)}
+.pc:nth-child(2){
+  background:linear-gradient(160deg,rgba(0,180,216,0.1),rgba(0,22,55,.85));
+  border:2px solid rgba(0,180,216,.5);
+  box-shadow:0 0 40px rgba(0,180,216,.08);
+}
+.pc:nth-child(3){background:linear-gradient(160deg,rgba(0,119,182,0.06),rgba(0,18,40,.85));border:1px solid var(--b3)}
+.pbadge{
+  position:absolute;top:-13px;left:50%;transform:translateX(-50%);
+  font-size:10px;font-weight:900;
+  padding:4px 16px;border-radius:100px;
+  letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;
+  background:linear-gradient(90deg,var(--cy),var(--te));color:var(--wh);
+}
+.pc h3{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:18px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;
+  margin-bottom:8px;
+}
+.pc:nth-child(1) h3{color:var(--em)}
+.pc:nth-child(2) h3{color:var(--cy)}
+.pc:nth-child(3) h3{color:var(--te)}
+.pnum{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:42px;font-weight:900;margin-bottom:6px;line-height:1;
+}
+.pc:nth-child(1) .pnum{color:var(--em)}
+.pc:nth-child(2) .pnum{color:var(--cy)}
+.pc:nth-child(3) .pnum{color:var(--te)}
+.pnum small{font-size:15px;color:var(--mu);font-weight:500}
+.pdesc{
+  font-size:12px;color:var(--mu);margin-bottom:18px;
+  padding-bottom:18px;line-height:1.65;
+}
+.pc:nth-child(1) .pdesc{border-bottom:1px solid var(--b1)}
+.pc:nth-child(2) .pdesc{border-bottom:1px solid var(--b2)}
+.pc:nth-child(3) .pdesc{border-bottom:1px solid var(--b3)}
+.pf{list-style:none;padding:0;flex:1}
+.pf li{
+  font-size:12px;color:var(--mu);padding:6px 0;
+  display:flex;gap:10px;align-items:flex-start;line-height:1.55;
+  border-bottom:1px solid rgba(0,180,216,0.07);
+}
+.pf li:last-child{border-bottom:none}
+.ck{flex-shrink:0;font-weight:900;font-size:13px}
+.pc:nth-child(1) .ck{color:var(--em)}
+.pc:nth-child(2) .ck{color:var(--cy)}
+.pc:nth-child(3) .ck{color:var(--te)}
+.ot{color:rgba(0,212,170,.7);flex-shrink:0;font-size:13px}
+.pc:nth-child(2) .ot{color:rgba(0,180,216,.7)}
+.bprice{
+  margin-top:22px;width:100%;padding:13px;
+  border-radius:8px;font-size:13px;font-weight:900;
+  cursor:pointer;transition:all .2s;font-family:'Barlow',sans-serif;
+  border:none;letter-spacing:.06em;text-transform:uppercase;
+}
+.pc:nth-child(1) .bprice{background:transparent;color:var(--em);border:2px solid var(--em)}
+.pc:nth-child(1) .bprice:hover{background:rgba(0,212,170,.12)}
+.pc:nth-child(2) .bprice{background:linear-gradient(90deg,var(--cy),var(--te));color:var(--wh)}
+.pc:nth-child(2) .bprice:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(0,180,216,.35)}
+.pc:nth-child(3) .bprice{background:transparent;color:var(--te);border:2px solid var(--te)}
+.pc:nth-child(3) .bprice:hover{background:rgba(0,119,182,.12)}
+
+/* ── CONTACT ── */
+.cw{display:grid;grid-template-columns:1fr 1fr;gap:48px;max-width:1000px;margin:0 auto}
+.fc{
+  background:linear-gradient(135deg,rgba(0,212,170,0.05),rgba(0,25,45,.85));
+  border:1px solid var(--b1);border-radius:16px;padding:34px;backdrop-filter:blur(10px);
+}
+.fc h3{
+  font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;
+  color:var(--em);margin-bottom:22px;text-transform:uppercase;letter-spacing:.04em;
+}
+.fg2{margin-bottom:15px}
+.fg2 label{
+  display:block;font-size:10px;font-weight:700;color:var(--mu);
+  margin-bottom:5px;letter-spacing:.08em;text-transform:uppercase;
+}
+.fg2 input,.fg2 textarea,.fg2 select{
+  width:100%;
+  background:rgba(0,180,216,0.06);
+  border:1px solid var(--b2);border-radius:8px;
+  padding:10px 14px;color:var(--wh);font-size:13px;
+  font-family:'Barlow',sans-serif;outline:none;transition:all .2s;
+}
+.fg2 input:focus,.fg2 textarea:focus{
+  border-color:rgba(0,212,170,.55);background:rgba(0,212,170,.04);
+}
+.fg2 input::placeholder,.fg2 textarea::placeholder{color:rgba(160,196,216,.4)}
+.fg2 textarea{resize:vertical;min-height:100px}
+.fg2d{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.cbl{display:flex;flex-direction:column;gap:8px}
+.cbli{
+  display:flex;align-items:flex-start;gap:8px;
+  font-size:12px;color:var(--mu);cursor:pointer;line-height:1.5;
+}
+.cbli input{width:auto;margin-top:2px;flex-shrink:0;accent-color:var(--em)}
+.rl{display:flex;gap:16px}
+.rli{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--mu);cursor:pointer}
+.rli input{width:auto;accent-color:var(--em)}
+.iw h3{
+  font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;
+  color:var(--cy);margin-bottom:20px;text-transform:uppercase;letter-spacing:.04em;
+}
+.ii2{
+  border-radius:12px;padding:16px;margin-bottom:14px;
+  display:flex;gap:14px;align-items:flex-start;backdrop-filter:blur(10px);
+}
+.ii2:nth-child(1){background:rgba(0,212,170,0.07);border:1px solid var(--b1)}
+.ii2:nth-child(2){background:rgba(0,180,216,0.07);border:1px solid var(--b2)}
+.ii2:nth-child(3){background:rgba(0,119,182,0.07);border:1px solid var(--b3)}
+.ii2:nth-child(4){background:rgba(0,212,170,0.05);border:1px solid var(--b1)}
+.ii{
+  width:38px;height:38px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;font-size:18px;
+}
+.ii2:nth-child(1) .ii{background:rgba(0,212,170,.15);border:1px solid rgba(0,212,170,.3)}
+.ii2:nth-child(2) .ii{background:rgba(0,180,216,.15);border:1px solid rgba(0,180,216,.3)}
+.ii2:nth-child(3) .ii{background:rgba(0,119,182,.15);border:1px solid rgba(0,119,182,.3)}
+.ii2:nth-child(4) .ii{background:rgba(0,212,170,.12);border:1px solid rgba(0,212,170,.25)}
+.ii2 strong{font-size:13px;color:var(--wh);display:block;margin-bottom:4px;font-weight:700}
+.ii2 p{font-size:12px;color:var(--mu);line-height:1.65;margin:0}
+.ccta{
+  margin-top:20px;border-radius:14px;padding:26px;text-align:center;
+  background:linear-gradient(135deg,rgba(0,180,216,0.1),rgba(0,119,182,0.15));
+  border:1px solid var(--b2);
+}
+.ccta h4{
+  font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:800;
+  color:var(--cy);margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em;
+}
+.ccta p{font-size:12px;color:var(--mu);margin-bottom:16px;line-height:1.65}
+
+/* ── TABS ── */
+.tabs{display:flex;gap:8px;justify-content:center;margin-bottom:36px;flex-wrap:wrap}
+.tab{
+  padding:8px 18px;border-radius:8px;font-size:12px;font-weight:700;
+  cursor:pointer;background:transparent;color:var(--mu);
+  font-family:'Barlow',sans-serif;letter-spacing:.04em;
+  text-transform:uppercase;transition:all .2s;
+}
+.tab:nth-child(1){border:1px solid var(--b1)}
+.tab:nth-child(2){border:1px solid var(--b2)}
+.tab:nth-child(3){border:1px solid var(--b3)}
+.tab:nth-child(1).act,.tab:nth-child(1):hover{background:rgba(0,212,170,.1);color:var(--em);border-color:rgba(0,212,170,.4)}
+.tab:nth-child(2).act,.tab:nth-child(2):hover{background:rgba(0,180,216,.1);color:var(--cy);border-color:rgba(0,180,216,.4)}
+.tab:nth-child(3).act,.tab:nth-child(3):hover{background:rgba(0,119,182,.1);color:var(--te);border-color:rgba(0,119,182,.4)}
+
+/* ── COMPTE ── */
+.accard{
+  max-width:460px;margin:0 auto;
+  background:linear-gradient(135deg,rgba(0,212,170,0.06),rgba(0,25,45,.9));
+  border:1px solid var(--b1);border-radius:16px;padding:44px 36px;backdrop-filter:blur(10px);
+}
+.accard h2{
+  font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:900;
+  color:var(--em);margin-bottom:8px;text-transform:uppercase;letter-spacing:.02em;
+}
+.accard>p{color:var(--mu);font-size:13px;margin-bottom:28px}
+.bfull{
+  width:100%;padding:13px;border-radius:8px;font-size:13px;
+  font-weight:900;cursor:pointer;border:none;margin-top:10px;
+  font-family:'Barlow',sans-serif;transition:all .2s;
+  letter-spacing:.06em;text-transform:uppercase;
+}
+.bfull.p{background:linear-gradient(90deg,var(--em),var(--cy));color:var(--da)}
+.bfull.p:hover{box-shadow:0 6px 20px rgba(0,212,170,.3)}
+.bfull.g{background:transparent;color:var(--wh);border:1px solid var(--b2);margin-top:12px}
+.bfull.g:hover{border-color:rgba(0,180,216,.4)}
+.dsh{max-width:650px;margin:0 auto}
+.dsh-h{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:28px}
+.dc2{
+  border-radius:14px;padding:26px;margin-bottom:18px;backdrop-filter:blur(10px);
+}
+.dc2:first-child{background:linear-gradient(135deg,rgba(0,212,170,0.06),rgba(0,25,45,.85));border:1px solid var(--b1)}
+.dc2:nth-child(2){background:linear-gradient(135deg,rgba(0,180,216,0.06),rgba(0,22,45,.85));border:1px solid var(--b2)}
+.dc2 h4{
+  font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;
+  color:var(--em);margin-bottom:16px;text-transform:uppercase;letter-spacing:.06em;
+}
+.or{
+  border-radius:10px;padding:14px 16px;margin-bottom:10px;
+  display:flex;justify-content:space-between;align-items:center;
+}
+.or:nth-child(1){background:rgba(0,212,170,0.06);border:1px solid var(--b1)}
+.or:nth-child(2){background:rgba(0,180,216,0.06);border:1px solid var(--b2)}
+.or strong{font-size:13px;color:var(--wh);display:block;margin-bottom:3px;font-weight:700}
+.or .os{font-size:11px;color:var(--mu)}
+.or-r{display:flex;align-items:center;gap:12px}
+.bdg{padding:4px 12px;border-radius:100px;font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+.bdg.d{background:rgba(0,212,170,.15);color:var(--em);border:1px solid rgba(0,212,170,.3)}
+.bdg.p{background:rgba(0,180,216,.15);color:var(--cy);border:1px solid rgba(0,180,216,.3)}
+
+/* ── PAIEMENT ── */
+.pw{display:grid;grid-template-columns:1fr 360px;gap:26px;max-width:900px;margin:0 auto}
+.pf2{
+  background:linear-gradient(135deg,rgba(0,212,170,0.05),rgba(0,25,45,.88));
+  border:1px solid var(--b1);border-radius:16px;padding:34px;backdrop-filter:blur(10px);
+}
+.pf2 h3{
+  font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;
+  color:var(--em);margin-bottom:24px;text-transform:uppercase;letter-spacing:.04em;
+}
+.cviz{
+  background:linear-gradient(135deg,#001a28,#002c18,#001830);
+  border:1px solid var(--b2);border-radius:16px;padding:22px;
+  margin-bottom:22px;aspect-ratio:16/9;position:relative;overflow:hidden;
+}
+.cviz::before{
+  content:'';position:absolute;top:-40px;right:-40px;width:180px;height:180px;
+  background:radial-gradient(circle,rgba(0,180,216,0.15),transparent);border-radius:50%;
+}
+.cviz::after{
+  content:'';position:absolute;bottom:-30px;left:-30px;width:140px;height:140px;
+  background:radial-gradient(circle,rgba(0,119,182,0.12),transparent);border-radius:50%;
+}
+.cnd{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:20px;letter-spacing:5px;color:rgba(255,255,255,.65);
+  margin:10px 0 18px;
+}
+.cmeta{display:flex;justify-content:space-between;align-items:flex-end}
+.cml{font-size:9px;color:var(--mu);text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px}
+.cmeta span{font-size:12px;color:rgba(255,255,255,.75);font-weight:500}
+.cbrand{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;color:rgba(255,255,255,.5);letter-spacing:1px}
+.psum{
+  background:linear-gradient(135deg,rgba(0,180,216,0.07),rgba(0,22,45,.88));
+  border:1px solid var(--b2);border-radius:16px;padding:26px;height:fit-content;backdrop-filter:blur(10px);
+}
+.psum h3{
+  font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:800;
+  color:var(--cy);margin-bottom:18px;text-transform:uppercase;letter-spacing:.04em;
+}
+.sr2{
+  display:flex;justify-content:space-between;
+  font-size:13px;color:var(--mu);padding:9px 0;border-bottom:1px solid var(--b2);
+}
+.stot{
+  display:flex;justify-content:space-between;
+  font-size:20px;font-weight:800;color:var(--wh);
+  padding-top:14px;border-top:2px solid var(--b2);margin-top:4px;
+}
+.stot span:last-child{color:var(--cy)}
+.sok{
+  margin-top:18px;border-radius:10px;padding:14px;
+  background:linear-gradient(135deg,rgba(0,212,170,0.06),rgba(0,119,182,0.06));
+  border:1px solid var(--b1);
+}
+.sok p{font-size:12px;color:var(--mu);line-height:2;margin:0}
+.sokc{font-weight:900;margin-right:4px}
+.sok p:nth-child(1) .sokc{color:var(--em)}
+.sok p:nth-child(2) .sokc{color:var(--cy)}
+.sok p:nth-child(3) .sokc{color:var(--te)}
+
+/* ── COMMANDE ── */
+.cmdw{display:grid;grid-template-columns:1fr 1fr;gap:22px;max-width:900px;margin:0 auto}
+.cmdd{
+  background:linear-gradient(135deg,rgba(0,212,170,0.06),rgba(0,25,45,.88));
+  border:1px solid var(--b1);border-radius:16px;padding:28px;backdrop-filter:blur(10px);
+}
+.cmdd h3{
+  font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:800;
+  color:var(--em);margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em;
+}
+.cmdp{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:36px;font-weight:900;color:var(--em);margin-bottom:18px;line-height:1;
+}
+.fl{list-style:none;padding:0}
+.fl li{
+  display:flex;gap:10px;padding:7px 0;font-size:12px;color:var(--mu);
+  border-bottom:1px solid rgba(0,180,216,0.08);line-height:1.55;
+}
+.fl li:last-child{border-bottom:none}
+.cmds{
+  background:linear-gradient(135deg,rgba(0,180,216,0.07),rgba(0,22,45,.88));
+  border:1px solid var(--b2);border-radius:16px;padding:28px;backdrop-filter:blur(10px);
+}
+.cmds h3{
+  font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:800;
+  color:var(--cy);margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em;
+}
+.stp{display:flex;flex-direction:column;margin-top:18px}
+.st{display:flex;gap:14px;padding-bottom:16px;position:relative}
+.st:not(:last-child)::after{
+  content:'';position:absolute;left:13px;top:28px;
+  width:2px;bottom:0;
+  background:linear-gradient(180deg,var(--cy),var(--te));
+  opacity:.3;
+}
+.std{
+  width:28px;height:28px;flex-shrink:0;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:800;border:2px solid;
+}
+.std.d{background:rgba(0,212,170,.15);border-color:var(--em);color:var(--em)}
+.std.a{background:rgba(0,180,216,.15);border-color:var(--cy);color:var(--cy)}
+.std.p{background:rgba(0,119,182,.07);border-color:rgba(0,119,182,.3);color:rgba(0,119,182,.6)}
+.stc strong{font-size:13px;color:var(--wh);display:block;margin-bottom:2px;font-weight:700}
+.stc p{font-size:11px;color:var(--mu);margin:0;line-height:1.55}
+
+/* ── NOTIFICATION ── */
+.notif{
+  position:fixed;top:84px;right:20px;z-index:9999;
+  background:rgba(5,18,32,.98);
+  border-radius:12px;padding:14px 18px;
+  display:flex;gap:12px;align-items:center;
+  transform:translateX(120%);transition:transform .35s cubic-bezier(.34,1.56,.64,1);
+  max-width:280px;backdrop-filter:blur(20px);
+  box-shadow:0 8px 32px rgba(0,0,0,.5);
+}
+.notif.show{transform:translateX(0)}
+.notif.e{border:1px solid rgba(0,212,170,.45)}
+.notif.c{border:1px solid rgba(0,180,216,.45)}
+.notif.t{border:1px solid rgba(0,119,182,.45)}
+.nico{font-size:20px;flex-shrink:0}
+.notif p{font-size:13px;color:var(--wh);font-weight:700;margin:0;line-height:1.3}
+.notif span{font-size:10px;color:var(--mu)}
+
+/* ── FOOTER ── */
+footer{
+  background:linear-gradient(135deg,rgba(0,119,182,0.08),#040e18,rgba(0,212,170,0.05));
+  border-top:2px solid transparent;
+  border-image:linear-gradient(90deg,var(--em),var(--cy),var(--te)) 1;
+  padding:64px 48px 30px;
+}
+.fg3{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;max-width:1100px;margin:0 auto 48px}
+.flogo{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.flhex{
+  width:36px;height:36px;
+  background:linear-gradient(135deg,var(--em),var(--cy),var(--te));
+  clip-path:polygon(50% 0%,93% 25%,93% 75%,50% 100%,7% 75%,7% 25%);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.fltxt{
+  font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;
+  color:var(--wh);letter-spacing:1px;
+}
+.fltxt b{color:var(--em)}
+.ftag{font-size:11px;color:var(--cy);margin-bottom:14px;text-transform:uppercase;letter-spacing:.1em;font-weight:700}
+.fdsc{font-size:12px;color:var(--mu);line-height:1.75;margin-bottom:16px}
+.fct{font-size:12px;color:rgba(160,196,216,.6);line-height:1.85}
+.fcol h4{
+  font-size:11px;font-weight:800;margin-bottom:14px;
+  letter-spacing:.14em;text-transform:uppercase;
+}
+.fg3 .fcol:nth-child(2) h4{color:var(--em)}
+.fg3 .fcol:nth-child(3) h4{color:var(--cy)}
+.fg3 .fcol:nth-child(4) h4{color:var(--te)}
+.fcol a{
+  display:block;font-size:12px;color:var(--mu);
+  margin-bottom:8px;cursor:pointer;text-decoration:none;transition:color .2s;
+}
+.fg3 .fcol:nth-child(2) a:hover{color:var(--em)}
+.fg3 .fcol:nth-child(3) a:hover{color:var(--cy)}
+.fg3 .fcol:nth-child(4) a:hover{color:var(--te)}
+.fbot{
+  max-width:1100px;margin:0 auto;border-top:1px solid rgba(0,180,216,.12);
+  padding-top:22px;display:flex;justify-content:space-between;align-items:center;
+}
+.fbot p{font-size:11px;color:rgba(160,196,216,.4)}
+</style>
+</head>
+<body>
+
+<div class="notif e" id="notif">
+  <div class="nico" id="ni">✓</div>
+  <div><p id="nm">Action réalisée</p><span id="ns">X3COM</span></div>
+</div>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-l">
+    <span>📍 Bureau 3, 5 Impasse de la Colombette — 31000 Toulouse</span>
+    <span style="color:var(--b2)">|</span>
+    <a href="mailto:contact@x3com.fr">✉ contact@x3com.fr</a>
+  </div>
+  <div class="topbar-r">
+    <a href="#">🕐 Lun–Ven : 8h–18h</a>
+    <span style="color:var(--b2)">|</span>
+    <a href="#">LinkedIn</a>
+    <a href="#">Facebook</a>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a class="logo" onclick="go('home')">
+    <div class="logo-hex">
+      <svg viewBox="0 0 22 22" fill="none">
+        <path d="M5 5L17 17M17 5L5 17" stroke="rgba(10,20,35,0.85)" stroke-width="2.8" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="logo-txt">X<b>3</b>COM</div>
+  </a>
+  <div class="nav-links">
+    <a id="nav-home" class="active" onclick="go('home')">L'entreprise</a>
+    <a id="nav-detection" onclick="go('detection')">Détection/VRD</a>
+    <a id="nav-tarifs" onclick="go('tarifs')">Tarifs</a>
+    <a id="nav-contact" onclick="go('contact')">Contact</a>
+  </div>
+  <button class="btn-nav" onclick="go('compte')">Mon compte</button>
+</nav>
+
+<!-- ══════════ HOME ══════════ -->
+<div id="page-home" class="page active">
+
+  <section class="hero">
+    <div class="hbg"></div>
+    <div class="hgrid"></div>
+    <div class="hglow"></div>
+    <div class="hlines">
+      <div class="hl-"></div><div class="hl-"></div><div class="hl-"></div>
+    </div>
+    <!-- hexagones déco -->
+    <div class="hhex" style="right:-60px;top:5%;opacity:.1">
+      <svg width="420" height="420" viewBox="0 0 420 420" fill="none">
+        <polygon points="210,20 378,116 378,308 210,404 42,308 42,116" stroke="#00D4AA" stroke-width="1.5" fill="none"/>
+        <polygon points="210,60 348,138 348,282 210,360 72,282 72,138" stroke="#00B4D8" stroke-width="1" fill="none"/>
+        <polygon points="210,100 318,160 318,260 210,320 102,260 102,160" stroke="#0077B6" stroke-width="0.8" fill="none"/>
+      </svg>
+    </div>
+    <div class="hhex" style="left:-50px;bottom:5%;opacity:.08">
+      <svg width="320" height="320" viewBox="0 0 320 320" fill="none">
+        <polygon points="160,16 287,88 287,232 160,304 33,232 33,88" stroke="#00D4AA" stroke-width="1.5" fill="none"/>
+        <polygon points="160,56 242,104 242,216 160,264 78,216 78,104" stroke="#00B4D8" stroke-width="1" fill="none"/>
+      </svg>
+    </div>
+    <div class="hcnt">
+      <div class="hbadge">Solutions Connectées &amp; Durables</div>
+      <h1 class="hero">
+        <span class="hl">Détection</span><br>
+        <span class="hl2">Génie Civil</span><br>
+        <span class="hl3">Fibre Optique</span>
+      </h1>
+      <p class="hero-sub">X3COM s'engage à vos côtés pour garantir la réussite et la sécurité de chaque projet d'infrastructure souterraine avec les technologies les plus innovantes du marché.</p>
+      <div class="hbtns">
+        <button class="btn1" onclick="go('tarifs')">Voir nos offres</button>
+        <button class="btn2" onclick="go('contact')">Nous contacter</button>
+      </div>
+      <div class="htag">
+        <div class="htag-i">Innovation</div>
+        <div class="htag-i">Performance</div>
+        <div class="htag-i">Durabilité</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="strip">
+    <div class="si"><div class="sd"></div>Pré-câblage Optique</div>
+    <div class="si"><div class="sd"></div>Détection Réseaux</div>
+    <div class="si"><div class="sd"></div>Génie Civil</div>
+    <div class="si"><div class="sd"></div>Énergies Renouvelables</div>
+    <div class="si"><div class="sd"></div>IRVE</div>
+    <div class="si"><div class="sd"></div>Géoréférencement</div>
+  </div>
+
+  <section class="sec tc">
+    <div class="lbl" style="justify-content:center">Domaines d'intervention</div>
+    <h2 class="big">Domaine <span class="hl">privé</span> &amp; <span class="hl2">public</span></h2>
+    <p class="sub">Du particulier à la collectivité, nous intervenons pour tous vos besoins en détection et infrastructure souterraine.</p>
+    <div class="dg">
+      <div class="dc">
+        <div class="dic">🏠</div>
+        <h3>Domaine privé</h3>
+        <p>Nous mettons notre expertise au service des particuliers comme des professionnels pour toutes vos missions : détection, géoréférencement et création de réseaux en propriété privée.</p>
+      </div>
+      <div class="dc">
+        <div class="dic">🏛️</div>
+        <h3>Domaine public</h3>
+        <p>Du particulier à la collectivité, professionnels et syndics inclus, nous intervenons pour tous vos besoins en domaine public dans le strict respect des normes réglementaires.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-alt">
+    <div class="aw">
+      <div>
+        <div class="lbl">Notre entreprise</div>
+        <h2 class="big">À propos de <span class="hl">X3COM</span></h2>
+        <p class="at">Implantée à Toulouse, X3COM est une société spécialisée dans les réseaux enterrés. Avec un savoir-faire reconnu, des habilitations et des certifications à jour, nous prenons en charge toutes vos missions.</p>
+        <p class="at">Détection et géoréférencement de réseaux enterrés, recherche de regards, localisation des blocages fibre optique, travaux de génie civil, énergies renouvelables et installation IRVE.</p>
+        <button class="btn1" onclick="go('contact')" style="margin-top:8px">Faites appel à nos experts</button>
+        <div class="sr">
+          <div class="sb"><span class="sn">500+</span><div class="sl">Interventions</div></div>
+          <div class="sb"><span class="sn">12+</span><div class="sl">Ans d'expérience</div></div>
+          <div class="sb"><span class="sn">100%</span><div class="sl">Certifié</div></div>
+        </div>
+      </div>
+      <div class="av2">
+        <svg width="280" height="260" viewBox="0 0 280 260" fill="none">
+          <polygon points="140,28 202,64 202,136 140,172 78,136 78,64" fill="none" stroke="#00D4AA" stroke-width="1.5" opacity=".6"/>
+          <polygon points="140,52 188,79 188,133 140,160 92,133 92,79" fill="rgba(0,180,216,0.07)" stroke="#00B4D8" stroke-width="1" opacity=".7"/>
+          <polygon points="140,74 170,91 170,126 140,143 110,126 110,91" fill="rgba(0,119,182,0.12)" stroke="#0077B6" stroke-width="1"/>
+          <polygon points="140,94 157,104 157,123 140,133 123,123 123,104" fill="rgba(0,212,170,0.2)" stroke="#00D4AA" stroke-width="1.5"/>
+          <line x1="140" y1="172" x2="140" y2="210" stroke="#00D4AA" stroke-width="1" opacity=".4"/>
+          <line x1="78" y1="136" x2="38" y2="158" stroke="#00B4D8" stroke-width="1" opacity=".35"/>
+          <line x1="202" y1="136" x2="242" y2="158" stroke="#0077B6" stroke-width="1" opacity=".35"/>
+          <line x1="140" y1="28" x2="140" y2="8" stroke="#00D4AA" stroke-width="1" opacity=".4"/>
+          <circle cx="140" cy="98" r="7" fill="#00D4AA" opacity=".8"/>
+          <circle cx="202" cy="64" r="4" fill="#00B4D8" opacity=".7"/>
+          <circle cx="78" cy="64" r="4" fill="#00D4AA" opacity=".6"/>
+          <circle cx="202" cy="136" r="3" fill="#0077B6" opacity=".6"/>
+          <circle cx="78" cy="136" r="3" fill="#00B4D8" opacity=".5"/>
+          <circle cx="140" cy="210" r="5" fill="#00D4AA" opacity=".4"/>
+          <circle cx="38" cy="158" r="3" fill="#00B4D8" opacity=".4"/>
+          <circle cx="242" cy="158" r="3" fill="#0077B6" opacity=".4"/>
+          <text x="140" y="230" text-anchor="middle" fill="#00D4AA" font-size="11" font-family="Barlow Condensed,sans-serif" font-weight="900" opacity=".7" letter-spacing="4">X3COM</text>
+          <text x="140" y="246" text-anchor="middle" fill="#a0c4d8" font-size="9" font-family="Barlow,sans-serif" opacity=".5">Solutions Connectées &amp; Durables</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec tc">
+    <div class="lbl" style="justify-content:center">Ce que nous faisons</div>
+    <h2 class="big">Nos <span class="hl">services</span></h2>
+    <p class="sub">Une expertise complète pour toutes vos infrastructures souterraines et énergétiques.</p>
+    <div class="sg">
+      <div class="sc">
+        <div class="sic">🔵</div>
+        <h3>Fibre Optique</h3>
+        <ul class="sli">
+          <li><div class="sd2"></div>Déploiement réseaux FTTH/FTTO</li>
+          <li><div class="sd2"></div>Raccordements et maintenance haute performance</li>
+          <li><div class="sd2"></div>Pré-câblage fibre optique</li>
+          <li><div class="sd2"></div>Débouchage de gaines TPC</li>
+          <li><div class="sd2"></div>Réparation et remplacement de fourreaux</li>
+        </ul>
+        <button class="sm" onclick="go('detection')">En savoir plus →</button>
+      </div>
+      <div class="sc">
+        <div class="sic">📡</div>
+        <h3>Détection &amp; Sécurité</h3>
+        <ul class="sli">
+          <li><div class="sd2"></div>Sécurisation des chantiers</li>
+          <li><div class="sd2"></div>Investigations complémentaires (IC)</li>
+          <li><div class="sd2"></div>Marquage-piquetage sur site</li>
+          <li><div class="sd2"></div>Géoréférencement de réseaux</li>
+          <li><div class="sd2"></div>Plans d'exécution de réseaux</li>
+        </ul>
+        <button class="sm" onclick="go('detection')">En savoir plus →</button>
+      </div>
+      <div class="sc">
+        <div class="sic">⚡</div>
+        <h3>Énergie &amp; IRVE</h3>
+        <ul class="sli">
+          <li><div class="sd2"></div>Installations photovoltaïques</li>
+          <li><div class="sd2"></div>Solutions d'autoconsommation</li>
+          <li><div class="sd2"></div>Stockage d'énergie</li>
+          <li><div class="sd2"></div>Bornes de recharge IRVE</li>
+          <li><div class="sd2"></div>Génie civil et tranchées</li>
+        </ul>
+        <button class="sm" onclick="go('contact')">En savoir plus →</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-alt tc">
+    <div class="lbl" style="justify-content:center">Ils nous font confiance</div>
+    <h2 class="big" style="margin-bottom:40px">Témoignages <span class="hl">clients</span></h2>
+    <div class="tg">
+      <div class="tc2">
+        <div class="stars">★★★★★</div>
+        <p>Intervention rapide et efficace. L'équipe a localisé le blocage en moins d'une heure, diagnostic complet fourni par email le soir même. Je recommande vivement.</p>
+        <div class="ta"><div class="av3">JD</div><div class="an"><strong>Jean Dupont</strong><span>Particulier — Toulouse</span></div></div>
+      </div>
+      <div class="tc2">
+        <div class="stars">★★★★★</div>
+        <p>Excellente prestation pour notre syndic. X3COM a géoréférencé l'ensemble du réseau de notre résidence. Travail sérieux, documentation parfaite.</p>
+        <div class="ta"><div class="av3">SM</div><div class="an"><strong>Sophie Martin</strong><span>Syndic de copropriété</span></div></div>
+      </div>
+      <div class="tc2">
+        <div class="stars">★★★★☆</div>
+        <p>Professionnel, ponctuel et pédagogue. La fibre était enfin raccordable après l'intervention. Très satisfait du résultat garanti par X3COM.</p>
+        <div class="ta"><div class="av3">PL</div><div class="an"><strong>Pierre Laurent</strong><span>Professionnel — Blagnac</span></div></div>
+      </div>
+    </div>
+    <div class="ctab">
+      <h2>Raccordement fibre bloqué ?</h2>
+      <p>X3COM dispose des équipements et de l'expertise pour lever chaque obstacle. Interventions garanties résultat sur tout le territoire.</p>
+      <button class="btn1" onclick="go('tarifs')" style="position:relative;z-index:1">Découvrir nos offres</button>
+    </div>
+  </section>
+
+  <footer>
+    <div class="fg3">
+      <div>
+        <div class="flogo">
+          <div class="flhex"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 4L16 16M16 4L4 16" stroke="rgba(5,18,32,.9)" stroke-width="2.8" stroke-linecap="round"/></svg></div>
+          <div class="fltxt">X<b>3</b>COM</div>
+        </div>
+        <div class="ftag">Solutions Connectées &amp; Durables</div>
+        <p class="fdsc">Implantée à Toulouse, X3COM est une société spécialisée dans les réseaux enterrés. Experte en détection, création et géoréférencement des infrastructures souterraines.</p>
+        <p class="fct">📍 Bureau 3, 5 Impasse de la Colombette, 31000 Toulouse<br>✉ contact@x3com.fr<br>🌐 www.x3com.com</p>
+      </div>
+      <div class="fcol"><h4>Services</h4><a onclick="go('detection')">Détection télécom</a><a>Fibre optique</a><a>Génie civil</a><a>IRVE</a><a>Énergies renouvelables</a></div>
+      <div class="fcol"><h4>Légal</h4><a>Conditions générales</a><a>Mentions légales</a><a>Confidentialité</a><a>CGV</a></div>
+      <div class="fcol"><h4>Contact</h4><a>05 .. .. .. ..</a><a>contact@x3com.fr</a><a>www.x3com.com</a></div>
+    </div>
+    <div class="fbot">
+      <p>© 2024 X3COM — Tous droits réservés.</p>
+      <p>Innovation · Performance · Durabilité</p>
+    </div>
+  </footer>
+</div>
+
+<!-- ══════════ DETECTION ══════════ -->
+<div id="page-detection" class="page">
+  <div class="ph">
+    <div class="lbl" style="justify-content:center">Services</div>
+    <h1 class="big">Détection de <span class="hl">Réseaux Télécom</span></h1>
+    <p class="sub" style="margin:0 auto 32px">Raccordement à la fibre impossible ? Notre équipe dispose de l'expertise et du matériel de pointe pour lever chaque blocage.</p>
+    <button class="btn1" onclick="go('tarifs')">Réaliser un devis</button>
+  </div>
+  <section class="sec">
+    <div class="tc" style="margin-bottom:36px">
+      <h2 class="big">Nos <span class="hl2">méthodes</span> de détection</h2>
+    </div>
+    <div class="mg">
+      <div class="mc">
+        <div class="mt">
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+            <circle cx="32" cy="32" r="26" stroke="#00D4AA" stroke-width="1.5" opacity=".4" stroke-dasharray="6 3"/>
+            <circle cx="32" cy="32" r="17" stroke="#00B4D8" stroke-width="1.5" opacity=".6"/>
+            <circle cx="32" cy="32" r="8" fill="rgba(0,212,170,0.2)" stroke="#00D4AA" stroke-width="2"/>
+            <line x1="32" y1="6" x2="32" y2="58" stroke="#00D4AA" stroke-width=".5" opacity=".3"/>
+            <line x1="6" y1="32" x2="58" y2="32" stroke="#00D4AA" stroke-width=".5" opacity=".3"/>
+          </svg>
+        </div>
+        <div class="mb">
+          <h3>Générateur de fréquences</h3>
+          <p>Induction électromagnétique haute puissance pour cartographier le tracé exact de votre réseau et en mesurer la profondeur avec précision.</p>
+          <span class="mtag">Méthode 1</span>
+        </div>
+      </div>
+      <div class="mc">
+        <div class="mt">
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+            <line x1="14" y1="50" x2="42" y2="22" stroke="#00B4D8" stroke-width="2.5" stroke-linecap="round"/>
+            <circle cx="42" cy="22" r="6" fill="rgba(0,180,216,0.2)" stroke="#00B4D8" stroke-width="2"/>
+            <circle cx="50" cy="14" r="4" fill="#00B4D8" opacity=".7"/>
+            <path d="M44 24L52 16L58 22" stroke="#00D4AA" stroke-width="2" fill="none" stroke-linecap="round"/>
+            <circle cx="14" cy="50" r="5" fill="rgba(0,119,182,0.2)" stroke="#0077B6" stroke-width="2"/>
+          </svg>
+        </div>
+        <div class="mb">
+          <h3>Aiguille traçable &amp; sonde</h3>
+          <p>Sonde émettrice introduite dans la gaine TPC pour identifier précisément chaque point de blocage avec marquage au sol.</p>
+          <span class="mtag">Méthode 2</span>
+        </div>
+      </div>
+      <div class="mc">
+        <div class="mt">
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+            <rect x="20" y="10" width="24" height="20" rx="5" stroke="#0077B6" stroke-width="2" fill="rgba(0,119,182,0.1)"/>
+            <circle cx="32" cy="20" r="5" stroke="#00B4D8" stroke-width="2" fill="rgba(0,180,216,0.1)"/>
+            <line x1="32" y1="30" x2="32" y2="50" stroke="#00D4AA" stroke-width="2" stroke-linecap="round"/>
+            <ellipse cx="32" cy="50" rx="10" ry="4" stroke="#00D4AA" stroke-width="1.5" opacity=".5"/>
+          </svg>
+        </div>
+        <div class="mb">
+          <h3>Endoscopie vidéo de gaine</h3>
+          <p>Caméra HD orientable 360° avec 9 LED blanches, compteur odomètre et enregistrement photo/vidéo pour inspection complète.</p>
+          <span class="mtag">Méthode 3</span>
+        </div>
+      </div>
+    </div>
+    <div class="nb">
+      <div class="lbl" style="justify-content:center">Réglementation</div>
+      <h2 class="big tc" style="font-size:28px;margin-bottom:14px">Normes <span class="hl2">d'enfouissement</span></h2>
+      <p class="sub tc" style="font-size:13px">Nous appliquons rigoureusement ces normes à chaque intervention.</p>
+      <div class="ng">
+        <div class="ni2"><div class="ic">📏</div><p>Profondeur min. 0,80 m en voirie</p></div>
+        <div class="ni2"><div class="ic">🛡️</div><p>Grillage avertisseur orange obligatoire</p></div>
+        <div class="ni2"><div class="ic">📄</div><p>DOE conforme DT/DICT</p></div>
+        <div class="ni2"><div class="ic">✅</div><p>Certification Classe A</p></div>
+      </div>
+    </div>
+  </section>
+  <footer>
+    <div class="fg3"><div><div class="flogo"><div class="flhex"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 4L16 16M16 4L4 16" stroke="rgba(5,18,32,.9)" stroke-width="2.8" stroke-linecap="round"/></svg></div><div class="fltxt">X<b>3</b>COM</div></div><p class="fdsc">Solutions Connectées &amp; Durables — Toulouse</p></div><div class="fcol"><h4>Liens rapides</h4><a onclick="go('detection')">Détection télécom</a><a>CGU</a></div></div>
+    <div class="fbot"><p>© 2024 X3COM — Tous droits réservés.</p></div>
+  </footer>
+</div>
+
+<!-- ══════════ TARIFS ══════════ -->
+<div id="page-tarifs" class="page">
+  <div class="ph">
+    <div class="lbl" style="justify-content:center">Tarifs</div>
+    <h1 class="big">Formules <span class="hl">Détection</span> <span class="hl2">Télécom</span></h1>
+    <p class="sub" style="margin:0 auto 0">Trois formules flexibles adaptées à tous les besoins et tous les budgets.</p>
+  </div>
+  <section class="sec" style="padding-top:30px">
+    <div class="tc" style="margin-bottom:38px">
+      <span style="background:linear-gradient(90deg,rgba(0,180,216,0.12),rgba(0,119,182,0.12));color:var(--cy);border:1px solid rgba(0,180,216,.35);padding:7px 22px;border-radius:100px;font-size:11px;font-weight:900;letter-spacing:.1em;text-transform:uppercase">★ Le plus populaire — Offre 2</span>
+    </div>
+    <div class="pg">
+      <div class="pc">
+        <h3>Diagnostic simple</h3>
+        <div class="pnum">590 <small>€ TTC</small></div>
+        <p class="pdesc">Diagnostic complet avec rapport détaillé. Idéal pour identifier votre problème avant travaux.</p>
+        <ul class="pf">
+          <li><span class="ck">✓</span>Détection et identification réseau cuivre domaine privé &amp; public</li>
+          <li><span class="ck">✓</span>Aiguillage fourreau par aiguille traçable et sonde émettrice</li>
+          <li><span class="ck">✓</span>Contre-aiguillage pour cibler les points de blocage</li>
+          <li><span class="ck">✓</span>Localisation du blocage : regard télécom ou fourreau obstrué</li>
+          <li><span class="ck">✓</span>Compte rendu détaillé transmis par e-mail</li>
+          <li><span class="ck">✓</span>Devis personnalisé pour les travaux à réaliser</li>
+          <li><span class="ck">✓</span>Travaux réalisables par vos soins ou votre entreprise</li>
+        </ul>
+        <button class="bprice" onclick="choisir('Diagnostic simple',590)">Choisir cette offre</button>
+      </div>
+      <div class="pc">
+        <div class="pbadge">★ Le plus populaire</div>
+        <h3>Diagnostic + Travaux</h3>
+        <div class="pnum">890 <small>€ TTC</small></div>
+        <p class="pdesc">Intervention sur surface végétale (terre uniquement). Garantie résultat incluse.</p>
+        <ul class="pf">
+          <li><span class="ck">✓</span>Détection et identification réseau cuivre</li>
+          <li><span class="ck">✓</span>Aiguillage par aiguille traçable et sonde émettrice</li>
+          <li><span class="ck">✓</span>Contre-aiguillage pour cibler les points de blocage</li>
+          <li><span class="ck">✓</span>Débouchage et réparation de fourreau ou gaine</li>
+          <li><span class="ck">✓</span>Terrassement pour accès à un regard enfoui</li>
+          <li><span class="ck">✓</span>Mise en place d'une ficelle de tirage après intervention</li>
+          <li><span class="ck" style="color:#7CB342">✓</span><strong style="color:var(--wh)">Garantie résultat — ligne fibre 100% raccordable</strong></li>
+          <li><span class="ot">+</span>Option câblage fibre optique : 140 €</li>
+          <li><span class="ot">+</span>Point de blocage supplémentaire : +180 €</li>
+        </ul>
+        <button class="bprice" onclick="choisir('Diagnostic + Travaux (végétal)',890)">Choisir cette offre</button>
+      </div>
+      <div class="pc">
+        <h3>Diagnostic + Travaux</h3>
+        <div class="pnum">1&nbsp;190 <small>€ TTC</small></div>
+        <p class="pdesc">Intervention sur surface dure (béton, enrobé, pavé). Remise en état maçonnerie incluse.</p>
+        <ul class="pf">
+          <li><span class="ck">✓</span>Surface dure (béton, enrobé, pavé, concassé…)</li>
+          <li><span class="ck">✓</span>Détection et identification réseau cuivre</li>
+          <li><span class="ck">✓</span>Aiguillage et contre-aiguillage complet</li>
+          <li><span class="ck">✓</span>Débouchage et réparation de fourreau ou gaine</li>
+          <li><span class="ck">✓</span>Terrassement pour accès à un regard enfoui</li>
+          <li><span class="ck">✓</span><strong style="color:var(--wh)">Remise en état par travaux de maçonnerie</strong></li>
+          <li><span class="ck" style="color:#7CB342">✓</span><strong style="color:var(--wh)">Garantie résultat — ligne fibre 100% raccordable</strong></li>
+          <li><span class="ot">+</span>Option câblage fibre optique : 140 €</li>
+          <li><span class="ot">+</span>Point de blocage supplémentaire : +220 €</li>
+        </ul>
+        <button class="bprice" onclick="choisir('Diagnostic + Travaux (dur)',1190)">Choisir cette offre</button>
+      </div>
+    </div>
+  </section>
+  <footer>
+    <div class="fg3"><div><div class="flogo"><div class="flhex"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 4L16 16M16 4L4 16" stroke="rgba(5,18,32,.9)" stroke-width="2.8" stroke-linecap="round"/></svg></div><div class="fltxt">X<b>3</b>COM</div></div><p class="fdsc">Solutions Connectées &amp; Durables.</p></div><div class="fcol"><h4>Liens rapides</h4><a onclick="go('detection')">Détection télécom</a><a>CGU</a></div></div>
+    <div class="fbot"><p>© 2024 X3COM — Tous droits réservés.</p></div>
+  </footer>
+</div>
+
+<!-- ══════════ CONTACT ══════════ -->
+<div id="page-contact" class="page">
+  <div class="ph">
+    <div class="lbl" style="justify-content:center">Contact</div>
+    <h1 class="big">Quel est <span class="hl">votre</span> <span class="hl2">besoin ?</span></h1>
+    <p class="sub" style="margin:0 auto 32px">Quelle que soit votre problématique, X3COM a la solution. Laissez nos experts prendre le relais.</p>
+    <div class="tabs">
+      <button class="tab act">Détection réseaux</button>
+      <button class="tab">Génie civil</button>
+      <button class="tab">Travaux fibre optique</button>
+    </div>
+  </div>
+  <section class="sec" style="padding-top:0">
+    <div class="cw">
+      <div class="fc">
+        <h3>Prendre contact</h3>
+        <div class="fg2"><label>Vous êtes</label><div class="rl"><label class="rli"><input type="radio" name="tp" checked> Professionnel</label><label class="rli"><input type="radio" name="tp"> Particulier</label></div></div>
+        <div class="fg2d">
+          <div class="fg2"><label>Nom et prénom *</label><input id="c-nom" type="text" placeholder="Jean Dupont"></div>
+          <div class="fg2"><label>E-mail *</label><input id="c-email" type="email" placeholder="jean@email.fr"></div>
+        </div>
+        <div class="fg2d">
+          <div class="fg2"><label>Téléphone</label><input type="tel" placeholder="06 .. .. .. .."></div>
+          <div class="fg2"><label>Ville</label><input type="text" placeholder="Toulouse"></div>
+        </div>
+        <div class="fg2"><label>Adresse</label><input type="text" placeholder="12 rue de la République"></div>
+        <div class="fg2"><label>Vos besoins</label>
+          <div class="cbl">
+            <label class="cbli"><input type="checkbox"> Détection tout réseaux et/ou géoréférencement</label>
+            <label class="cbli"><input type="checkbox"> Recherche et détection d'un point de blocage dans une gaine</label>
+            <label class="cbli"><input type="checkbox"> Détecter un regard télécom caché ou enterré en domaine privatif</label>
+            <label class="cbli"><input type="checkbox"> Effectuer une tranchée avec ou sans pose de fourreau</label>
+            <label class="cbli"><input type="checkbox"> Réparation d'un câble adsl, réseaux ou fibre optique</label>
+            <label class="cbli"><input type="checkbox"> Création d'une adduction au domaine public</label>
+          </div>
+        </div>
+        <div class="fg2"><label>Votre opérateur</label><input type="text" placeholder="Orange, SFR, Bouygues..."></div>
+        <div class="fg2"><label>Message</label><textarea placeholder="Décrivez votre besoin en détail..."></textarea></div>
+        <button class="btn1" style="width:100%;justify-content:center;font-size:14px" onclick="envoyerContact()">Envoyer le message</button>
+      </div>
+      <div class="iw">
+        <h3>Coordonnées</h3>
+        <div class="ii2"><div class="ii">📍</div><div><strong>Adresse</strong><p>Bureau 3, 5 Impasse de la Colombette<br>31000 Toulouse</p></div></div>
+        <div class="ii2"><div class="ii">🕐</div><div><strong>Horaires</strong><p>Lundi – Vendredi : 8h00 – 18h00<br>Samedi : sur rendez-vous</p></div></div>
+        <div class="ii2"><div class="ii">📞</div><div><strong>Téléphone</strong><p>05 .. .. .. ..<br>Réponse sous 24h</p></div></div>
+        <div class="ii2"><div class="ii">✉</div><div><strong>E-mail</strong><p>contact@x3com.fr<br>www.x3com.com</p></div></div>
+        <div class="ccta">
+          <h4>Commander directement</h4>
+          <p>Choisissez votre formule et passez commande en ligne dès maintenant.</p>
+          <button class="btn2" onclick="go('tarifs')">Voir les offres →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+  <footer>
+    <div class="fg3"><div><div class="flogo"><div class="flhex"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 4L16 16M16 4L4 16" stroke="rgba(5,18,32,.9)" stroke-width="2.8" stroke-linecap="round"/></svg></div><div class="fltxt">X<b>3</b>COM</div></div><p class="fdsc">Solutions Connectées &amp; Durables.</p></div><div class="fcol"><h4>Liens</h4><a onclick="go('detection')">Détection télécom</a><a>CGU</a></div></div>
+    <div class="fbot"><p>© 2024 X3COM — Tous droits réservés.</p></div>
+  </footer>
+</div>
+
+<!-- ══════════ COMPTE ══════════ -->
+<div id="page-compte" class="page">
+  <section class="sec">
+    <div id="v-login">
+      <div class="tc" style="margin-bottom:36px">
+        <div class="lbl" style="justify-content:center">Espace client</div>
+        <h1 class="big">Mon <span class="hl">Compte</span></h1>
+      </div>
+      <div class="accard">
+        <h2>Se connecter</h2>
+        <p>Accédez à votre espace client pour gérer vos commandes et informations personnelles.</p>
+        <div class="fg2"><label>E-mail *</label><input id="l-email" type="email" placeholder="votre@email.fr"></div>
+        <div class="fg2"><label>Nom</label><input id="l-nom" type="text" placeholder="Dupont"></div>
+        <div class="fg2"><label>Prénom</label><input id="l-prenom" type="text" placeholder="Jean"></div>
+        <div class="fg2"><label>Téléphone</label><input id="l-tel" type="tel" placeholder="06 .. .. .. .."></div>
+        <button class="bfull p" onclick="connexion()">Enregistrer &amp; Accéder au compte</button>
+        <button class="bfull g" onclick="go('commande')">Suivre une commande →</button>
+      </div>
+    </div>
+    <div id="v-dash" style="display:none">
+      <div class="dsh">
+        <div class="dsh-h">
+          <div><div class="lbl">Espace client</div><h2 class="big" style="font-size:clamp(22px,2.5vw,38px)">Bonjour <span class="hl" id="d-hello">Client</span> !</h2></div>
+          <button class="btn2" style="font-size:12px;padding:8px 16px" onclick="deconnexion()">Déconnexion</button>
+        </div>
+        <div class="dc2">
+          <h4>📋 Mes informations</h4>
+          <div class="fg2d"><div class="fg2"><label>Prénom</label><input id="d-prenom" type="text"></div><div class="fg2"><label>Nom</label><input id="d-nom" type="text"></div></div>
+          <div class="fg2"><label>E-mail</label><input id="d-email" type="email"></div>
+          <div class="fg2"><label>Téléphone</label><input id="d-tel" type="tel"></div>
+          <button class="btn1" style="margin-top:4px;font-size:13px" onclick="notify('✓','Informations mises à jour','Sauvegarde effectuée')">Enregistrer les modifications</button>
+        </div>
+        <div class="dc2">
+          <h4 style="color:var(--cy)">🛒 Mes commandes</h4>
+          <div class="or"><div><strong>Diagnostic simple</strong><span class="os">Commande #X3-2025-001 · 15 mars 2025</span></div><div class="or-r"><span style="color:var(--em);font-weight:900;font-size:15px;font-family:'Barlow Condensed',sans-serif">590 €</span><span class="bdg d">Terminé</span></div></div>
+          <div class="or"><div><strong>Diagnostic + Travaux (végétal)</strong><span class="os">Commande #X3-2025-002 · 2 avril 2025</span></div><div class="or-r"><span style="color:var(--cy);font-weight:900;font-size:15px;font-family:'Barlow Condensed',sans-serif">890 €</span><span class="bdg p">En cours</span></div></div>
+          <div style="text-align:center;margin-top:20px"><button class="btn2" onclick="go('tarifs')">+ Nouvelle commande</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <footer>
+    <div class="fg3"><div><div class="flogo"><div class="flhex"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 4L16 16M16 4L4 16" stroke="rgba(5,18,32,.9)" stroke-width="2.8" stroke-linecap="round"/></svg></div><div class="fltxt">X<b>3</b>COM</div></div><p class="fdsc">Solutions Connectées &amp; Durables.</p></div><div class="fcol"><h4>Liens</h4><a onclick="go('detection')">Détection télécom</a></div></div>
+    <div class="fbot"><p>© 2024 X3COM — Tous droits réservés.</p></div>
+  </footer>
+</div>
+
+<!-- ══════════ PAIEMENT ══════════ -->
+<div id="page-paiement" class="page">
+  <section class="sec">
+    <div class="tc" style="margin-bottom:44px">
+      <div class="lbl" style="justify-content:center">Paiement sécurisé</div>
+      <h1 class="big">Finaliser la <span class="hl2">commande</span></h1>
+    </div>
+    <div class="pw">
+      <div class="pf2">
+        <h3>💳 Informations de paiement</h3>
+        <div class="cviz">
+          <svg width="32" height="26" viewBox="0 0 32 26" fill="none"><rect x="1" y="1" width="30" height="24" rx="4" stroke="rgba(0,180,216,0.5)" stroke-width="1.5"/><rect x="5" y="8" width="10" height="8" rx="2" fill="rgba(0,212,170,0.2)" stroke="#00D4AA" stroke-width="1"/></svg>
+          <div class="cnd" id="cn-d">•••• •••• •••• ••••</div>
+          <div class="cmeta">
+            <div><div class="cml">Titulaire</div><span id="cn-nm">Votre nom</span></div>
+            <div><div class="cml">Expire</div><span id="cn-ex">MM/AA</span></div>
+            <div class="cbrand">VISA</div>
+          </div>
+        </div>
+        <div class="fg2"><label>Numéro de carte *</label><input id="cn" type="text" placeholder="1234 5678 9012 3456" maxlength="19" oninput="fmtC(this)"></div>
+        <div class="fg2"><label>Nom sur la carte *</label><input id="cnm" type="text" placeholder="JEAN DUPONT" oninput="document.getElementById('cn-nm').textContent=this.value||'Votre nom'"></div>
+        <div class="fg2d">
+          <div class="fg2"><label>Date d'expiration *</label><input id="cex" type="text" placeholder="MM/AA" maxlength="5" oninput="document.getElementById('cn-ex').textContent=this.value||'MM/AA'"></div>
+          <div class="fg2"><label>CVV *</label><input type="text" placeholder="•••" maxlength="4"></div>
+        </div>
+        <button class="btn1" style="width:100%;justify-content:center;font-size:14px;padding:14px" onclick="payer()">🔒 Payer maintenant — Sécurisé SSL</button>
+        <p style="text-align:center;font-size:11px;color:var(--mu);margin-top:12px">Paiement 100% sécurisé · Données chiffrées · SSL</p>
+      </div>
+      <div class="psum">
+        <h3>Résumé de commande</h3>
+        <div class="sr2"><span id="ss">Diagnostic simple</span><span id="sp">590 €</span></div>
+        <div class="sr2"><span>TVA (20%)</span><span id="stv">118 €</span></div>
+        <div class="stot"><span>Total TTC</span><span id="st">590 €</span></div>
+        <div class="sok">
+          <p><span class="sokc">✓</span>Garantie satisfaction client</p>
+          <p><span class="sokc">✓</span>Réponse sous 24h</p>
+          <p><span class="sokc">✓</span>Compte-rendu par e-mail inclus</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <footer>
+    <div class="fg3"><div><div class="flogo"><div class="flhex"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 4L16 16M16 4L4 16" stroke="rgba(5,18,32,.9)" stroke-width="2.8" stroke-linecap="round"/></svg></div><div class="fltxt">X<b>3</b>COM</div></div></div></div>
+    <div class="fbot"><p>© 2024 X3COM — Tous droits réservés.</p></div>
+  </footer>
+</div>
+
+<!-- ══════════ COMMANDE ══════════ -->
+<div id="page-commande" class="page">
+  <section class="sec">
+    <div class="tc" style="margin-bottom:38px">
+      <div class="lbl" style="justify-content:center">Suivi</div>
+      <h1 class="big">Ma <span class="hl">Commande</span></h1>
+    </div>
+    <div class="cmdw">
+      <div class="cmdd">
+        <h3 id="cmd-t">Diagnostic simple</h3>
+        <div class="cmdp" id="cmd-p">590 €</div>
+        <ul class="fl">
+          <li><span class="ck" style="color:var(--em)">✓</span>Détection et identification du réseau cuivre en domaine privé et public</li>
+          <li><span class="ck" style="color:var(--em)">✓</span>Aiguillage du fourreau par aiguille traçable et sonde émettrice</li>
+          <li><span class="ck" style="color:var(--em)">✓</span>Contre-aiguillage pour cibler les points de blocage</li>
+          <li><span class="ck" style="color:var(--em)">✓</span>Localisation du blocage : regard télécom ou fourreau obstrué</li>
+          <li><span class="ck" style="color:var(--em)">✓</span>Compte rendu détaillé transmis par e-mail</li>
+          <li><span class="ck" style="color:var(--em)">✓</span>Devis personnalisé pour les travaux à réaliser</li>
+          <li><span class="ck" style="color:var(--em)">✓</span>Travaux réalisables par vos soins ou votre entreprise</li>
+        </ul>
+      </div>
+      <div class="cmds">
+        <h3>Statut de la commande</h3>
+        <span class="bdg p" style="display:inline-block;margin-bottom:22px">En cours de traitement</span>
+        <div class="stp">
+          <div class="st"><div class="std d">✓</div><div class="stc"><strong>Commande reçue</strong><p>Votre commande a bien été enregistrée.</p></div></div>
+          <div class="st"><div class="std d">✓</div><div class="stc"><strong>Paiement confirmé</strong><p>Paiement sécurisé validé.</p></div></div>
+          <div class="st"><div class="std a">⟳</div><div class="stc"><strong>Planification</strong><p>Un technicien vous contacte sous 24h.</p></div></div>
+          <div class="st"><div class="std p">4</div><div class="stc"><strong>Intervention sur site</strong><p>Le technicien se déplace à votre adresse.</p></div></div>
+          <div class="st" style="padding-bottom:0"><div class="std p">5</div><div class="stc"><strong>Rapport transmis</strong><p>Compte-rendu complet envoyé par e-mail.</p></div></div>
+        </div>
+        <div style="margin-top:26px;display:flex;flex-direction:column;gap:12px">
+          <button class="btn3" onclick="go('compte')">← Retour à mon compte</button>
+          <button class="btn1" onclick="go('tarifs')">+ Nouvelle commande</button>
+        </div>
+      </div>
+    </div>
+  </section>
+  <footer>
+    <div class="fg3"><div><div class="flogo"><div class="flhex"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 4L16 16M16 4L4 16" stroke="rgba(5,18,32,.9)" stroke-width="2.8" stroke-linecap="round"/></svg></div><div class="fltxt">X<b>3</b>COM</div></div></div></div>
+    <div class="fbot"><p>© 2024 X3COM — Tous droits réservés.</p></div>
+  </footer>
+</div>
+
+<script>
+let offer={name:'Diagnostic simple',price:590};
+
+function go(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.querySelectorAll('.nav-links a').forEach(a=>a.classList.remove('active'));
+  const n=document.getElementById('nav-'+id);
+  if(n)n.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function notify(ico,msg,sub){
+  const el=document.getElementById('notif');
+  document.getElementById('ni').textContent=ico;
+  document.getElementById('nm').textContent=msg;
+  document.getElementById('ns').textContent=sub||'X3COM';
+  el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),3500);
+}
+
+function choisir(name,price){
+  offer={name,price};
+  document.getElementById('ss').textContent=name;
+  document.getElementById('sp').textContent=price+' €';
+  document.getElementById('stv').textContent=Math.round(price*0.2)+' €';
+  document.getElementById('st').textContent=price+' €';
+  go('paiement');
+}
+
+function payer(){
+  const n=document.getElementById('cn').value;
+  const nm=document.getElementById('cnm').value;
+  if(!n||!nm){notify('⚠','Champs manquants','Veuillez compléter le formulaire');return;}
+  document.getElementById('cmd-t').textContent=offer.name;
+  document.getElementById('cmd-p').textContent=offer.price+' €';
+  notify('✓','Paiement confirmé !','Commande enregistrée avec succès');
+  setTimeout(()=>go('commande'),900);
+}
+
+function fmtC(inp){
+  const raw=inp.value.replace(/\D/g,'').substring(0,16);
+  inp.value=raw.replace(/(.{4})/g,'$1 ').trim();
+  const p=raw.padEnd(16,'•').replace(/(.{4})/g,'$1 ').trim();
+  document.getElementById('cn-d').textContent=p;
+}
+
+function envoyerContact(){
+  const n=document.getElementById('c-nom').value;
+  const e=document.getElementById('c-email').value;
+  if(!n||!e){notify('⚠','Champs manquants','Nom et e-mail requis');return;}
+  notify('✓','Message envoyé !','Nous vous répondrons sous 24h');
+}
+
+function connexion(){
+  const email=document.getElementById('l-email').value;
+  const prenom=document.getElementById('l-prenom').value;
+  const nom=document.getElementById('l-nom').value;
+  const tel=document.getElementById('l-tel').value;
+  if(!email){notify('⚠','E-mail requis','Veuillez saisir votre e-mail');return;}
+  document.getElementById('v-login').style.display='none';
+  document.getElementById('v-dash').style.display='block';
+  document.getElementById('d-hello').textContent=prenom||'Client';
+  document.getElementById('d-prenom').value=prenom;
+  document.getElementById('d-nom').value=nom;
+  document.getElementById('d-email').value=email;
+  document.getElementById('d-tel').value=tel;
+  notify('✓','Connecté !','Bienvenue sur votre espace client');
+  if(offer.price){setTimeout(()=>go('paiement'),1200);}
+}
+
+function deconnexion(){
+  document.getElementById('v-login').style.display='block';
+  document.getElementById('v-dash').style.display='none';
+  notify('✓','Déconnecté','À bientôt !');
+}
+
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click',function(){
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('act'));
+    this.classList.add('act');
+  });
+});
+</script>
+</body>
+</html>

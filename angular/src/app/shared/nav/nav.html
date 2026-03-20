@@ -1,0 +1,17 @@
+<nav class="x3-nav">
+  <a class="logo" routerLink="/">
+    <img src="logo_entreprise.png" alt="X3COM" class="logo-img">
+  </a>
+
+  <div class="nav-links">
+    <a routerLink="/"             routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">L'entreprise</a>
+    <a routerLink="/terrassement" routerLinkActive="active">Terrassement/VRD</a>
+    <a routerLink="/tarifs"       routerLinkActive="active">Tarifs</a>
+    <a routerLink="/contact"      routerLinkActive="active">Contact</a>
+    @if (auth.utilisateur()?.role === 'admin') {
+      <a routerLink="/admin" routerLinkActive="active" class="nav-admin">⚙ Admin</a>
+    }
+  </div>
+
+  <a routerLink="/compte" class="btn-compte">Mon compte</a>
+</nav>

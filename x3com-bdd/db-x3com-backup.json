@@ -1,0 +1,115 @@
+{
+  "utilisateurs": [
+    {
+      "id": 1,
+      "email": "admin@x3com.fr",
+      "nom": "Dupont",
+      "prenom": "Jean",
+      "telephone": "06 12 34 56 78",
+      "adresse": "5 Impasse de la Colombette",
+      "ville": "Toulouse",
+      "codePostal": "31000",
+      "role": "admin",
+      "dateCreation": "2024-01-15T08:00:00.000Z"
+    },
+    {
+      "id": 2,
+      "email": "client@example.fr",
+      "nom": "Martin",
+      "prenom": "Sophie",
+      "telephone": "06 98 76 54 32",
+      "adresse": "12 Rue de la Paix",
+      "ville": "Toulouse",
+      "codePostal": "31000",
+      "role": "client",
+      "dateCreation": "2024-03-10T10:30:00.000Z"
+    }
+  ],
+  "offres": [
+    {
+      "id": 1,
+      "nom": "Diagnostic simple",
+      "prix": 590,
+      "description": "Diagnostic complet avec rapport détaillé.",
+      "surface": "Tous types de surfaces",
+      "populaire": false,
+      "features": [
+        "Détection et identification du réseau cuivre en domaine privé et public",
+        "Aiguillage du fourreau par aiguille traçable et sonde émettrice",
+        "Contre-aiguillage pour cibler le ou les points de blocage",
+        "Localisation du blocage : regard télécom ou fourreau obstrué",
+        "Compte rendu détaillé transmis par e-mail",
+        "Devis personnalisé pour les travaux à réaliser",
+        "Travaux réalisables par vos soins ou par l'entreprise de votre choix"
+      ],
+      "options": []
+    },
+    {
+      "id": 2,
+      "nom": "Diagnostic + Travaux (végétal)",
+      "prix": 890,
+      "description": "Intervention sur surface végétale. Garantie résultat incluse.",
+      "surface": "Surface végétale (terre uniquement)",
+      "populaire": true,
+      "features": [
+        "Détection et identification du réseau cuivre en domaine privé et public",
+        "Aiguillage du fourreau par aiguille traçable et sonde émettrice",
+        "Contre-aiguillage pour cibler le ou les points de blocage",
+        "Débouchage et réparation de fourreau ou gaine endommagée",
+        "Terrassement pour accès à un regard enfoui",
+        "Mise en place d'une ficelle de tirage après intervention",
+        "Garantie résultat — ligne fibre 100% raccordable"
+      ],
+      "options": [
+        "Option câblage fibre optique : 140 €",
+        "Point de blocage supplémentaire : +180 €"
+      ]
+    },
+    {
+      "id": 3,
+      "nom": "Diagnostic + Travaux (dur)",
+      "prix": 1190,
+      "description": "Intervention sur surface dure. Remise en état maçonnerie incluse.",
+      "surface": "Surface dure (béton, enrobé, pavé, concassé…)",
+      "populaire": false,
+      "features": [
+        "Intervention sur surface dure (béton, enrobé, pavé, concassé…)",
+        "Détection et identification du réseau cuivre en domaine privé et public",
+        "Aiguillage du fourreau par aiguille traçable et sonde émettrice",
+        "Contre-aiguillage pour cibler le ou les points de blocage",
+        "Débouchage et réparation de fourreau ou gaine endommagée",
+        "Terrassement pour accès à un regard enfoui",
+        "Remise en état par travaux de maçonnerie en fin de chantier",
+        "Garantie résultat — ligne fibre 100% raccordable"
+      ],
+      "options": [
+        "Option câblage fibre optique : 140 €",
+        "Point de blocage supplémentaire : +220 €"
+      ]
+    }
+  ],
+  "commandes": [
+    {
+      "id": 1,
+      "utilisateurId": 2,
+      "offreId": 1,
+      "statut": "termine",
+      "dateCreation": "2025-03-15T09:00:00.000Z",
+      "prix": 590,
+      "adresseIntervention": "12 Rue de la Paix, 31000 Toulouse",
+      "operateur": "Orange",
+      "notes": "Blocage localisé au regard télécom."
+    },
+    {
+      "id": 2,
+      "utilisateurId": 2,
+      "offreId": 2,
+      "statut": "planification",
+      "dateCreation": "2025-04-02T14:00:00.000Z",
+      "prix": 890,
+      "adresseIntervention": "12 Rue de la Paix, 31000 Toulouse",
+      "operateur": "SFR",
+      "notes": "Rendez-vous à planifier."
+    }
+  ]
+}

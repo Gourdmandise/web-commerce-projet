@@ -1,0 +1,32 @@
+.ph { padding:80px 48px 40px; max-width:900px; margin:0 auto; text-align:center; }
+.cmdw { display:grid; grid-template-columns:1fr 1fr; gap:40px; max-width:1000px; margin:0 auto; }
+
+.cmdd { background:#fff; border:1px solid rgba(0,212,170,0.25); box-shadow:0 4px 16px rgba(0,119,182,0.06); border-radius:16px; padding:30px; }
+.cmdd h3 { font-family:'Barlow Condensed',sans-serif; font-size:22px; font-weight:900; color:#1A202C; margin-bottom:6px; text-transform:uppercase; }
+.cmdp { font-family:'Barlow Condensed',sans-serif; font-size:38px; font-weight:900; color:#00D4AA; margin-bottom:20px; }
+.fl { list-style:none; padding:0; }
+.fl li { font-size:13px; color:#4A6275; padding:8px 0; display:flex; gap:10px; align-items:flex-start; line-height:1.55; border-bottom:1px solid #e0edf5; }
+.fl li:last-child { border-bottom:none; }
+.ck { color:#00D4AA; font-weight:900; flex-shrink:0; }
+
+.cmds { background:#F7FAFC; border:1px solid rgba(0,180,216,0.25); box-shadow:0 4px 16px rgba(0,119,182,0.06); border-radius:16px; padding:30px; }
+.cmds h3 { font-family:'Barlow Condensed',sans-serif; font-size:20px; font-weight:800; color:#1A202C; margin-bottom:12px; text-transform:uppercase; }
+.bdg-active { display:inline-block; background:rgba(0,180,216,0.12); color:#00B4D8; border:1px solid rgba(0,180,216,.3); padding:4px 14px; border-radius:100px; font-size:11px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; margin-bottom:24px; }
+
+.stp { display:flex; flex-direction:column; gap:0; }
+.st { display:flex; gap:14px; align-items:flex-start; padding-bottom:20px; position:relative; }
+.st:not(:last-child)::before { content:''; position:absolute; left:13px; top:28px; width:2px; height:calc(100% - 10px); background:#e2edf5; }
+.std { width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:900; flex-shrink:0; }
+.std.done    { background:rgba(0,212,170,0.15); border:2px solid #00D4AA; color:#00D4AA; }
+.std.active  { background:rgba(0,180,216,0.15); border:2px solid #00B4D8; color:#00B4D8; animation:spin 1s linear infinite; }
+.std.pending { background:#f0f5fb; border:2px solid #d0e4f0; color:#4A6275; }
+@keyframes spin { 0%{transform:rotate(0)} 100%{transform:rotate(360deg)} }
+.stc strong { font-size:13px; color:#1A202C; display:block; margin-bottom:2px; }
+.stc p      { font-size:12px; color:#4A6275; margin:0; }
+
+.cmd-actions { display:flex; flex-direction:column; gap:12px; margin-top:24px; }
+
+@media (max-width:768px) {
+  .ph { padding:48px 20px 24px; }
+  .cmdw { grid-template-columns:1fr; }
+}
