@@ -8,7 +8,7 @@ Site e-commerce développé dans le cadre d'un stage informatique
 [cols="6*", options="header"]
 |============================================================================
 | Date       | Nom                                       | Lien | Retour Prof | Note | lien fonctionel
-|            | Version courante                          | https://[v1]     |    |  | ✓
+|            | Version courante                          | https://github.com/Gourdmandise/web-commerce-projet/releases/tag/Version-1[v1]     |    |  | ✓
 |            | Maquette V1                               | link:[Maquette]     |      |  | ✓
 |            | Maquette V2                               | link:[Maquette]     |      |  | ✓
 |============================================================================
