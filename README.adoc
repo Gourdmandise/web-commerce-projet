@@ -1,0 +1,14 @@
+# web-commerce-projet
+Site e-commerce développé dans le cadre d'un stage informatique
+
+== Gestion de projet & Qualité
+
+==== Lien important
+
+[cols="6*", options="header"]
+|============================================================================
+| Date       | Nom                                       | Lien | Retour Prof | Note | lien fonctionel
+|            | Version courante                          | https://[v1]     |    |  | ✓
+|            | Maquette V1                               | link:[Maquette]     |      |  | ✓
+|            | Maquette V2                               | link:[Maquette]     |      |  | ✓
+|============================================================================
