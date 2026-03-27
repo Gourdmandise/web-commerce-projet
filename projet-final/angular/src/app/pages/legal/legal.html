@@ -1,0 +1,566 @@
+<div class="legal-wrap">
+
+  <!-- Navigation entre les pages légales -->
+  <div class="legal-nav">
+    <button class="legal-tab" [class.active]="page() === 'mentions'"       (click)="page.set('mentions')">Mentions légales</button>
+    <button class="legal-tab" [class.active]="page() === 'cgu'"            (click)="page.set('cgu')">CGU</button>
+    <button class="legal-tab" [class.active]="page() === 'confidentialite'"(click)="page.set('confidentialite')">Confidentialité</button>
+    <button class="legal-tab" [class.active]="page() === 'cgv'"            (click)="page.set('cgv')">CGV</button>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       MENTIONS LÉGALES
+  ══════════════════════════════════════════ -->
+  @if (page() === 'mentions') {
+    <div class="legal-content">
+      <div class="legal-header">
+        <div class="lbl" style="justify-content:center">Informations légales</div>
+        <h1 class="big">Mentions <span class="hl">légales</span></h1>
+        <p class="legal-date">En vigueur au 01/01/2025</p>
+      </div>
+
+      <div class="legal-body">
+        <p class="legal-intro">
+          Conformément aux dispositions des articles 6-III et 19 de la loi n° 2004-575 du 21 juin 2004
+          pour la confiance dans l'économie numérique (LCEN), les présentes mentions légales sont portées
+          à la connaissance de tout utilisateur du site <strong>www.x3com.com</strong>.
+          La navigation sur ce site implique l'acceptation intégrale et sans réserve des présentes mentions légales.
+        </p>
+
+        <div class="legal-section">
+          <h2>Article 1 — L'éditeur</h2>
+          <p>Le site <strong>www.x3com.com</strong> est édité par la société <strong>X3COM</strong>,
+          dont le siège social est situé au :</p>
+          <div class="legal-adresse">
+            Bureau 3, 5 Impasse de la Colombette<br>
+            31000 Toulouse, France
+          </div>
+          <ul class="legal-list">
+            <li><strong>Forme juridique :</strong> SARL</li>
+            <li><strong>Capital social :</strong> 10 000 €</li>
+            <li><strong>Immatriculation RCS :</strong> <span class="legal-todo">À compléter — ex : Toulouse B 123 456 789</span></li>
+            <li><strong>N° de TVA intracommunautaire :</strong> <span class="legal-todo">À compléter — ex : FR 12 123 456 789</span></li>
+            <li><strong>Téléphone :</strong> <span class="legal-todo">À compléter — ex : 05 61 00 00 00</span></li>
+            <li><strong>E-mail :</strong> contact&#64;x3com.com</li>
+            <li><strong>Directeur de la publication :</strong> <span class="legal-todo">À compléter — Nom Prénom du gérant</span></li>
+          </ul>
+        </div>
+
+        <div class="legal-section">
+          <h2>Article 2 — L'hébergeur</h2>
+          <p>Le site <strong>www.x3com.com</strong> est hébergé par :</p>
+          <div class="legal-adresse">
+            <strong>OVHcloud</strong><br>
+            2 rue Kellermann<br>
+            59100 Roubaix, France<br>
+            Tél. : 09 72 10 10 07
+          </div>
+        </div>
+
+        <div class="legal-section">
+          <h2>Article 3 — Accès au site</h2>
+          <p>
+            Le site est accessible 7j/7 et 24h/24 depuis tout endroit disposant d'un accès internet,
+            sauf en cas de force majeure, d'interruption programmée pour maintenance, ou de toute autre
+            circonstance indépendante de la volonté d'X3COM.
+          </p>
+          <p>
+            X3COM ne saurait être tenu responsable de toute interruption de service, quelle qu'en soit
+            la cause, la durée ou la fréquence. L'accès au site peut être suspendu à tout moment sans
+            préavis ni indemnité.
+          </p>
+        </div>
+
+        <div class="legal-section">
+          <h2>Article 4 — Collecte des données personnelles</h2>
+          <p>
+            X3COM assure à l'utilisateur une collecte et un traitement de ses données personnelles dans
+            le respect de sa vie privée, conformément à la loi n° 78-17 du 6 janvier 1978 relative à
+            l'informatique, aux fichiers et aux libertés, ainsi qu'au Règlement Général sur la Protection
+            des Données (RGPD — UE 2016/679).
+          </p>
+          <p>
+            Conformément à ces textes, l'utilisateur dispose d'un droit d'accès, de rectification,
+            de suppression, de portabilité et d'opposition concernant ses données personnelles.
+            Pour exercer ces droits, contactez-nous à : <strong>contact&#64;x3com.com</strong>
+          </p>
+          <p>
+            Pour en savoir plus, consultez notre <button class="link-legal" (click)="page.set('confidentialite')">Politique de confidentialité</button>.
+          </p>
+        </div>
+
+        <div class="legal-section">
+          <h2>Article 5 — Cookies</h2>
+          <p>
+            Lors de la navigation sur le site, des cookies techniques peuvent être déposés sur le terminal
+            de l'utilisateur. Ces cookies sont strictement nécessaires au fonctionnement du site
+            (maintien de la session, préférences de navigation) et ne permettent pas d'identifier
+            personnellement l'utilisateur.
+          </p>
+          <p>
+            Aucun cookie publicitaire ou de traçage tiers n'est utilisé sur ce site.
+            L'utilisateur peut désactiver les cookies via les paramètres de son navigateur, ce qui
+            pourrait toutefois altérer certaines fonctionnalités du site.
+          </p>
+        </div>
+
+        <div class="legal-section">
+          <h2>Article 6 — Propriété intellectuelle</h2>
+          <p>
+            L'ensemble des contenus du site <strong>www.x3com.com</strong> — textes, images, logos,
+            graphismes, structure et code source — est la propriété exclusive d'X3COM ou de ses partenaires,
+            et est protégé par le droit de la propriété intellectuelle.
+          </p>
+          <p>
+            Toute reproduction, représentation, modification, publication, adaptation ou exploitation
+            de tout ou partie de ces éléments, sans l'autorisation écrite préalable d'X3COM, est strictement
+            interdite et constituerait une contrefaçon sanctionnée par les articles L.335-2 et suivants
+            du Code de la propriété intellectuelle.
+          </p>
+        </div>
+
+        <div class="legal-section">
+          <h2>Article 7 — Responsabilité</h2>
+          <p>
+            X3COM met tout en œuvre pour fournir des informations fiables et à jour sur son site.
+            Cependant, X3COM ne peut garantir l'exactitude, la complétude ou l'actualité des informations
+            diffusées. L'utilisateur reste seul responsable de l'utilisation qu'il fait de ces informations.
+          </p>
+          <p>
+            X3COM décline toute responsabilité pour tout dommage direct ou indirect résultant de l'accès
+            au site ou de l'utilisation des informations qui y figurent.
+          </p>
+        </div>
+
+        <div class="legal-section">
+          <h2>Article 8 — Droit applicable</h2>
+          <p>
+            Les présentes mentions légales sont soumises au droit français. En cas de litige, et à défaut
+            de résolution amiable, les tribunaux français seront seuls compétents.
+          </p>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- ══════════════════════════════════════════
+       CGU
+  ══════════════════════════════════════════ -->
+  @if (page() === 'cgu') {
+    <div class="legal-content">
+      <div class="legal-header">
+        <div class="lbl" style="justify-content:center">Utilisation du site</div>
+        <h1 class="big">Conditions générales <span class="hl2">d'utilisation</span></h1>
+        <p class="legal-date">En vigueur au 01/01/2025</p>
+      </div>
+
+      <div class="legal-body">
+        <p class="legal-intro">
+          Les présentes conditions générales d'utilisation (CGU) régissent l'accès et l'utilisation
+          du site <strong>www.x3com.com</strong> et de ses services. Tout accès au site vaut acceptation
+          pleine et entière des présentes CGU.
+        </p>
+
+        <div class="legal-section">
+          <h2>Article 1 — Objet</h2>
+          <p>
+            Les présentes CGU ont pour objet de définir les conditions dans lesquelles les utilisateurs
+            accèdent au site <strong>www.x3com.com</strong> et utilisent ses services, notamment la
+            consultation des offres, la création d'un compte client et la passation de commandes de
+            prestations de détection de réseaux et travaux VRD.
+          </p>
+        </div>
+
+        <div class="legal-section">
+          <h2>Article 2 — Accès au site et création de compte</h2>
+          <p>
+            Le site est accessible à tout utilisateur disposant d'un accès internet. La création d'un
+            compte client est nécessaire pour passer une commande. L'utilisateur s'engage à fournir
+            des informations exactes, complètes et à jour lors de son inscription.
+          </p>
+          <p>
+            L'utilisateur est seul responsable de la confidentialité de ses identifiants de connexion.
+            Toute connexion effectuée avec ses identifiants est présumée effectuée par l'utilisateur
+            lui-même. X3COM ne pourra être tenu responsable d'une utilisation frauduleuse du compte
+            résultant d'une négligence de l'utilisateur.
+          </p>
+          <p>
+            X3COM se réserve le droit de suspendre ou supprimer tout compte en cas d'utilisation
+            frauduleuse, abusive ou contraire aux présentes CGU.
+          </p>
+        </div>
+
+        <div class="legal-section">
+          <h2>Article 3 — Services proposés</h2>
+          <p>X3COM propose via son site les prestations suivantes :</p>
+          <ul class="legal-list">
+            <li>Détection et identification de réseaux enterrés (cuivre, fibre optique, réseaux divers)</li>
+            <li>Localisation de blocages dans les fourreaux et gaines télécom</li>
+            <li>Travaux de génie civil et VRD (terrassement, pose de fourreau, raccordement)</li>
+            <li>Déploiement de réseaux fibre optique FTTH/FTTO</li>
+            <li>Installation de bornes de recharge IRVE</li>
+            <li>Installations photovoltaïques et solutions énergétiques</li>
+          </ul>
+          <p>
+            X3COM se réserve le droit de modifier, suspendre ou cesser tout ou partie de ses services
+            à tout moment, sans préavis ni indemnité.
+          </p>
+        </div>
+
+        <div class="legal-section">
+          <h2>Article 4 — Commandes et paiement</h2>
+          <p>
+            La passation d'une commande via le site implique l'acceptation des
+            <button class="link-legal" (click)="page.set('cgv')">Conditions Générales de Vente</button>.
+            Le paiement s'effectue en ligne de manière sécurisée via la plateforme Stripe.
+            X3COM ne stocke aucune donnée bancaire sur ses serveurs.
+          </p>
+          <p>
+            Une confirmation de commande est envoyée à l'adresse e-mail renseignée lors de la création
+            du compte dans les plus brefs délais suivant la validation du paiement.
+          </p>
+        </div>
+
+        <div class="legal-section">
+          <h2>Article 5 — Obligations de l'utilisateur</h2>
+          <p>L'utilisateur s'engage à :</p>
+          <ul class="legal-list">
+            <li>Utiliser le site conformément à sa destination et aux présentes CGU</li>
+            <li>Ne pas tenter de compromettre la sécurité ou l'intégrité du site</li>
+            <li>Ne pas diffuser de contenus illicites, offensants ou portant atteinte aux droits de tiers</li>
+            <li>Fournir des informations exactes lors de la création de son compte et de ses commandes</li>
+            <li>Ne pas utiliser le site à des fins commerciales sans autorisation préalable d'X3COM</li>
+          </ul>
+        </div>
+
+        <div class="legal-section">
+          <h2>Article 6 — Limitation de responsabilité</h2>
+          <p>
+            X3COM ne saurait être tenu responsable des dommages directs ou indirects causés au matériel
+            de l'utilisateur lors de l'accès au site, ni des dommages résultant d'une utilisation non
+            conforme aux présentes CGU. X3COM ne garantit pas que le site sera exempt d'anomalies
+            ou d'erreurs.
+          </p>
+        </div>
+
+        <div class="legal-section">
+          <h2>Article 7 — Modification des CGU</h2>
+          <p>
+            X3COM se réserve le droit de modifier les présentes CGU à tout moment. Les CGU applicables
+            sont celles en vigueur au moment de l'utilisation du site. Il est conseillé à l'utilisateur
+            de les consulter régulièrement.
+          </p>
+        </div>
+
+        <div class="legal-section">
+          <h2>Article 8 — Droit applicable et juridiction</h2>
+          <p>
+            Les présentes CGU sont soumises au droit français. Tout litige relatif à leur interprétation
+            ou à leur exécution relève de la compétence exclusive des tribunaux de Toulouse,
+            sauf dispositions légales contraires.
+          </p>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- ══════════════════════════════════════════
+       POLITIQUE DE CONFIDENTIALITÉ
+  ══════════════════════════════════════════ -->
+  @if (page() === 'confidentialite') {
+    <div class="legal-content">
+      <div class="legal-header">
+        <div class="lbl" style="justify-content:center">Protection des données</div>
+        <h1 class="big">Politique de <span class="hl">confidentialité</span></h1>
+        <p class="legal-date">En vigueur au 01/01/2025 — Conformité RGPD</p>
+      </div>
+
+      <div class="legal-body">
+        <p class="legal-intro">
+          X3COM accorde une importance primordiale à la protection de vos données personnelles.
+          La présente politique de confidentialité vous informe de la manière dont vos données sont
+          collectées, utilisées et protégées, conformément au Règlement Général sur la Protection
+          des Données (RGPD — Règlement UE 2016/679) et à la loi Informatique et Libertés du
+          6 janvier 1978 modifiée.
+        </p>
+
+        <div class="legal-section">
+          <h2>Article 1 — Responsable du traitement</h2>
+          <p>
+            Le responsable du traitement de vos données personnelles est la société <strong>X3COM</strong>,
+            dont le siège est situé au Bureau 3, 5 Impasse de la Colombette, 31000 Toulouse.
+            Contact : <strong>contact&#64;x3com.com</strong>
+          </p>
+        </div>
+
+        <div class="legal-section">
+          <h2>Article 2 — Données collectées</h2>
+          <p>Dans le cadre de l'utilisation du site et de nos services, nous collectons les données suivantes :</p>
+          <div class="legal-table-wrap">
+            <table class="legal-table">
+              <thead><tr><th>Donnée</th><th>Finalité</th><th>Base légale</th></tr></thead>
+              <tbody>
+                <tr><td>Nom, prénom</td><td>Identification du client</td><td>Exécution du contrat</td></tr>
+                <tr><td>Adresse e-mail</td><td>Communication, confirmation de commande</td><td>Exécution du contrat</td></tr>
+                <tr><td>Numéro de téléphone</td><td>Prise de rendez-vous pour intervention</td><td>Exécution du contrat</td></tr>
+                <tr><td>Adresse postale</td><td>Localisation de l'intervention</td><td>Exécution du contrat</td></tr>
+                <tr><td>Mot de passe (haché)</td><td>Authentification sécurisée</td><td>Exécution du contrat</td></tr>
+                <tr><td>Historique des commandes</td><td>Gestion du compte client</td><td>Exécution du contrat</td></tr>
+                <tr><td>Données de paiement</td><td>Traitement du paiement (via Stripe)</td><td>Exécution du contrat</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p style="margin-top:12px;font-size:13px;color:var(--mu)">
+            ⚠ X3COM ne stocke aucune donnée bancaire. Les paiements sont traités exclusivement
+            par Stripe, certifié PCI-DSS niveau 1.
+          </p>
+        </div>
+
+        <div class="legal-section">
+          <h2>Article 3 — Durée de conservation</h2>
+          <ul class="legal-list">
+            <li><strong>Données de compte client :</strong> durée de la relation contractuelle + 3 ans</li>
+            <li><strong>Données de commande et factures :</strong> 10 ans (obligation légale comptable)</li>
+            <li><strong>Données de contact (formulaire) :</strong> 3 ans à compter du dernier contact</li>
+            <li><strong>Logs de connexion :</strong> 1 an</li>
+          </ul>
+        </div>
+
+        <div class="legal-section">
+          <h2>Article 4 — Vos droits</h2>
+          <p>Conformément au RGPD, vous disposez des droits suivants sur vos données :</p>
+          <ul class="legal-list">
+            <li><strong>Droit d'accès :</strong> obtenir une copie de vos données personnelles</li>
+            <li><strong>Droit de rectification :</strong> corriger des données inexactes ou incomplètes</li>
+            <li><strong>Droit à l'effacement :</strong> demander la suppression de vos données</li>
+            <li><strong>Droit à la portabilité :</strong> recevoir vos données dans un format structuré</li>
+            <li><strong>Droit d'opposition :</strong> vous opposer à certains traitements</li>
+            <li><strong>Droit à la limitation :</strong> restreindre le traitement de vos données</li>
+          </ul>
+          <p>
+            Pour exercer ces droits, adressez votre demande par e-mail à
+            <strong>contact&#64;x3com.com</strong> en joignant une copie de votre pièce d'identité.
+            Nous nous engageons à répondre dans un délai maximum d'un mois.
+          </p>
+          <p>
+            En cas de réponse insatisfaisante, vous avez le droit d'introduire une réclamation auprès
+            de la <strong>CNIL</strong> (Commission Nationale de l'Informatique et des Libertés) —
+            <a href="https://www.cnil.fr" target="_blank" rel="noopener" style="color:var(--em)">www.cnil.fr</a>
+          </p>
+        </div>
+
+        <div class="legal-section">
+          <h2>Article 5 — Partage des données</h2>
+          <p>Vos données personnelles ne sont jamais vendues ni cédées à des tiers. Elles peuvent être
+          partagées uniquement avec :</p>
+          <ul class="legal-list">
+            <li><strong>Stripe Inc.</strong> — pour le traitement sécurisé des paiements</li>
+            <li><strong>Prestataires techniques</strong> — hébergement du site (sous confidentialité)</li>
+            <li><strong>Autorités légales</strong> — en cas d'obligation légale ou judiciaire</li>
+          </ul>
+        </div>
+
+        <div class="legal-section">
+          <h2>Article 6 — Sécurité des données</h2>
+          <p>
+            X3COM met en œuvre les mesures techniques et organisationnelles appropriées pour protéger
+            vos données contre tout accès non autorisé, perte, altération ou divulgation :
+          </p>
+          <ul class="legal-list">
+            <li>Hachage des mots de passe par algorithme bcrypt (12 rounds) côté serveur — conforme aux recommandations OWASP</li>
+            <li>Connexions sécurisées via protocole HTTPS/TLS</li>
+            <li>Accès aux données restreint aux seules personnes habilitées</li>
+            <li>Sauvegardes régulières des données</li>
+          </ul>
+        </div>
+
+        <div class="legal-section">
+          <h2>Article 7 — Cookies</h2>
+          <p>
+            Le site utilise uniquement des cookies techniques strictement nécessaires à son fonctionnement
+            (maintien de session, préférences). Aucun cookie publicitaire ou de tracking tiers n'est utilisé.
+            Vous pouvez gérer les cookies via les paramètres de votre navigateur.
+          </p>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- ══════════════════════════════════════════
+       CGV
+  ══════════════════════════════════════════ -->
+  @if (page() === 'cgv') {
+    <div class="legal-content">
+      <div class="legal-header">
+        <div class="lbl" style="justify-content:center">Conditions commerciales</div>
+        <h1 class="big">Conditions générales <span class="hl3">de vente</span></h1>
+        <p class="legal-date">En vigueur au 01/01/2025</p>
+      </div>
+
+      <div class="legal-body">
+        <p class="legal-intro">
+          Les présentes conditions générales de vente (CGV) s'appliquent à toute commande de prestations
+          passée sur le site <strong>www.x3com.com</strong> auprès de la société X3COM.
+          Toute commande implique l'acceptation pleine et entière des présentes CGV.
+        </p>
+
+        <div class="legal-section">
+          <h2>Article 1 — Identification du vendeur</h2>
+          <ul class="legal-list">
+            <li><strong>Société :</strong> X3COM</li>
+            <li><strong>Siège :</strong> Bureau 3, 5 Impasse de la Colombette, 31000 Toulouse</li>
+            <li><strong>E-mail :</strong> contact&#64;x3com.com</li>
+            <li><strong>Activité :</strong> Détection de réseaux, génie civil, fibre optique, IRVE</li>
+          </ul>
+        </div>
+
+        <div class="legal-section">
+          <h2>Article 2 — Prestations et tarifs</h2>
+          <p>X3COM propose les prestations suivantes aux tarifs indiqués TTC :</p>
+          <div class="legal-table-wrap">
+            <table class="legal-table">
+              <thead><tr><th>Prestation</th><th>Prix TTC</th><th>Surface</th></tr></thead>
+              <tbody>
+                <tr><td>Diagnostic simple</td><td><strong>590 €</strong></td><td>Tous types</td></tr>
+                <tr><td>Diagnostic + Travaux</td><td><strong>890 €</strong></td><td>Surface végétale</td></tr>
+                <tr><td>Diagnostic + Travaux</td><td><strong>1 190 €</strong></td><td>Surface dure</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p style="margin-top:12px">
+            Les prix sont indiqués en euros toutes taxes comprises (TVA 20%).
+            X3COM se réserve le droit de modifier ses tarifs à tout moment. Les prestations seront
+            facturées au tarif en vigueur au moment de la commande.
+          </p>
+          <p>
+            Des options supplémentaires (câblage fibre optique, points de blocage supplémentaires)
+            peuvent être facturées en sus selon le devis établi lors de l'intervention.
+          </p>
+        </div>
+
+        <div class="legal-section">
+          <h2>Article 3 — Commande et confirmation</h2>
+          <p>
+            La commande est réputée ferme et définitive après validation du paiement en ligne.
+            Un e-mail de confirmation récapitulant la prestation commandée et son montant est adressé
+            au client à l'adresse fournie lors de la création de son compte.
+          </p>
+          <p>
+            X3COM se réserve le droit de refuser toute commande pour laquelle une intervention
+            s'avérerait techniquement impossible ou en dehors de sa zone d'intervention.
+            Dans ce cas, le client serait remboursé intégralement.
+          </p>
+        </div>
+
+        <div class="legal-section">
+          <h2>Article 4 — Paiement</h2>
+          <p>
+            Le paiement s'effectue intégralement et en ligne au moment de la commande, via la
+            plateforme sécurisée <strong>Stripe</strong> (certifiée PCI-DSS). Les moyens de paiement
+            acceptés sont : carte bancaire Visa, Mastercard, American Express, ainsi que les wallets
+            Apple Pay et Google Pay.
+          </p>
+          <p>
+            X3COM ne stocke aucune donnée bancaire. En cas d'échec du paiement, la commande
+            n'est pas enregistrée et le client est invité à recommencer.
+          </p>
+        </div>
+
+        <div class="legal-section">
+          <h2>Article 5 — Délais d'intervention</h2>
+          <p>
+            Après confirmation du paiement, un technicien X3COM prend contact avec le client dans un
+            délai de <strong>24 heures ouvrées</strong> (du lundi au vendredi, 8h-18h) pour convenir
+            d'une date d'intervention.
+          </p>
+          <p>
+            Les délais d'intervention sont donnés à titre indicatif et peuvent varier en fonction
+            des contraintes techniques, météorologiques ou de la disponibilité des équipes.
+            X3COM s'engage à informer le client de tout retard significatif.
+          </p>
+        </div>
+
+        <div class="legal-section">
+          <h2>Article 6 — Garantie résultat</h2>
+          <p>
+            Les prestations <em>Diagnostic + Travaux</em> (offres à 890 € et 1 190 €) incluent une
+            <strong>garantie résultat</strong> : la ligne fibre optique sera raccordable à l'issue de
+            l'intervention, ou X3COM effectuera les travaux complémentaires nécessaires sans supplément
+            de prix.
+          </p>
+          <p>
+            La prestation <em>Diagnostic simple</em> (590 €) n'inclut pas de garantie résultat, mais
+            comprend un compte rendu détaillé et un devis pour les travaux éventuels.
+          </p>
+          <p>
+            La garantie est limitée aux travaux réalisés par X3COM et ne couvre pas les dommages
+            résultant d'une intervention ultérieure de tiers ou d'une utilisation non conforme.
+          </p>
+        </div>
+
+        <div class="legal-section">
+          <h2>Article 7 — Droit de rétractation</h2>
+          <p>
+            Conformément à l'article L221-28 du Code de la consommation, le droit de rétractation
+            de 14 jours ne s'applique pas aux prestations de services pleinement exécutées avant
+            la fin du délai de rétractation, lorsque l'exécution a commencé avec l'accord exprès
+            du consommateur.
+          </p>
+          <p>
+            Pour toute intervention non encore réalisée, le client peut annuler sa commande en
+            contactant X3COM par e-mail à <strong>contact&#64;x3com.com</strong> avant la prise
+            de rendez-vous. Le remboursement sera effectué dans un délai de 14 jours.
+          </p>
+        </div>
+
+        <div class="legal-section">
+          <h2>Article 8 — Responsabilité</h2>
+          <p>
+            X3COM souscrit les assurances professionnelles obligatoires couvrant sa responsabilité
+            civile dans le cadre de ses interventions. En cas de dommage causé lors d'une intervention,
+            X3COM prend en charge les réparations dans la limite des garanties souscrites.
+          </p>
+          <p>
+            La responsabilité d'X3COM ne pourra être engagée pour des dommages résultant d'informations
+            erronées fournies par le client lors de la commande (adresse, nature du sol, accès au site, etc.).
+          </p>
+        </div>
+
+        <div class="legal-section">
+          <h2>Article 9 — Litiges et médiation</h2>
+          <p>
+            En cas de litige, le client est invité à contacter X3COM en premier lieu par e-mail à
+            <strong>contact&#64;x3com.com</strong> afin de trouver une solution amiable.
+          </p>
+          <p>
+            À défaut de résolution amiable dans un délai de 30 jours, le client consommateur peut
+            recourir gratuitement à la médiation de la consommation auprès de :
+          </p>
+          <div class="legal-adresse">
+            <strong>CM2C — Centre de Médiation de la Consommation de Conciliateurs de Justice</strong><br>
+            14 rue Saint-Jean — 75017 Paris<br>
+            Site : <a href="https://www.cm2c.net" target="_blank" rel="noopener" style="color:var(--em)">www.cm2c.net</a><br>
+            E-mail : cm2c&#64;cm2c.net
+          </div>
+          <p style="margin-top:12px">
+            Conformément au règlement (UE) n° 524/2013, le client peut également utiliser la
+            plateforme européenne de règlement en ligne des litiges (RLL) :
+            <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener" style="color:var(--em)">
+              ec.europa.eu/consumers/odr
+            </a>
+          </p>
+          <p>
+            Les présentes CGV sont soumises au droit français. Tout litige non résolu par voie
+            amiable relève de la compétence des tribunaux de Toulouse.
+          </p>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Retour au site -->
+  <div class="legal-footer">
+    <a routerLink="/" class="btn-x2">← Retour au site</a>
+  </div>
+
+</div>

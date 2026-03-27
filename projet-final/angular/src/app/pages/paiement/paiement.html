@@ -1,0 +1,75 @@
+<div class="ph tc">
+  <div class="lbl" style="justify-content:center">Paiement sécurisé</div>
+  <h1 class="big">Finaliser la <span class="hl2">commande</span></h1>
+</div>
+
+<section class="sec" style="padding-top:20px">
+
+  @if (annule()) {
+    <div class="annule-msg">
+      ⚠ Paiement annulé. Vous pouvez réessayer ou choisir une autre offre.
+    </div>
+  }
+
+  <div class="pw">
+
+    <!-- RÉSUMÉ OFFRE -->
+    <div class="pf2">
+      <h3>📋 Récapitulatif</h3>
+
+      @if (panier.offre()) {
+        <div class="offre-recap">
+          <div class="recap-head">
+            <span class="recap-nom">{{ panier.offre()!.nom }}</span>
+            <span class="recap-prix">{{ panier.offre()!.prix }} €</span>
+          </div>
+          <p class="recap-desc">{{ panier.offre()!.description }}</p>
+          <ul class="recap-features">
+            @for (f of panier.offre()!.features; track f) {
+              <li><span class="ck">✓</span>{{ f }}</li>
+            }
+          </ul>
+        </div>
+      } @else {
+        <p style="color:var(--mu);font-size:13px">Aucune offre sélectionnée. <a routerLink="/tarifs" style="color:var(--em)">Choisir une offre →</a></p>
+      }
+    </div>
+
+    <!-- PAIEMENT STRIPE -->
+    <div class="psum">
+      <h3>Paiement</h3>
+
+      <div class="sr2"><span>{{ panier.offre()?.nom }}</span><span>{{ panier.offre()?.prix ?? 0 }} €</span></div>
+      <div class="sr2"><span>TVA incluse (20%)</span><span>{{ tva }} €</span></div>
+      <div class="stot"><span>Total TTC</span><span>{{ total }} €</span></div>
+
+      <div class="sok">
+        <p><span class="sokc">✓</span>Paiement 100% sécurisé par Stripe</p>
+        <p><span class="sokc">✓</span>Données chiffrées — jamais stockées ici</p>
+        <p><span class="sokc">✓</span>Visa, Mastercard, Apple Pay, Google Pay</p>
+      </div>
+
+      <!-- Logos cartes -->
+      <div class="stripe-logos">
+        <span class="card-logo visa">VISA</span>
+        <span class="card-logo mc">MC</span>
+        <span class="card-logo amex">AMEX</span>
+        <span class="stripe-badge">🔒 Powered by Stripe</span>
+      </div>
+
+      <button class="btn-x1" style="width:100%;justify-content:center;font-size:15px;padding:15px;margin-top:20px"
+              (click)="payer()" [disabled]="chargement() || !panier.offre()">
+        @if (chargement()) {
+          ⏳ Redirection vers Stripe…
+        } @else {
+          🔒 Payer {{ total }} € — Sécurisé
+        }
+      </button>
+
+      <p style="text-align:center;font-size:11px;color:var(--mu);margin-top:12px">
+        Vous serez redirigé vers la page de paiement sécurisée Stripe.
+      </p>
+    </div>
+
+  </div>
+</section>

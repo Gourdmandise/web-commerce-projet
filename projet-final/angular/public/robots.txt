@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /compte
+Disallow: /commande
+
+Sitemap: https://www.x3com.com/sitemap.xml

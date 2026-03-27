@@ -1,0 +1,32 @@
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
+import { Utilisateur } from '../models/utilisateur.model';
+
+@Injectable({ providedIn: 'root' })
+export class UtilisateurService {
+  private http    = inject(HttpClient);
+  private backend = environment.backendUrl;
+  private url     = `${environment.backendUrl}/utilisateurs`;
+
+  connecter(email: string, motDePasse: string): Observable<{ utilisateur: Utilisateur }> {
+    return this.http.post<{ utilisateur: Utilisateur }>(`${this.backend}/login`, { email, motDePasse });
+  }
+
+  inscrire(email: string, motDePasse: string, prenom: string, nom: string): Observable<{ utilisateur: Utilisateur }> {
+    return this.http.post<{ utilisateur: Utilisateur }>(`${this.backend}/register`, { email, motDePasse, prenom, nom });
+  }
+
+  mettreAJour(id: number, data: Partial<Utilisateur>): Observable<Utilisateur> {
+    return this.http.patch<Utilisateur>(`${this.url}/${id}`, data);
+  }
+
+  getAll(): Observable<Utilisateur[]> {
+    return this.http.get<Utilisateur[]>(this.url);
+  }
+
+  supprimer(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.url}/${id}`);
+  }
+}

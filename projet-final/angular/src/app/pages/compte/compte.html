@@ -1,0 +1,161 @@
+<section class="sec">
+
+  <!-- ══ VUE LOGIN ══ -->
+  @if (!auth.connecte) {
+    <div class="tc" style="margin-bottom:36px">
+      <div class="lbl" style="justify-content:center">Espace client</div>
+      <h1 class="big">Mon <span class="hl">Compte</span></h1>
+    </div>
+
+    <!-- Onglets Connexion / Inscription -->
+    <div class="login-tabs">
+      <button class="login-tab" [class.active]="vueLogin() === 'connexion'"   (click)="vueLogin.set('connexion')">Connexion</button>
+      <button class="login-tab" [class.active]="vueLogin() === 'inscription'" (click)="vueLogin.set('inscription')">Créer un compte</button>
+    </div>
+
+    <!-- Formulaire Connexion -->
+    @if (vueLogin() === 'connexion') {
+      <div class="accard">
+        <h2>Se connecter</h2>
+        <p>Accédez à votre espace client avec votre e-mail et mot de passe.</p>
+        <div class="fg2">
+          <label>E-mail *</label>
+          <input [(ngModel)]="login.email" name="lemail" type="email" placeholder="votre@email.fr">
+        </div>
+        <div class="fg2">
+          <label>Mot de passe *</label>
+          <input [(ngModel)]="login.motDePasse" name="lmdp" type="password" placeholder="••••••••">
+        </div>
+        <button class="bfull p" (click)="seConnecter()" [disabled]="chargement()">
+          {{ chargement() ? 'Connexion…' : 'Se connecter' }}
+        </button>
+        <p class="login-switch">
+          Pas encore de compte ?
+          <button class="link-btn" (click)="vueLogin.set('inscription')">Créer un compte</button>
+        </p>
+      </div>
+    }
+
+    <!-- Formulaire Inscription -->
+    @if (vueLogin() === 'inscription') {
+      <div class="accard">
+        <h2>Créer un compte</h2>
+        <p>Renseignez vos informations de base. Vous pourrez compléter votre profil après connexion.</p>
+        <div class="fg2d">
+          <div class="fg2"><label>Prénom *</label><input [(ngModel)]="inscription.prenom" name="iprenom" type="text" placeholder="Jean"></div>
+          <div class="fg2"><label>Nom</label>     <input [(ngModel)]="inscription.nom"    name="inom"    type="text" placeholder="Dupont"></div>
+        </div>
+        <div class="fg2">
+          <label>E-mail *</label>
+          <input [(ngModel)]="inscription.email" name="iemail" type="email" placeholder="votre@email.fr">
+        </div>
+        <div class="fg2">
+          <label>Mot de passe *</label>
+          <input [(ngModel)]="inscription.motDePasse" name="imdp" type="password" placeholder="••••••••">
+        </div>
+        <div class="fg2">
+          <label>Confirmer le mot de passe *</label>
+          <input [(ngModel)]="inscription.confirmMotDePasse" name="imdp2" type="password" placeholder="••••••••">
+        </div>
+        <!-- FIX : acceptation CGU/CGV obligatoire (RGPD + droit conso) -->
+        <div class="cgu-wrap">
+          <input type="checkbox" id="accepteCgu" [(ngModel)]="inscription.accepteCgu" name="accepteCgu">
+          <label for="accepteCgu">
+            J'ai lu et j'accepte les
+            <a routerLink="/cgu" target="_blank">Conditions générales d'utilisation</a>
+            et les
+            <a routerLink="/cgv" target="_blank">Conditions générales de vente</a> *
+          </label>
+        </div>
+
+        <button class="bfull p" (click)="sInscrire()" [disabled]="chargement() || !inscription.accepteCgu">
+          {{ chargement() ? 'Création…' : 'Créer mon compte' }}
+        </button>
+        <p class="login-switch">
+          Déjà un compte ?
+          <button class="link-btn" (click)="vueLogin.set('connexion')">Se connecter</button>
+        </p>
+      </div>
+    }
+  }
+
+  <!-- ══ VUE DASHBOARD ══ -->
+  @if (auth.connecte && auth.utilisateur()) {
+    <div class="dsh">
+      <div class="dsh-h">
+        <div>
+          <div class="lbl">Espace client</div>
+          <h2 class="big">Bonjour <span class="hl">{{ auth.utilisateur()!.prenom }}</span> !</h2>
+        </div>
+        <button class="btn-x2" (click)="seDeconnecter()">Déconnexion</button>
+      </div>
+
+      <div class="dc2-grid">
+
+        <!-- ── Informations personnelles ── -->
+        <div class="dc2">
+          <h4>📋 Mes informations</h4>
+          <div class="fg2d">
+            <div class="fg2"><label>Prénom</label>    <input [(ngModel)]="profil.prenom"    name="dp"  type="text"></div>
+            <div class="fg2"><label>Nom</label>       <input [(ngModel)]="profil.nom"       name="dn"  type="text"></div>
+          </div>
+          <div class="fg2"><label>E-mail</label>      <input [(ngModel)]="profil.email"     name="de"  type="email"></div>
+          <div class="fg2"><label>Téléphone</label>   <input [(ngModel)]="profil.telephone" name="dt"  type="tel" placeholder="06 .. .. .. .."></div>
+          <div class="fg2"><label>Adresse</label>     <input [(ngModel)]="profil.adresse"   name="da"  type="text" placeholder="12 rue de la Paix"></div>
+          <div class="fg2d">
+            <div class="fg2"><label>Ville</label>     <input [(ngModel)]="profil.ville"     name="dv"  type="text" placeholder="Toulouse"></div>
+            <div class="fg2"><label>Code postal</label><input [(ngModel)]="profil.codePostal" name="dcp" type="text" placeholder="31000"></div>
+          </div>
+          <button class="btn-x1" style="margin-top:6px;font-size:13px" (click)="sauvegarder()">Enregistrer</button>
+        </div>
+
+        <!-- ── Mes commandes ── -->
+        <div class="dc2">
+          <h4 style="color:var(--cy)">🛒 Mes commandes</h4>
+
+          @if (commandes().length === 0) {
+            <p style="color:var(--mu);font-size:13px;margin:12px 0 20px">Aucune commande pour l'instant.</p>
+          }
+
+          @for (c of commandes(); track c.id) {
+            <div class="cmd-card">
+              <!-- En-tête commande -->
+              <div class="cmd-card-head">
+                <div>
+                  <strong>{{ c.notes }}</strong>
+                  <span class="os">{{ c.dateCreation | date:'dd/MM/yyyy' }} · {{ c.prix }} €</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:8px">
+                  <span class="bdg" [class]="statutCouleur(c.statut)">{{ statutLabel(c.statut) }}</span>
+                  <!-- FIX : bouton annulation (droit de rétractation CGV art. 7) -->
+                  @if (peutAnnuler(c.statut)) {
+                    <button class="btn-annuler" (click)="annulerCommande(c)" title="Annuler la commande">✕ Annuler</button>
+                  }
+                </div>
+              </div>
+              <!-- Stepper statut -->
+              <div class="cmd-stepper">
+                @for (e of etapesCommande(c.statut); track e.label) {
+                  <div class="cmd-step">
+                    <div class="cmd-dot" [class]="e.etat">
+                      @if (e.etat === 'done')   { ✓ }
+                      @if (e.etat === 'active') { ● }
+                      @if (e.etat === 'pending'){ ○ }
+                    </div>
+                    <span class="cmd-step-label" [class]="e.etat">{{ e.label }}</span>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+
+          <div style="text-align:center;margin-top:16px">
+            <a routerLink="/tarifs" class="btn-x2">+ Nouvelle commande</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  }
+
+</section>

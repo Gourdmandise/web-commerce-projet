@@ -1,0 +1,243 @@
+<div class="admin-wrap">
+
+  <!-- ══ EN-TÊTE ══ -->
+  <div class="admin-head">
+    <div>
+      <div class="lbl">Administration</div>
+      <h1 class="big">Dashboard <span class="hl">Admin</span></h1>
+    </div>
+    <div class="admin-stats">
+      <div class="astat"><span class="astat-n">{{ utilisateurs().length }}</span><span class="astat-l">Utilisateurs</span></div>
+      <div class="astat"><span class="astat-n">{{ commandes().length }}</span><span class="astat-l">Commandes</span></div>
+      <div class="astat"><span class="astat-n">{{ offres().length }}</span><span class="astat-l">Offres</span></div>
+    </div>
+  </div>
+
+  <!-- ══ ONGLETS ══ -->
+  <div class="admin-tabs">
+    <button class="atab" [class.active]="onglet() === 'utilisateurs'" (click)="onglet.set('utilisateurs')">👥 Utilisateurs</button>
+    <button class="atab" [class.active]="onglet() === 'commandes'"   (click)="onglet.set('commandes')">🛒 Commandes</button>
+    <button class="atab" [class.active]="onglet() === 'offres'"      (click)="onglet.set('offres')">💼 Offres</button>
+  </div>
+
+  <!-- ══════════════════════════════════
+       ONGLET UTILISATEURS
+  ══════════════════════════════════ -->
+  @if (onglet() === 'utilisateurs') {
+    <div class="admin-section">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>#</th><th>Nom</th><th>E-mail</th><th>Rôle</th><th>Inscription</th><th>Commandes</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (u of utilisateurs(); track u.id) {
+            <tr>
+              <td>{{ u.id }}</td>
+              <td><strong>{{ u.prenom }} {{ u.nom }}</strong></td>
+              <td>{{ u.email }}</td>
+              <td><span class="role-badge" [class.admin]="u.role === 'admin'">{{ u.role }}</span></td>
+              <td>{{ u.dateCreation | date:'dd/MM/yyyy' }}</td>
+              <td>{{ commandesDe(u.id!).length }}</td>
+              <td class="actions">
+                <button class="btn-edit" (click)="ouvrirEditUser(u)">✏️ Modifier</button>
+                <button class="btn-del"  (click)="supprimerUser(u)" [disabled]="u.role === 'admin'">🗑️ Supprimer</button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Modal édition utilisateur -->
+    @if (editUser) {
+      <div class="modal-overlay" (click)="fermerEditUser()">
+        <div class="modal" (click)="$event.stopPropagation()">
+          <div class="modal-head">
+            <h3>Modifier l'utilisateur</h3>
+            <button class="modal-close" (click)="fermerEditUser()">✕</button>
+          </div>
+          <div class="fg2d">
+            <div class="fg2"><label>Prénom</label><input [(ngModel)]="editUser.prenom" name="eup" type="text"></div>
+            <div class="fg2"><label>Nom</label>   <input [(ngModel)]="editUser.nom"    name="eun" type="text"></div>
+          </div>
+          <div class="fg2"><label>E-mail</label>    <input [(ngModel)]="editUser.email"     name="eue" type="email"></div>
+          <div class="fg2"><label>Téléphone</label> <input [(ngModel)]="editUser.telephone" name="eut" type="tel"></div>
+          <div class="fg2"><label>Adresse</label>   <input [(ngModel)]="editUser.adresse"   name="eua" type="text"></div>
+          <div class="fg2d">
+            <div class="fg2"><label>Ville</label>       <input [(ngModel)]="editUser.ville"      name="euv"  type="text"></div>
+            <div class="fg2"><label>Code postal</label> <input [(ngModel)]="editUser.codePostal" name="eucp" type="text"></div>
+          </div>
+          <div class="fg2">
+            <label>Rôle</label>
+            <select [(ngModel)]="editUser.role" name="eur">
+              <option value="client">client</option>
+              <option value="admin">admin</option>
+            </select>
+          </div>
+          <div class="fg2">
+            <label>Nouveau mot de passe <span style="color:var(--mu);font-weight:400">(laisser vide = inchangé)</span></label>
+            <input [(ngModel)]="nouveauMotDePasse" name="eumdp" type="password" placeholder="••••••••">
+          </div>
+          <div class="modal-actions">
+            <button class="btn-x2" (click)="fermerEditUser()">Annuler</button>
+            <button class="btn-x1" (click)="sauvegarderUser()">Enregistrer</button>
+          </div>
+        </div>
+      </div>
+    }
+  }
+
+  <!-- ══════════════════════════════════
+       ONGLET COMMANDES
+  ══════════════════════════════════ -->
+  @if (onglet() === 'commandes') {
+    <div class="admin-section">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>#</th><th>Client</th><th>Offre</th><th>Prix</th><th>Date</th><th>Statut</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (c of commandes(); track c.id) {
+            <tr>
+              <td>{{ c.id }}</td>
+              <td>{{ nomUtilisateur(c.utilisateurId) }}</td>
+              <td>{{ c.notes }}</td>
+              <td><strong>{{ c.prix }} €</strong></td>
+              <td>{{ c.dateCreation | date:'dd/MM/yyyy' }}</td>
+              <td><span class="bdg" [class]="statutCouleur(c.statut)">{{ statutLabel(c.statut) }}</span></td>
+              <td class="actions">
+                <button class="btn-edit" (click)="ouvrirEditCommande(c)">✏️ Statut</button>
+                <button class="btn-del"  (click)="supprimerCommande(c)">🗑️ Supprimer</button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Modal édition commande -->
+    @if (editCommande) {
+      <div class="modal-overlay" (click)="fermerEditCommande()">
+        <div class="modal" (click)="$event.stopPropagation()">
+          <div class="modal-head">
+            <h3>Changer le statut — Commande #{{ editCommande.id }}</h3>
+            <button class="modal-close" (click)="fermerEditCommande()">✕</button>
+          </div>
+          <p style="color:var(--mu);font-size:13px;margin-bottom:16px">
+            Client : <strong>{{ nomUtilisateur(editCommande.utilisateurId) }}</strong> · {{ editCommande.notes }}
+          </p>
+          <div class="statut-picker">
+            @for (s of statuts; track s) {
+              <button class="statut-btn" [class.active]="editCommande.statut === s"
+                      (click)="editCommande.statut = s">
+                {{ statutLabel(s) }}
+              </button>
+            }
+          </div>
+          <div class="modal-actions">
+            <button class="btn-x2" (click)="fermerEditCommande()">Annuler</button>
+            <button class="btn-x1" (click)="sauvegarderCommande()">Enregistrer</button>
+          </div>
+        </div>
+      </div>
+    }
+  }
+
+  <!-- ══════════════════════════════════
+       ONGLET OFFRES
+  ══════════════════════════════════ -->
+  @if (onglet() === 'offres') {
+    <div class="admin-section">
+      <div style="display:flex;justify-content:flex-end;margin-bottom:16px">
+        <button class="btn-x1" (click)="nouvelleOffre()">+ Nouvelle offre</button>
+      </div>
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>#</th><th>Nom</th><th>Prix</th><th>Surface</th><th>Populaire</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (o of offres(); track o.id) {
+            <tr>
+              <td>{{ o.id }}</td>
+              <td><strong>{{ o.nom }}</strong></td>
+              <td>{{ o.prix }} €</td>
+              <td style="font-size:12px;color:var(--mu)">{{ o.surface }}</td>
+              <td>@if (o.populaire) { <span class="pop-badge">★ Populaire</span> } @else { — }</td>
+              <td class="actions">
+                <button class="btn-edit" (click)="ouvrirEditOffre(o)">✏️ Modifier</button>
+                <button class="btn-del"  (click)="supprimerOffre(o)">🗑️ Supprimer</button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Modal édition / création offre -->
+    @if (editOffre) {
+      <div class="modal-overlay" (click)="fermerEditOffre()">
+        <div class="modal modal-large" (click)="$event.stopPropagation()">
+          <div class="modal-head">
+            <h3>{{ modeOffre === 'creation' ? 'Nouvelle offre' : 'Modifier l\'offre' }}</h3>
+            <button class="modal-close" (click)="fermerEditOffre()">✕</button>
+          </div>
+
+          <div class="fg2d">
+            <div class="fg2"><label>Nom *</label> <input [(ngModel)]="editOffre.nom"  name="eon" type="text" placeholder="Diagnostic simple"></div>
+            <div class="fg2"><label>Prix € *</label><input [(ngModel)]="editOffre.prix" name="eop" type="number" placeholder="590"></div>
+          </div>
+          <div class="fg2"><label>Description</label><input [(ngModel)]="editOffre.description" name="eod" type="text"></div>
+          <div class="fg2"><label>Surface</label>    <input [(ngModel)]="editOffre.surface"      name="eos" type="text" placeholder="Surface végétale (terre)"></div>
+          <div class="fg2">
+            <label class="toggle-label">
+              <input type="checkbox" [(ngModel)]="editOffre.populaire" name="eopop">
+              ★ Marquer comme populaire
+            </label>
+          </div>
+
+          <!-- Features -->
+          <div class="fg2">
+            <label>Inclus dans l'offre</label>
+            <div class="tag-list">
+              @for (f of editOffre.features; track $index) {
+                <div class="tag">{{ f }} <button class="tag-del" (click)="supprimerFeature($index)">✕</button></div>
+              }
+            </div>
+            <div class="tag-input">
+              <input [(ngModel)]="editFeature" name="ef" type="text" placeholder="Ajouter une prestation…" (keydown.enter)="ajouterFeature()">
+              <button class="btn-add" (click)="ajouterFeature()">+</button>
+            </div>
+          </div>
+
+          <!-- Options -->
+          <div class="fg2">
+            <label>Options supplémentaires</label>
+            <div class="tag-list">
+              @for (opt of editOffre.options; track $index) {
+                <div class="tag opt">{{ opt }} <button class="tag-del" (click)="supprimerOption($index)">✕</button></div>
+              }
+            </div>
+            <div class="tag-input">
+              <input [(ngModel)]="editOption" name="eo2" type="text" placeholder="Option câblage : 140 €…" (keydown.enter)="ajouterOption()">
+              <button class="btn-add" (click)="ajouterOption()">+</button>
+            </div>
+          </div>
+
+          <div class="modal-actions">
+            <button class="btn-x2" (click)="fermerEditOffre()">Annuler</button>
+            <button class="btn-x1" (click)="sauvegarderOffre()">
+              {{ modeOffre === 'creation' ? 'Créer l\'offre' : 'Enregistrer' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    }
+  }
+
+</div>

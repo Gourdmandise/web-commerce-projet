@@ -1,0 +1,20 @@
+@if (visible()) {
+  <div class="cb-overlay" role="region" aria-label="Gestion des cookies">
+    <div class="cb-wrap">
+      <div class="cb-ico">🍪</div>
+      <div class="cb-body">
+        <p class="cb-title">Ce site utilise des cookies</p>
+        <p class="cb-text">
+          Nous utilisons uniquement des <strong>cookies techniques strictement nécessaires</strong>
+          au fonctionnement du site (maintien de session, panier).
+          Aucun cookie publicitaire ou de suivi tiers n'est déposé.
+          <a routerLink="/confidentialite">En savoir plus</a>
+        </p>
+      </div>
+      <div class="cb-actions">
+        <button class="cb-btn cb-refuse" (click)="refuser()">Refuser</button>
+        <button class="cb-btn cb-accept" (click)="accepter()">Accepter</button>
+      </div>
+    </div>
+  </div>
+}

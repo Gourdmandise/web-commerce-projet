@@ -1,0 +1,73 @@
+.ph { padding:80px 48px 40px; max-width:900px; margin:0 auto; text-align:center; }
+.pw { display:grid; grid-template-columns:1fr 380px; gap:40px; max-width:1000px; margin:0 auto; }
+
+.pf2 { background:#fff; border:1px solid rgba(0,212,170,0.25); box-shadow:0 4px 20px rgba(0,119,182,0.06); border-radius:16px; padding:34px; }
+.pf2 h3 { font-family:'Barlow Condensed',sans-serif; font-size:20px; font-weight:800; color:#1A202C; margin-bottom:22px; text-transform:uppercase; }
+
+.cviz { background:linear-gradient(135deg,#0f3460,#16213e); border-radius:12px; padding:24px; margin-bottom:22px; color:#fff; min-height:120px; }
+.cviz-num { font-family:'Barlow Condensed',sans-serif; font-size:22px; letter-spacing:3px; margin-bottom:16px; }
+.cviz-meta { display:flex; align-items:flex-end; justify-content:space-between; font-size:12px; }
+.cviz-lbl { font-size:9px; opacity:.6; text-transform:uppercase; letter-spacing:.1em; margin-bottom:2px; }
+.cviz-brand { font-family:'Barlow Condensed',sans-serif; font-size:20px; font-weight:900; font-style:italic; color:#FFD700; }
+
+.fg2 { margin-bottom:15px; }
+.fg2 label { display:block; font-size:10px; font-weight:700; color:#4A6275; margin-bottom:5px; letter-spacing:.08em; text-transform:uppercase; }
+.fg2 input { width:100%; background:#F7FAFC; border:1px solid #d0e4f0; border-radius:8px; padding:10px 14px; color:#1A202C; font-size:13px; font-family:'Barlow',sans-serif; outline:none; transition:all .2s; }
+.fg2 input:focus { border-color:#00D4AA; background:rgba(0,212,170,.03); box-shadow:0 0 0 3px rgba(0,212,170,.1); }
+.fg2d { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+
+.ssl-note { text-align:center; font-size:11px; color:#4A6275; margin-top:12px; }
+
+.psum { background:#F7FAFC; border:1px solid rgba(0,180,216,0.25); box-shadow:0 4px 16px rgba(0,119,182,0.06); border-radius:16px; padding:28px; align-self:start; }
+.psum h3 { font-family:'Barlow Condensed',sans-serif; font-size:18px; font-weight:800; color:#1A202C; margin-bottom:18px; text-transform:uppercase; }
+.sr2 { display:flex; justify-content:space-between; font-size:13px; color:#4A6275; padding:10px 0; border-bottom:1px solid #e0edf5; }
+.stot { display:flex; justify-content:space-between; font-size:16px; font-weight:900; color:#1A202C; padding:14px 0; border-top:2px solid rgba(0,180,216,0.25); margin-top:4px; }
+.sok { background:linear-gradient(135deg,rgba(0,212,170,0.05),rgba(0,119,182,0.05)); border:1px solid rgba(0,212,170,0.2); border-radius:8px; padding:14px; margin-top:16px; }
+.sok p { font-size:12px; color:#4A6275; display:flex; align-items:center; gap:8px; margin-bottom:6px; }
+.sok p:last-child { margin-bottom:0; }
+.sokc { color:#00D4AA; font-weight:900; }
+
+@media (max-width:768px) {
+  .ph { padding:48px 20px 24px; }
+  .pw { grid-template-columns:1fr; }
+  .fg2d { grid-template-columns:1fr; }
+}
+/* ── Stripe redirect paiement ── */
+.annule-msg {
+  max-width: 1000px; margin: 0 auto 20px;
+  background: rgba(220,80,80,0.08);
+  border: 1px solid rgba(220,80,80,0.3);
+  border-radius: 10px; padding: 14px 20px;
+  font-size: 14px; color: #c0392b;
+}
+.offre-recap {
+  background: #F7FAFC;
+  border: 1px solid var(--b1);
+  border-radius: 12px; padding: 20px; margin-bottom: 20px;
+}
+.recap-head {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 8px;
+}
+.recap-nom { font-family: 'Barlow Condensed', sans-serif; font-size: 20px; font-weight: 800; color: var(--da); text-transform: uppercase; }
+.recap-prix { font-family: 'Barlow Condensed', sans-serif; font-size: 28px; font-weight: 900; color: var(--em); }
+.recap-desc { font-size: 13px; color: var(--mu); margin-bottom: 14px; }
+.recap-features { list-style: none; padding: 0; }
+.recap-features li { font-size: 12px; color: var(--mu); padding: 5px 0; display: flex; gap: 8px; border-bottom: 1px solid #e8f0f5; }
+.recap-features li:last-child { border-bottom: none; }
+
+.stripe-logos {
+  display: flex; align-items: center; gap: 8px;
+  margin-top: 16px; flex-wrap: wrap;
+}
+.card-logo {
+  padding: 4px 10px; border-radius: 4px;
+  font-size: 11px; font-weight: 900;
+  border: 1px solid #d0e4f0;
+}
+.visa  { background: #1a1f71; color: #fff; }
+.mc    { background: #eb001b; color: #fff; }
+.amex  { background: #007bc1; color: #fff; }
+.stripe-badge {
+  font-size: 11px; color: var(--mu); margin-left: auto;
+}

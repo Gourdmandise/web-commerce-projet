@@ -1,0 +1,74 @@
+<div class="ph tc">
+  <div class="lbl" style="justify-content:center">Suivi</div>
+  <h1 class="big">Ma <span class="hl">Commande</span></h1>
+</div>
+
+<section class="sec" style="padding-top:20px">
+  <div class="cmdw">
+
+    <!-- DÉTAIL COMMANDE -->
+    <div class="cmdd">
+      @if (chargement()) {
+        <p style="color:var(--mu);font-size:13px">Chargement du récapitulatif…</p>
+      } @else if (offre()) {
+        <h3>{{ offre()!.nom }}</h3>
+        <div class="cmdp">{{ offre()!.prix }} <small>€ TTC</small></div>
+
+        @if (offre()!.features.length > 0) {
+          <ul class="fl">
+            @for (f of offre()!.features; track f) {
+              <li><span class="ck">✓</span>{{ f }}</li>
+            }
+            @for (opt of offre()!.options; track opt) {
+              <li><span class="ck opt">+</span>{{ opt }}</li>
+            }
+          </ul>
+        } @else {
+          <p style="color:var(--mu);font-size:13px;margin-top:12px">
+            Votre intervention a bien été enregistrée. Un technicien vous contactera sous 24h.
+          </p>
+        }
+
+        <div class="cmd-confirm">
+          <span class="confirm-ico">✓</span>
+          <div>
+            <strong>Paiement confirmé par Stripe</strong>
+            <span>Commande enregistrée avec succès</span>
+          </div>
+        </div>
+      } @else {
+        <p style="color:var(--mu);font-size:13px">
+          Aucune commande trouvée. <a routerLink="/tarifs" style="color:var(--em)">Choisir une offre →</a>
+        </p>
+      }
+    </div>
+
+    <!-- STATUT -->
+    <div class="cmds">
+      <h3>Statut de la commande</h3>
+      <span class="bdg-active">En cours de traitement</span>
+
+      <div class="stp">
+        @for (e of etapes; track e.label) {
+          <div class="st">
+            <div class="std" [class]="e.statut">
+              @if (e.statut === 'done')    { ✓ }
+              @if (e.statut === 'active')  { ⟳ }
+              @if (e.statut === 'pending') { {{ $index + 1 }} }
+            </div>
+            <div class="stc">
+              <strong>{{ e.label }}</strong>
+              <p>{{ e.desc }}</p>
+            </div>
+          </div>
+        }
+      </div>
+
+      <div class="cmd-actions">
+        <a routerLink="/compte" class="btn-x3">← Mon espace client</a>
+        <a routerLink="/tarifs" class="btn-x1">+ Nouvelle commande</a>
+      </div>
+    </div>
+
+  </div>
+</section>

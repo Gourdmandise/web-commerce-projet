@@ -1,0 +1,194 @@
+.legal-wrap {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 60px 48px;
+}
+
+/* ── Navigation onglets ── */
+.legal-nav {
+  display: flex;
+  gap: 0;
+  border-bottom: 2px solid var(--b1);
+  margin-bottom: 48px;
+  flex-wrap: wrap;
+}
+.legal-tab {
+  padding: 12px 22px;
+  background: none;
+  border: none;
+  font-family: 'Barlow', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--mu);
+  cursor: pointer;
+  transition: all .2s;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+.legal-tab.active {
+  color: var(--em);
+  border-bottom-color: var(--em);
+}
+.legal-tab:hover:not(.active) {
+  color: var(--da);
+}
+
+/* ── En-tête page ── */
+.legal-header {
+  text-align: center;
+  margin-bottom: 48px;
+  padding-bottom: 36px;
+  border-bottom: 1px solid var(--b1);
+}
+.legal-date {
+  font-size: 12px;
+  color: var(--mu);
+  margin-top: 10px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+/* ── Corps ── */
+.legal-intro {
+  font-size: 15px;
+  color: var(--mu);
+  line-height: 1.85;
+  margin-bottom: 36px;
+  padding: 20px 24px;
+  background: rgba(0,212,170,.04);
+  border-left: 3px solid var(--em);
+  border-radius: 0 8px 8px 0;
+}
+
+.legal-section {
+  margin-bottom: 40px;
+  padding-bottom: 40px;
+  border-bottom: 1px solid #e8f0f5;
+}
+.legal-section:last-child {
+  border-bottom: none;
+}
+
+.legal-section h2 {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: var(--da);
+  margin-bottom: 14px;
+  padding-left: 14px;
+  border-left: 3px solid var(--em);
+}
+
+.legal-section p {
+  font-size: 14px;
+  color: var(--mu);
+  line-height: 1.85;
+  margin-bottom: 12px;
+}
+.legal-section p:last-child { margin-bottom: 0; }
+
+.legal-list {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0;
+}
+.legal-list li {
+  font-size: 14px;
+  color: var(--mu);
+  padding: 8px 0 8px 20px;
+  position: relative;
+  line-height: 1.7;
+  border-bottom: 1px solid #f0f5fa;
+}
+.legal-list li:last-child { border-bottom: none; }
+.legal-list li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--em);
+  font-weight: 900;
+  font-size: 12px;
+}
+
+.legal-adresse {
+  background: #F7FAFC;
+  border: 1px solid var(--b2);
+  border-radius: 8px;
+  padding: 16px 20px;
+  font-size: 14px;
+  color: var(--da);
+  line-height: 1.8;
+  margin: 12px 0;
+}
+
+/* ── Tableau ── */
+.legal-table-wrap { overflow-x: auto; margin: 12px 0; }
+.legal-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.legal-table th {
+  text-align: left;
+  padding: 10px 14px;
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--mu);
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  background: #F7FAFC;
+  border-bottom: 2px solid var(--b1);
+}
+.legal-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid #e8f0f5;
+  color: var(--mu);
+  line-height: 1.6;
+  vertical-align: top;
+}
+.legal-table tr:last-child td { border-bottom: none; }
+.legal-table tr:hover td { background: rgba(0,212,170,.03); }
+
+/* ── Lien interne ── */
+.link-legal {
+  background: none;
+  border: none;
+  color: var(--em);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+  font-family: 'Barlow', sans-serif;
+  transition: color .2s;
+}
+.link-legal:hover { color: var(--cy); }
+
+/* ── Pied de page ── */
+.legal-footer {
+  text-align: center;
+  margin-top: 48px;
+  padding-top: 32px;
+  border-top: 1px solid var(--b1);
+}
+
+@media (max-width: 768px) {
+  .legal-wrap { padding: 40px 20px; }
+  .legal-nav { overflow-x: auto; }
+  .legal-tab { padding: 10px 14px; font-size: 12px; }
+}
+
+/* ── FIX : marqueurs éditoriaux "À compléter" ──────────── */
+.legal-todo {
+  background: rgba(255, 193, 7, 0.15);
+  border: 1px dashed rgba(255, 193, 7, 0.5);
+  color: #856404;
+  padding: 1px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-style: italic;
+}
