@@ -9,7 +9,10 @@ const { createClient } = require('@supabase/supabase-js');
 
 const app   = express();
 const PORT  = process.env.PORT || 3001;
-const FRONT = process.env.FRONTEND_URL || 'http://localhost:4200';
+const ALLOWED_ORIGINS = [
+  process.env.FRONTEND_URL || "http://localhost:4200",
+  "http://localhost:4200",
+].filter(Boolean);
 
 // ══════════════════════════════════════════════════════════
 // SUPABASE
@@ -60,7 +63,13 @@ function commandeToAngular(c) {
 // ══════════════════════════════════════════════════════════
 // MIDDLEWARES
 // ══════════════════════════════════════════════════════════
-app.use(cors({ origin: FRONT }));
+app.use(cors({
+  origin: (origin, cb) => {
+    if (!origin || ALLOWED_ORIGINS.includes(origin)) return cb(null, true);
+    cb(new Error('CORS: origine non autorisée : ' + origin));
+  },
+  credentials: true,
+}));
 app.use('/webhook', express.raw({ type: 'application/json' }));
 app.use(express.json());
 
