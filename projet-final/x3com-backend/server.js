@@ -584,7 +584,7 @@ app.listen(PORT, async () => {
   console.log(`   Stripe   : ${process.env.STRIPE_SECRET_KEY?.startsWith('sk_test') ? '✓ TEST' : process.env.STRIPE_SECRET_KEY ? '✓ LIVE' : '⚠ MANQUANT'}`);
   console.log(`   Resend   : ${process.env.RESEND_API_KEY   ? '✓ actif' : '⚠ MANQUANT'}`);
   console.log(`   Supabase : ${process.env.SUPABASE_URL     ? '✓ URL ok' : '⚠ SUPABASE_URL MANQUANT'}`);
-  console.log(`   Front    : ${FRONT}`);
+  console.log(`   Front    : ${ALLOWED_ORIGINS.join(', ')}`);
 
   // Test de connexion Supabase au démarrage
   console.log('\n🔍 Test connexion Supabase...');
