@@ -113,7 +113,7 @@ export class Compte implements OnInit {
   sauvegarder(): void {
     const user = this.auth.utilisateur();
     if (!user?.id) return;
-    const { motDePasse, ...profilSansMotDePasse } = this.profil as Utilisateur;
+    const { motDePasse, dateCreation, ...profilSansMotDePasse } = this.profil as Utilisateur;
     this.utilisateurService.mettreAJour(user.id, profilSansMotDePasse).subscribe({
       next: (updated) => {
         this.auth.connecter(updated);
