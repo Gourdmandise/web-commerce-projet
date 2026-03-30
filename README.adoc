@@ -13,6 +13,8 @@ Site e-commerce développé dans le cadre d'un stage informatique
 |            | Version courante                          | https://github.com/Gourdmandise/web-commerce-projet/releases/tag/Version-3[v3]     |  | ✓
 |            | Version courante                          | https://github.com/Gourdmandise/web-commerce-projet/releases/tag/Version-4[v4]     |  | ✓
 |            | Version courante                          | https://github.com/Gourdmandise/web-commerce-projet/releases/tag/Version-5[v5]     |  | ✓
+|            | Version courante                          | https://github.com/Gourdmandise/web-commerce-projet/releases/tag/Version-6[v6]     |  | ✓
+|            | Version courante                          | https://github.com/Gourdmandise/web-commerce-projet/releases/tag/Version-7[v7]     |  | ✓
 |============================================================================
 
 ===== Navigation
