@@ -453,7 +453,7 @@ app.delete('/commandes/:id', async (req, res) => {
 // POST /create-checkout-session
 // ══════════════════════════════════════════════════════════
 app.post('/create-checkout-session', async (req, res) => {
-  const { offreId, prix, nom, utilisateurId } = req.body;
+  const { offreId, prix, nom, utilisateurId, emailClient } = req.body;
   if (!offreId || !prix || !nom)
     return res.status(400).json({ error: 'offreId, prix et nom sont obligatoires' });
   try {
@@ -461,7 +461,8 @@ app.post('/create-checkout-session', async (req, res) => {
       payment_method_types: ['card'],
       mode: 'payment',
       line_items: [{ price_data: { currency: 'eur', unit_amount: Math.round(prix * 100), product_data: { name: nom, description: `X3COM — Offre #${offreId}` } }, quantity: 1 }],
-      metadata: { offreId: String(offreId), utilisateurId: String(utilisateurId || ''), nomOffre: nom, prix: String(prix) },
+      metadata: { offreId: String(offreId), utilisateurId: String(utilisateurId || ''), nomOffre: nom, prix: String(prix), emailClient: emailClient || '' },
+      customer_email: emailClient || undefined,
       success_url: `${process.env.FRONTEND_URL || "http://localhost:4200"}/commande?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url:  `${process.env.FRONTEND_URL || "http://localhost:4200"}/paiement?annule=1`,
     });
@@ -504,7 +505,7 @@ app.post('/webhook', async (req, res) => {
   if (event.type === 'checkout.session.completed') {
     const session     = event.data.object;
     const meta        = session.metadata || {};
-    const emailClient = session.customer_details?.email || null;
+    const emailClient = session.customer_details?.email || session.metadata?.emailClient || null;
 
     console.log(`  → ${meta.nomOffre} — ${meta.prix} € — client: ${emailClient || '—'}`);
 

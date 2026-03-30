@@ -55,6 +55,7 @@ export class Paiement implements OnInit {
       prix:          offre.prix,
       nom:           offre.nom,
       utilisateurId: user.id,
+      emailClient:   user.email,
     }).subscribe({
       next: (session) => {
         // Redirige vers la page de paiement Stripe
