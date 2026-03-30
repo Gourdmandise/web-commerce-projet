@@ -342,7 +342,7 @@ app.get('/utilisateurs', async (req, res) => {
 });
 
 app.patch('/utilisateurs/:id', async (req, res) => {
-  const { motDePasse, motdepasse, ...champs } = req.body;
+  const { motDePasse, motdepasse, dateCreation, datecreation, role, id, ...champs } = req.body;
   try {
     const { data, error } = await supabase
       .from('utilisateurs').update(champs).eq('id', req.params.id)
