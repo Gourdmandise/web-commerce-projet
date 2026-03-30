@@ -445,7 +445,8 @@ app.delete('/commandes/:id', async (req, res) => {
     const { error } = await supabase.from('commandes').delete().eq('id', req.params.id);
     if (error) throw new Error(error.message);
     res.status(204).send();
-  } catch (err) { res.status(500).json({ error: err.message });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
 
 // ══════════════════════════════════════════════════════════
 // POST /commandes/:id/annuler  — annulation + remboursement Stripe
@@ -490,8 +491,6 @@ app.post('/commandes/:id/annuler', async (req, res) => {
 
     res.json({ ...commandeToAngular(updated), refundId });
   } catch (err) { res.status(500).json({ error: err.message }); }
-});
- }
 });
 
 
