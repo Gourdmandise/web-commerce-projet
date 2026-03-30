@@ -462,8 +462,8 @@ app.post('/create-checkout-session', async (req, res) => {
       mode: 'payment',
       line_items: [{ price_data: { currency: 'eur', unit_amount: Math.round(prix * 100), product_data: { name: nom, description: `X3COM — Offre #${offreId}` } }, quantity: 1 }],
       metadata: { offreId: String(offreId), utilisateurId: String(utilisateurId || ''), nomOffre: nom, prix: String(prix) },
-      success_url: `${FRONT}/commande?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url:  `${FRONT}/paiement?annule=1`,
+      success_url: `${process.env.FRONTEND_URL || "http://localhost:4200"}/commande?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url:  `${process.env.FRONTEND_URL || "http://localhost:4200"}/paiement?annule=1`,
     });
     res.json({ url: session.url, sessionId: session.id });
   } catch (err) { console.error('Stripe:', err.message); res.status(500).json({ error: err.message }); }
