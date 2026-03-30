@@ -213,3 +213,14 @@
   background: rgba(220, 53, 69, 0.15);
   border-color: rgba(220, 53, 69, 0.5);
 }
+
+/* Mot de passe */
+.mdp-section { margin-top:18px; border-top:1px solid rgba(0,212,170,0.15); padding-top:14px; }
+.btn-link { background:none; border:none; color:var(--cy); font-size:13px; font-weight:700; cursor:pointer; padding:0; text-decoration:underline; font-family:'Barlow',sans-serif; }
+.btn-link:hover { color:var(--em); }
+.mdp-form { margin-top:14px; padding:16px; background:#f7fafc; border-radius:10px; border:1px solid rgba(0,212,170,0.2); }
+
+/* Danger zone */
+.danger-zone { margin-top:14px; border-top:1px solid rgba(220,38,38,0.15); padding-top:14px; }
+.btn-danger { background:none; border:1px solid rgba(220,38,38,0.4); color:#dc2626; font-size:12px; font-weight:700; cursor:pointer; padding:8px 16px; border-radius:8px; font-family:'Barlow',sans-serif; transition:all .2s; width:100%; }
+.btn-danger:hover { background:rgba(220,38,38,0.08); border-color:#dc2626; }

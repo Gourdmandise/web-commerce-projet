@@ -22,6 +22,10 @@ export class UtilisateurService {
     return this.http.patch<Utilisateur>(`${this.url}/${id}`, data);
   }
 
+  changerMotDePasse(id: number, motDePasse: string): Observable<{ ok: boolean }> {
+    return this.http.patch<{ ok: boolean }>(`${this.url}/${id}/password`, { motDePasse });
+  }
+
   getAll(): Observable<Utilisateur[]> {
     return this.http.get<Utilisateur[]>(this.url);
   }

@@ -62,7 +62,15 @@
 
         <div class="fg2">
           <label>Votre opérateur</label>
-          <input [(ngModel)]="form.operateur" name="operateur" type="text" placeholder="Orange, SFR, Bouygues...">
+          <select [(ngModel)]="form.operateur" name="operateur">
+            <option value="">— Sélectionnez votre opérateur —</option>
+            <option value="Orange">Orange</option>
+            <option value="SFR">SFR</option>
+            <option value="Bouygues">Bouygues Telecom</option>
+            <option value="Free">Free</option>
+            <option value="La Poste Mobile">La Poste Mobile</option>
+            <option value="Autre">Autre</option>
+          </select>
         </div>
 
         <div class="fg2">

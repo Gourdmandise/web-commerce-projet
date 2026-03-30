@@ -25,9 +25,10 @@ export class Compte implements OnInit {
   utilisateurService = inject(UtilisateurService);
   commandeService    = inject(CommandeService);
 
-  vueLogin   = signal<VueLogin>('connexion');
-  chargement = signal(false);
-  commandes  = signal<Commande[]>([]);
+  vueLogin      = signal<VueLogin>('connexion');
+  chargement    = signal(false);
+  commandes     = signal<Commande[]>([]);
+  vueMdp        = signal(false);
 
   login       = { email: '', motDePasse: '' };
   inscription = {
@@ -36,6 +37,7 @@ export class Compte implements OnInit {
     accepteCgu: false
   };
   profil: Partial<Utilisateur> = {};
+  mdp = { actuel: '', nouveau: '', confirmer: '' };
 
   ngOnInit(): void {
     if (this.auth.connecte) {
@@ -50,8 +52,6 @@ export class Compte implements OnInit {
       return;
     }
     this.chargement.set(true);
-
-    // Authentification déléguée au backend — vérification bcrypt côté serveur
     this.utilisateurService.connecter(this.login.email, this.login.motDePasse).subscribe({
       next: ({ utilisateur }) => {
         this.chargement.set(false);
@@ -85,7 +85,6 @@ export class Compte implements OnInit {
       return;
     }
     this.chargement.set(true);
-
     this.utilisateurService.inscrire(
       this.inscription.email,
       this.inscription.motDePasse,
@@ -118,18 +117,65 @@ export class Compte implements OnInit {
     this.utilisateurService.mettreAJour(user.id, profilSansMotDePasse).subscribe({
       next: (updated) => {
         this.auth.connecter(updated);
+        this.profil = { ...updated };
         this.panier.notify('✓', 'Profil mis à jour', 'Sauvegarde effectuée');
       },
       error: () => this.panier.notify('⚠', 'Erreur', 'Impossible de sauvegarder')
     });
   }
 
+  changerMotDePasse(): void {
+    if (!this.mdp.nouveau || !this.mdp.actuel) {
+      this.panier.notify('⚠', 'Champs requis', 'Remplissez tous les champs');
+      return;
+    }
+    if (this.mdp.nouveau !== this.mdp.confirmer) {
+      this.panier.notify('⚠', 'Mots de passe différents', 'Le nouveau mot de passe ne correspond pas');
+      return;
+    }
+    if (this.mdp.nouveau.length < 8) {
+      this.panier.notify('⚠', 'Mot de passe trop court', 'Minimum 8 caractères');
+      return;
+    }
+    const user = this.auth.utilisateur();
+    if (!user?.id) return;
+
+    // Vérifier l'ancien mot de passe via login
+    this.utilisateurService.connecter(user.email, this.mdp.actuel).subscribe({
+      next: () => {
+        this.utilisateurService.changerMotDePasse(user.id!, this.mdp.nouveau).subscribe({
+          next: () => {
+            this.mdp = { actuel: '', nouveau: '', confirmer: '' };
+            this.vueMdp.set(false);
+            this.panier.notify('✓', 'Mot de passe modifié', 'Changement effectué avec succès');
+          },
+          error: () => this.panier.notify('⚠', 'Erreur', 'Impossible de changer le mot de passe')
+        });
+      },
+      error: () => this.panier.notify('⚠', 'Mot de passe actuel incorrect', 'Vérifiez votre mot de passe actuel')
+    });
+  }
+
+  supprimerCompte(): void {
+    const user = this.auth.utilisateur();
+    if (!user?.id) return;
+    if (!confirm(`Supprimer définitivement votre compte ?\n\nCette action est irréversible. Toutes vos données seront effacées.`)) return;
+    this.utilisateurService.supprimer(user.id).subscribe({
+      next: () => {
+        this.auth.deconnecter();
+        this.commandes.set([]);
+        this.profil = {};
+        this.panier.notify('✓', 'Compte supprimé', 'Votre compte a été supprimé');
+      },
+      error: () => this.panier.notify('⚠', 'Erreur', 'Impossible de supprimer le compte')
+    });
+  }
+
   annulerCommande(commande: Commande): void {
-    if (!confirm(`Annuler la commande "${commande.notes}" ?\n\nVous serez remboursé sous 14 jours conformément à nos CGV.`)) return;
+    if (!confirm(`Annuler la commande "${commande.notes}" ?\n\nVous serez remboursé sous 5-10 jours ouvrés.`)) return;
     const annulables: string[] = ['en_attente', 'paiement_confirme'];
     if (!annulables.includes(commande.statut)) {
-      this.panier.notify('⚠', 'Annulation impossible',
-        'L\'intervention est déjà planifiée. Contactez-nous : contact@x3com.com');
+      this.panier.notify('⚠', 'Annulation impossible', 'L\'intervention est déjà planifiée. Contactez-nous : contact@x3com.com');
       return;
     }
     const user = this.auth.utilisateur();
@@ -148,9 +194,11 @@ export class Compte implements OnInit {
   seDeconnecter(): void {
     this.auth.deconnecter();
     this.commandes.set([]);
+    this.vueMdp.set(false);
     this.login       = { email: '', motDePasse: '' };
     this.inscription = { email: '', motDePasse: '', confirmMotDePasse: '', prenom: '', nom: '', accepteCgu: false };
     this.profil      = {};
+    this.mdp         = { actuel: '', nouveau: '', confirmer: '' };
   }
 
   private chargerCommandes(): void {

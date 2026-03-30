@@ -7,13 +7,11 @@
       <h1 class="big">Mon <span class="hl">Compte</span></h1>
     </div>
 
-    <!-- Onglets Connexion / Inscription -->
     <div class="login-tabs">
       <button class="login-tab" [class.active]="vueLogin() === 'connexion'"   (click)="vueLogin.set('connexion')">Connexion</button>
       <button class="login-tab" [class.active]="vueLogin() === 'inscription'" (click)="vueLogin.set('inscription')">Créer un compte</button>
     </div>
 
-    <!-- Formulaire Connexion -->
     @if (vueLogin() === 'connexion') {
       <div class="accard">
         <h2>Se connecter</h2>
@@ -36,7 +34,6 @@
       </div>
     }
 
-    <!-- Formulaire Inscription -->
     @if (vueLogin() === 'inscription') {
       <div class="accard">
         <h2>Créer un compte</h2>
@@ -57,7 +54,6 @@
           <label>Confirmer le mot de passe *</label>
           <input [(ngModel)]="inscription.confirmMotDePasse" name="imdp2" type="password" placeholder="••••••••">
         </div>
-        <!-- FIX : acceptation CGU/CGV obligatoire (RGPD + droit conso) -->
         <div class="cgu-wrap">
           <input type="checkbox" id="accepteCgu" [(ngModel)]="inscription.accepteCgu" name="accepteCgu">
           <label for="accepteCgu">
@@ -67,7 +63,6 @@
             <a routerLink="/cgv" target="_blank">Conditions générales de vente</a> *
           </label>
         </div>
-
         <button class="bfull p" (click)="sInscrire()" [disabled]="chargement() || !inscription.accepteCgu">
           {{ chargement() ? 'Création…' : 'Créer mon compte' }}
         </button>
@@ -106,7 +101,36 @@
             <div class="fg2"><label>Ville</label>     <input [(ngModel)]="profil.ville"     name="dv"  type="text" placeholder="Toulouse"></div>
             <div class="fg2"><label>Code postal</label><input [(ngModel)]="profil.codePostal" name="dcp" type="text" placeholder="31000"></div>
           </div>
-          <button class="btn-x1" style="margin-top:6px;font-size:13px" (click)="sauvegarder()">Enregistrer</button>
+          <button class="btn-x1" style="margin-top:6px;font-size:13px;width:100%" (click)="sauvegarder()">💾 Enregistrer les modifications</button>
+
+          <!-- Changer mot de passe -->
+          <div class="mdp-section">
+            <button class="btn-link" (click)="vueMdp.set(!vueMdp())">
+              🔑 {{ vueMdp() ? 'Annuler' : 'Changer le mot de passe' }}
+            </button>
+            @if (vueMdp()) {
+              <div class="mdp-form">
+                <div class="fg2">
+                  <label>Mot de passe actuel *</label>
+                  <input [(ngModel)]="mdp.actuel" name="mdpActuel" type="password" placeholder="••••••••">
+                </div>
+                <div class="fg2">
+                  <label>Nouveau mot de passe *</label>
+                  <input [(ngModel)]="mdp.nouveau" name="mdpNouv" type="password" placeholder="Minimum 8 caractères">
+                </div>
+                <div class="fg2">
+                  <label>Confirmer le nouveau mot de passe *</label>
+                  <input [(ngModel)]="mdp.confirmer" name="mdpConf" type="password" placeholder="••••••••">
+                </div>
+                <button class="btn-x1" style="font-size:13px;width:100%" (click)="changerMotDePasse()">Valider le changement</button>
+              </div>
+            }
+          </div>
+
+          <!-- Supprimer le compte -->
+          <div class="danger-zone">
+            <button class="btn-danger" (click)="supprimerCompte()">🗑 Supprimer mon compte</button>
+          </div>
         </div>
 
         <!-- ── Mes commandes ── -->
@@ -119,7 +143,6 @@
 
           @for (c of commandes(); track c.id) {
             <div class="cmd-card">
-              <!-- En-tête commande -->
               <div class="cmd-card-head">
                 <div>
                   <strong>{{ c.notes }}</strong>
@@ -127,13 +150,11 @@
                 </div>
                 <div style="display:flex;align-items:center;gap:8px">
                   <span class="bdg" [class]="statutCouleur(c.statut)">{{ statutLabel(c.statut) }}</span>
-                  <!-- FIX : bouton annulation (droit de rétractation CGV art. 7) -->
                   @if (peutAnnuler(c.statut)) {
                     <button class="btn-annuler" (click)="annulerCommande(c)" title="Annuler la commande">✕ Annuler</button>
                   }
                 </div>
               </div>
-              <!-- Stepper statut -->
               <div class="cmd-stepper">
                 @for (e of etapesCommande(c.statut); track e.label) {
                   <div class="cmd-step">
