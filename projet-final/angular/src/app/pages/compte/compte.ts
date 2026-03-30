@@ -132,12 +132,16 @@ export class Compte implements OnInit {
         'L\'intervention est déjà planifiée. Contactez-nous : contact@x3com.com');
       return;
     }
-    this.commandeService.changerStatut(commande.id!, 'annulee' as any).subscribe({
+    const user = this.auth.utilisateur();
+    this.commandeService.annuler(commande.id!, user?.email || '').subscribe({
       next: () => {
         this.chargerCommandes();
-        this.panier.notify('✓', 'Commande annulée', 'Remboursement sous 14 jours ouvrés');
+        this.panier.notify('✓', 'Commande annulée', 'Remboursement initié sous 5-10 jours ouvrés');
       },
-      error: () => this.panier.notify('⚠', 'Erreur', 'Contactez contact@x3com.com')
+      error: (err: any) => {
+        const msg = err?.error?.error || 'Contactez contact@x3com.com';
+        this.panier.notify('⚠', 'Erreur annulation', msg);
+      }
     });
   }
 

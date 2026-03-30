@@ -28,6 +28,10 @@ export class CommandeService {
     return this.http.patch<Commande>(`${this.url}/${id}`, { statut });
   }
 
+  annuler(id: number, emailClient: string): Observable<Commande> {
+    return this.http.post<Commande>(`${this.url}/${id}/annuler`, { emailClient });
+  }
+
   supprimer(id: number): Observable<void> {
     return this.http.delete<void>(`${this.url}/${id}`);
   }

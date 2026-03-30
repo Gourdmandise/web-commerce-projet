@@ -445,7 +445,53 @@ app.delete('/commandes/:id', async (req, res) => {
     const { error } = await supabase.from('commandes').delete().eq('id', req.params.id);
     if (error) throw new Error(error.message);
     res.status(204).send();
+  } catch (err) { res.status(500).json({ error: err.message });
+
+// ══════════════════════════════════════════════════════════
+// POST /commandes/:id/annuler  — annulation + remboursement Stripe
+// ══════════════════════════════════════════════════════════
+app.post('/commandes/:id/annuler', async (req, res) => {
+  try {
+    const { data: commande, error: fetchErr } = await supabase
+      .from('commandes').select('*').eq('id', req.params.id).single();
+    if (fetchErr || !commande) return res.status(404).json({ error: 'Commande introuvable' });
+
+    const annulables = ['en_attente', 'paiement_confirme'];
+    if (!annulables.includes(commande.statut))
+      return res.status(400).json({ error: `Statut "${commande.statut}" non annulable` });
+
+    let refundId = null;
+    if (commande.stripesessionid) {
+      try {
+        const session = await stripe.checkout.sessions.retrieve(commande.stripesessionid);
+        if (session.payment_intent) {
+          const refund = await stripe.refunds.create({ payment_intent: session.payment_intent });
+          refundId = refund.id;
+          console.log('✓ Remboursement Stripe : ' + refundId);
+        }
+      } catch (stripeErr) {
+        console.error('✗ Stripe refund:', stripeErr.message);
+        return res.status(502).json({ error: 'Remboursement Stripe échoué : ' + stripeErr.message });
+      }
+    }
+
+    const { data: updated, error: updateErr } = await supabase
+      .from('commandes').update({ statut: 'annulee' }).eq('id', req.params.id).select().single();
+    if (updateErr) throw new Error(updateErr.message);
+
+    const emailClient = req.body.emailClient || null;
+    if (emailClient) {
+      await sendMail({
+        to: emailClient,
+        subject: 'Remboursement en cours — ' + (commande.notes || 'votre commande'),
+        html: '<p>Votre commande a ete annulee. Remboursement de ' + commande.prix + ' euros sous 5 a 10 jours.' + (refundId ? ' Ref: ' + refundId : '') + '</p>',
+      });
+    }
+
+    res.json({ ...commandeToAngular(updated), refundId });
   } catch (err) { res.status(500).json({ error: err.message }); }
+});
+ }
 });
 
 
