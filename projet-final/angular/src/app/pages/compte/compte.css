@@ -224,3 +224,41 @@
 .danger-zone { margin-top:14px; border-top:1px solid rgba(220,38,38,0.15); padding-top:14px; }
 .btn-danger { background:none; border:1px solid rgba(220,38,38,0.4); color:#dc2626; font-size:12px; font-weight:700; cursor:pointer; padding:8px 16px; border-radius:8px; font-family:'Barlow',sans-serif; transition:all .2s; width:100%; }
 .btn-danger:hover { background:rgba(220,38,38,0.08); border-color:#dc2626; }
+
+/* ── Couleurs police en mode édition profil ── */
+.dc2 input,
+.dc2 select,
+.dc2 textarea {
+  color: #1A202C;
+  background: #fff;
+  border: 1px solid rgba(0,180,216,0.3);
+}
+.dc2 input:focus,
+.dc2 select:focus {
+  border-color: #00D4AA;
+  color: #0077B6;
+  background: rgba(0,212,170,0.03);
+  box-shadow: 0 0 0 3px rgba(0,212,170,0.1);
+  outline: none;
+}
+.dc2 label {
+  color: #4A6275;
+}
+.mdp-form input {
+  color: #1A202C;
+  background: #fff;
+  border: 1px solid rgba(0,180,216,0.3);
+  border-radius: 8px;
+  padding: 10px 14px;
+  width: 100%;
+  font-size: 13px;
+  font-family: 'Barlow', sans-serif;
+  margin-top: 5px;
+  display: block;
+}
+.mdp-form input:focus {
+  border-color: #00D4AA;
+  color: #0077B6;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0,212,170,0.1);
+}

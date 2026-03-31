@@ -342,7 +342,12 @@ app.get('/utilisateurs', async (req, res) => {
 });
 
 app.patch('/utilisateurs/:id', async (req, res) => {
-  const { motDePasse, motdepasse, dateCreation, datecreation, role, id, ...champs } = req.body;
+  const { motDePasse, motdepasse, dateCreation, datecreation, role, id, ...raw } = req.body;
+  // Colonnes connues dans la table utilisateurs
+  const COLONNES_AUTORISEES = ['email','prenom','nom','telephone','adresse','ville','codepostal'];
+  const champs = Object.fromEntries(
+    Object.entries(raw).filter(([k]) => COLONNES_AUTORISEES.includes(k.toLowerCase()))
+  );
   try {
     const { data, error } = await supabase
       .from('utilisateurs').update(champs).eq('id', req.params.id)
@@ -393,7 +398,8 @@ app.post('/offres', async (req, res) => {
 
 app.patch('/offres/:id', async (req, res) => {
   try {
-    const { data, error } = await supabase.from('offres').update(req.body).eq('id', req.params.id).select().single();
+    const { id, ...champs } = req.body;
+    const { data, error } = await supabase.from('offres').update(champs).eq('id', req.params.id).select().single();
     if (error) throw new Error(error.message);
     res.json(data);
   } catch (err) { res.status(500).json({ error: err.message }); }
@@ -484,9 +490,23 @@ app.post('/commandes/:id/annuler', async (req, res) => {
     if (emailClient) {
       await sendMail({
         to: emailClient,
-        subject: 'Remboursement en cours — ' + (commande.notes || 'votre commande'),
-        html: '<p>Votre commande a ete annulee. Remboursement de ' + commande.prix + ' euros sous 5 a 10 jours.' + (refundId ? ' Ref: ' + refundId : '') + '</p>',
+        subject: `🔄 Annulation confirmée — ${escHtml(commande.notes || 'votre commande')}`,
+        html: `<div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden">
+          <div style="background:#1a365d;padding:24px;text-align:center"><h1 style="color:#fff;margin:0;font-size:20px">🔄 Remboursement initié — X3COM</h1></div>
+          <div style="padding:28px;background:#f8fafc">
+            <p style="color:#374151">Bonjour,</p>
+            <p style="color:#374151">Votre commande <strong>${escHtml(commande.notes || '')}</strong> a bien été annulée. Votre remboursement a été initié.</p>
+            <table style="width:100%;border-collapse:collapse">
+              <tr><td style="padding:8px 0;color:#64748b;width:160px;font-weight:bold">Offre</td><td><strong>${escHtml(commande.notes || '')}</strong></td></tr>
+              <tr style="background:#fff"><td style="padding:8px 0;color:#64748b;font-weight:bold">Montant remboursé</td><td style="font-size:18px;font-weight:bold;color:#059669">${commande.prix} €</td></tr>
+              <tr><td style="padding:8px 0;color:#64748b;font-weight:bold">Délai</td><td>5 à 10 jours ouvrés selon votre banque</td></tr>
+              ${refundId ? `<tr style="background:#fff"><td style="padding:8px 0;color:#64748b;font-weight:bold">Référence</td><td style="font-size:11px;color:#94a3b8">${refundId}</td></tr>` : ''}
+            </table>
+            <p style="margin-top:20px;color:#374151">Pour toute question : <a href="mailto:contact@x3com.com">contact@x3com.com</a></p>
+            <p style="margin-top:16px;font-size:12px;color:#94a3b8;text-align:center">X3COM — contact@x3com.com</p>
+          </div></div>`,
       });
+      console.log('✓ Email annulation envoyé à :', emailClient);
     }
 
     res.json({ ...commandeToAngular(updated), refundId });
@@ -625,6 +645,24 @@ app.get('/health', (req, res) => {
 // ══════════════════════════════════════════════════════════
 // DÉMARRAGE + TEST SUPABASE au boot
 // ══════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════
+// NETTOYAGE AUTO — supprime les commandes annulées > 3 jours
+// ══════════════════════════════════════════════════════════
+async function nettoyerCommandesAnnulees() {
+  const il_y_a_3_jours = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString();
+  const { data, error } = await supabase
+    .from('commandes')
+    .delete()
+    .eq('statut', 'annulee')
+    .lt('datecreation', il_y_a_3_jours)
+    .select('id');
+  if (error) { console.error('✗ Nettoyage commandes annulées:', error.message); return; }
+  if (data?.length > 0) console.log(`🗑 ${data.length} commande(s) annulée(s) supprimée(s) automatiquement`);
+}
+// Lancer au démarrage puis toutes les 24h
+nettoyerCommandesAnnulees();
+setInterval(nettoyerCommandesAnnulees, 24 * 60 * 60 * 1000);
+
 app.listen(PORT, async () => {
   console.log(`\n🚀 X3COM Backend — http://localhost:${PORT}`);
   console.log(`   Stripe   : ${process.env.STRIPE_SECRET_KEY?.startsWith('sk_test') ? '✓ TEST' : process.env.STRIPE_SECRET_KEY ? '✓ LIVE' : '⚠ MANQUANT'}`);

@@ -235,3 +235,43 @@
   font-size: 13px; color: var(--mu); cursor: pointer;
 }
 .toggle-label input { width: auto; accent-color: var(--em); }
+
+/* ── Couleurs police en mode édition ── */
+.modal input,
+.modal select,
+.modal textarea {
+  color: #1A202C;
+  background: #fff;
+  border: 1px solid rgba(0,180,216,0.4);
+}
+.modal input:focus,
+.modal select:focus,
+.modal textarea:focus {
+  border-color: #00D4AA;
+  color: #0077B6;
+  background: rgba(0,212,170,0.03);
+  box-shadow: 0 0 0 3px rgba(0,212,170,0.12);
+  outline: none;
+}
+.modal label {
+  color: #4A6275;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  display: block;
+  margin-bottom: 5px;
+}
+.modal .tag {
+  color: #0077B6;
+  background: rgba(0,180,216,0.1);
+  border: 1px solid rgba(0,180,216,0.25);
+}
+.statut-btn {
+  color: #4A6275;
+}
+.statut-btn.active {
+  color: #fff;
+}
+
+/* ── Couleurs police compte client (édition profil) ── */
