@@ -55,7 +55,7 @@
       <div class="modal-overlay" (click)="fermerEditUser()">
         <div class="modal" (click)="$event.stopPropagation()">
           <div class="modal-head">
-            <h3>Modifier l'utilisateur</h3>
+            <h3 class="commande-title">Modifier l'utilisateur</h3>
             <button class="modal-close" (click)="fermerEditUser()">✕</button>
           </div>
           <div class="fg2d">
@@ -124,7 +124,7 @@
       <div class="modal-overlay" (click)="fermerEditCommande()">
         <div class="modal" (click)="$event.stopPropagation()">
           <div class="modal-head">
-            <h3>Changer le statut — Commande #{{ editCommande.id }}</h3>
+            <h3 class="commande-title"> Changer le statut — Commande #{{ editCommande.id }}</h3>
             <button class="modal-close" (click)="fermerEditCommande()">✕</button>
           </div>
           <p style="color:var(--mu);font-size:13px;margin-bottom:16px">
@@ -189,7 +189,7 @@
       <div class="modal-overlay" (click)="fermerEditOffre()">
         <div class="modal modal-large" (click)="$event.stopPropagation()">
           <div class="modal-head">
-            <h3>{{ modeOffre === 'creation' ? 'Nouvelle offre' : 'Modifier l\'offre' }}</h3>
+            <h3 class="commande-title">{{ modeOffre === 'creation' ? 'Nouvelle offre' : 'Modifier l\'offre' }}</h3>
             <button class="modal-close" (click)="fermerEditOffre()">✕</button>
           </div>
 

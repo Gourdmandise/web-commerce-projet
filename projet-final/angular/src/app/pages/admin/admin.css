@@ -36,7 +36,7 @@
 .astat-l {
   display: block;
   font-size: 11px;
-  color: var(--mu);
+  color: var(--wh, #ffffff);
   text-transform: uppercase;
   letter-spacing: .08em;
   margin-top: 4px;
@@ -160,6 +160,9 @@
   font-family: 'Barlow Condensed', sans-serif;
   font-size: 20px; font-weight: 800;
   color: var(--wh); text-transform: uppercase; letter-spacing: .04em;
+}
+.modal-head .commande-title {
+  color: #ffffff;
 }
 .modal-close {
   background: none; border: none; color: var(--mu); font-size: 18px;
