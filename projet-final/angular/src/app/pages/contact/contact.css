@@ -11,6 +11,16 @@
 .fg2 textarea { resize:vertical; min-height:100px; }
 .fg2d { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
 
+/* Petit tag "(optionnel)" à côté du label */
+.label-opt {
+  font-size:9px;
+  font-weight:400;
+  color:#94a3b8;
+  letter-spacing:.04em;
+  text-transform:none;
+  margin-left:4px;
+}
+
 .rl { display:flex; gap:16px; }
 .rli { display:flex; align-items:center; gap:6px; font-size:13px; color:#4A6275; cursor:pointer; text-transform:none; letter-spacing:0; font-weight:400; }
 .rli input { width:auto; accent-color:#00D4AA; }
@@ -19,6 +29,116 @@
 .cbli { display:flex; align-items:flex-start; gap:8px; font-size:12px; color:#4A6275; cursor:pointer; text-transform:none; letter-spacing:0; font-weight:400; line-height:1.5; }
 .cbli input { width:auto; margin-top:2px; flex-shrink:0; accent-color:#00D4AA; }
 
+/* ── Zone de dépôt de fichier ───────────────────────────── */
+.upload-zone {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+  width:100%;
+  min-height:72px;
+  border:2px dashed #d0e4f0;
+  border-radius:10px;
+  background:#F7FAFC;
+  cursor:pointer;
+  transition:all .2s;
+  padding:14px 16px;
+  box-sizing:border-box;
+  /* reset label default styles */
+  font-size:inherit;
+  font-weight:400;
+  color:inherit;
+  letter-spacing:0;
+  text-transform:none;
+  margin-bottom:0;
+}
+.upload-zone:hover {
+  border-color:#00D4AA;
+  background:rgba(0,212,170,.04);
+}
+.upload-zone.has-file {
+  border-style:solid;
+  border-color:#00D4AA;
+  background:rgba(0,212,170,.05);
+  justify-content:space-between;
+}
+
+/* Input natif caché */
+.upload-input {
+  position:absolute;
+  inset:0;
+  opacity:0;
+  cursor:pointer;
+  width:100% !important;
+  height:100% !important;
+  border:none !important;
+  background:transparent !important;
+  padding:0 !important;
+}
+
+/* État vide */
+.upload-idle {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:4px;
+  pointer-events:none;
+}
+.upload-icon { font-size:22px; line-height:1; }
+.upload-text { font-size:12px; font-weight:600; color:#4A6275; }
+.upload-hint { font-size:10px; color:#94a3b8; }
+
+/* État fichier sélectionné */
+.upload-preview {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  pointer-events:none;
+  flex:1;
+  min-width:0;
+}
+.upload-preview .upload-icon { font-size:20px; flex-shrink:0; }
+.upload-filename {
+  font-size:12px;
+  font-weight:600;
+  color:#1A202C;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  flex:1;
+  min-width:0;
+}
+.upload-size {
+  font-size:11px;
+  color:#94a3b8;
+  flex-shrink:0;
+  white-space:nowrap;
+}
+
+/* Bouton supprimer (×) */
+.upload-remove {
+  position:relative;
+  z-index:2;
+  flex-shrink:0;
+  width:24px;
+  height:24px;
+  border-radius:50%;
+  border:none;
+  background:rgba(239,68,68,.12);
+  color:#ef4444;
+  font-size:12px;
+  font-weight:700;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  line-height:1;
+  transition:background .15s;
+  padding:0;
+}
+.upload-remove:hover { background:rgba(239,68,68,.22); }
+
+/* ── Infos de contact ────────────────────────────────────── */
 .iw h3 { font-family:'Barlow Condensed',sans-serif; font-size:20px; font-weight:800; color:#00B4D8; margin-bottom:20px; text-transform:uppercase; letter-spacing:.04em; }
 .ii2 { border-radius:12px; padding:16px; margin-bottom:14px; display:flex; gap:14px; align-items:flex-start; background:rgba(0,212,170,0.05); border:1px solid rgba(0,212,170,0.2); }
 .ii2:nth-child(2) { background:rgba(0,180,216,0.05); border-color:rgba(0,180,216,0.2); }

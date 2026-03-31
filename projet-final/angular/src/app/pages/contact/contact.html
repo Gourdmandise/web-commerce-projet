@@ -78,9 +78,32 @@
           <textarea [(ngModel)]="form.message" name="message" rows="4" placeholder="Décrivez votre besoin en détail..."></textarea>
         </div>
 
+        <!-- PIÈCE JOINTE -->
+        <div class="fg2">
+          <label>Pièce jointe <span class="label-opt">(optionnel — 8 Mo max)</span></label>
+          <label class="upload-zone" [class.has-file]="fichierSelectionne">
+            <input type="file" class="upload-input" (change)="onFichierChange($event)"
+                   accept=".jpg,.jpeg,.png,.gif,.webp,.pdf,.doc,.docx,.xls,.xlsx,.txt">
+            @if (!fichierSelectionne) {
+              <span class="upload-idle">
+                <span class="upload-icon">📎</span>
+                <span class="upload-text">Cliquez ou déposez un fichier</span>
+                <span class="upload-hint">JPG, PNG, PDF, Word, Excel — 8 Mo max</span>
+              </span>
+            } @else {
+              <span class="upload-preview">
+                <span class="upload-icon">{{ getFileIcon(fichierSelectionne.name) }}</span>
+                <span class="upload-filename">{{ fichierSelectionne.name }}</span>
+                <span class="upload-size">{{ (fichierSelectionne.size / 1024).toFixed(0) }} Ko</span>
+              </span>
+              <button type="button" class="upload-remove" (click)="supprimerFichier($event)">✕</button>
+            }
+          </label>
+        </div>
+
         <button type="submit" class="btn-x1" style="width:100%;justify-content:center"
-                [disabled]="leFormulaire.invalid">
-          Envoyer le message
+                [disabled]="leFormulaire.invalid || envoi">
+          {{ envoi ? 'Envoi en cours…' : 'Envoyer le message' }}
         </button>
       </form>
     </div>
