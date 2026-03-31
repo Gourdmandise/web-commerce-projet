@@ -254,7 +254,7 @@ export class Admin implements OnInit {
     const ordre = list.map((o, i) => ({ id: o.id!, ordre: i }));
     this.offreService.reordonner(ordre).subscribe({
       next: () => this.panier.notify('✓', 'Ordre sauvegardé', ''),
-      error: () => this.panier.notify('⚠', 'Erreur', 'Impossible de sauvegarder l'ordre')
+      error: () => this.panier.notify('⚠', 'Erreur', 'Impossible de sauvegarder l\'ordre')
     });
   }
 
