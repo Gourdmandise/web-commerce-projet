@@ -15,6 +15,7 @@ interface ContactForm {
   besoins:   string[];
   operateur: string;
   message:   string;
+  fichier?:  File | null;
 }
 
 @Component({
@@ -33,16 +34,24 @@ export class Contact {
   envoi = false;
 
   besoinsDisponibles = [
-    'Détection tout réseaux et/ou géoréférencement',
-    'Recherche et détection d\'un point de blocage dans une gaine',
-    'Détecter un regard télécom caché ou enterré en domaine privatif',
-    'Effectuer une tranchée avec ou sans pose de fourreau',
-    'Réparation d\'un câble adsl, réseaux ou fibre optique',
-    'Création d\'une adduction au domaine public',
+    'Electricité (domestique)',
+    'Fourreau bouché',
+    'Regard enterré',
+    'Préfibrage',
+    'Passage dans les combles / vide sanitaire',
+    'Tranchée (Préciser le type de sol)',
+    'Electricité (Détails dans Message)',
+    'Dépannage (Réparation installation ADSL/FIBRE)',
+    'Création Réseau RJ45',
+    'Déplacement de prise optique',
+    'Expertise Installation',
+    'Elagage / Etêtage',
   ];
+  fichierSelectionne: File | null = null;
 
   private vide(): ContactForm {
-    return { type: 'Professionnel', nom: '', email: '', tel: '', ville: '', adresse: '', besoins: [], operateur: '', message: '' };
+    this.fichierSelectionne = null;
+    return { type: 'Professionnel', nom: '', email: '', tel: '', ville: '', adresse: '', besoins: [], operateur: '', message: '', fichier: null };
   }
 
   toggleBesoin(b: string): void {
@@ -55,11 +64,23 @@ export class Contact {
     return this.form.besoins.includes(b);
   }
 
+  onFichierChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.fichierSelectionne = input.files?.[0] ?? null;
+  }
+
   onSubmit(f: NgForm): void {
     if (!f.valid || this.envoi) return;
     this.envoi = true;
 
-    this.http.post(`${this.backend}/contact`, this.form).subscribe({
+    const formData = new FormData();
+    Object.entries(this.form).forEach(([k, v]) => {
+      if (k === 'fichier') return;
+      formData.append(k, Array.isArray(v) ? JSON.stringify(v) : String(v ?? ''));
+    });
+    if (this.fichierSelectionne) formData.append('fichier', this.fichierSelectionne);
+
+    this.http.post(`${this.backend}/contact`, formData).subscribe({
       next: () => {
         this.panier.notify('✓', 'Message envoyé !', 'Nous vous répondrons sous 24h');
         this.form = this.vide();
