@@ -232,6 +232,32 @@ export class Admin implements OnInit {
     }
   }
 
+  monterOffre(o: Offre): void {
+    const list = [...this.offres()];
+    const idx = list.findIndex(x => x.id === o.id);
+    if (idx <= 0) return;
+    [list[idx - 1], list[idx]] = [list[idx], list[idx - 1]];
+    this.offres.set(list);
+    this.sauvegarderOrdre(list);
+  }
+
+  descendreOffre(o: Offre): void {
+    const list = [...this.offres()];
+    const idx = list.findIndex(x => x.id === o.id);
+    if (idx < 0 || idx >= list.length - 1) return;
+    [list[idx], list[idx + 1]] = [list[idx + 1], list[idx]];
+    this.offres.set(list);
+    this.sauvegarderOrdre(list);
+  }
+
+  private sauvegarderOrdre(list: Offre[]): void {
+    const ordre = list.map((o, i) => ({ id: o.id!, ordre: i }));
+    this.offreService.reordonner(ordre).subscribe({
+      next: () => this.panier.notify('✓', 'Ordre sauvegardé', ''),
+      error: () => this.panier.notify('⚠', 'Erreur', 'Impossible de sauvegarder l'ordre')
+    });
+  }
+
   supprimerOffre(o: Offre): void {
     if (!confirm(`Supprimer l'offre "${o.nom}" ?`)) return;
     this.offreService.supprimer(o.id!).subscribe({

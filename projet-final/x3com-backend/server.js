@@ -371,7 +371,7 @@ app.delete('/utilisateurs/:id', async (req, res) => {
 // ══════════════════════════════════════════════════════════
 app.get('/offres', async (req, res) => {
   try {
-    const { data, error } = await supabase.from('offres').select('*');
+    const { data, error } = await supabase.from('offres').select('*').order('ordre', { ascending: true, nullsFirst: false });
     if (error) {
       console.error('[offres] GET error:', error.message, '| code:', error.code, '| hint:', error.hint);
       return res.status(500).json({ error: error.message });
@@ -402,6 +402,19 @@ app.patch('/offres/:id', async (req, res) => {
     const { data, error } = await supabase.from('offres').update(champs).eq('id', req.params.id).select().single();
     if (error) throw new Error(error.message);
     res.json(data);
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// POST /offres/reordonner — met à jour l'ordre de toutes les offres
+app.post('/offres/reordonner', async (req, res) => {
+  try {
+    const { ordre } = req.body; // [{ id: 1, ordre: 0 }, { id: 2, ordre: 1 }, ...]
+    if (!Array.isArray(ordre)) return res.status(400).json({ error: 'ordre doit être un tableau' });
+    const updates = ordre.map(({ id, ordre: o }) =>
+      supabase.from('offres').update({ ordre: o }).eq('id', id)
+    );
+    await Promise.all(updates);
+    res.json({ ok: true });
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 

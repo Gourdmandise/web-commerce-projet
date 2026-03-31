@@ -158,13 +158,18 @@
       <table class="admin-table">
         <thead>
           <tr>
-            <th>#</th><th>Nom</th><th>Prix</th><th>Surface</th><th>Populaire</th><th>Actions</th>
+            <th>Ordre</th><th>Nom</th><th>Prix</th><th>Surface</th><th>Populaire</th><th>Actions</th>
           </tr>
         </thead>
         <tbody>
           @for (o of offres(); track o.id) {
             <tr>
-              <td>{{ o.id }}</td>
+              <td>
+                <div class="ordre-btns">
+                  <button class="btn-ordre" (click)="monterOffre(o)" title="Monter">▲</button>
+                  <button class="btn-ordre" (click)="descendreOffre(o)" title="Descendre">▼</button>
+                </div>
+              </td>
               <td><strong>{{ o.nom }}</strong></td>
               <td>{{ o.prix }} €</td>
               <td style="font-size:12px;color:var(--mu)">{{ o.surface }}</td>

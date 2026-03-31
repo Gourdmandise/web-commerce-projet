@@ -236,25 +236,9 @@
 }
 .toggle-label input { width: auto; accent-color: var(--em); }
 
-/* ── Couleurs police en mode édition ── */
-.modal input,
-.modal select,
-.modal textarea {
-  color: #1A202C;
-  background: #fff;
-  border: 1px solid rgba(0,180,216,0.4);
-}
-.modal input:focus,
-.modal select:focus,
-.modal textarea:focus {
-  border-color: #00D4AA;
-  color: #0077B6;
-  background: rgba(0,212,170,0.03);
-  box-shadow: 0 0 0 3px rgba(0,212,170,0.12);
-  outline: none;
-}
+/* ── Couleurs police en mode édition — Vert émeraude ── */
 .modal label {
-  color: #4A6275;
+  color: #00D4AA !important;
   font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
@@ -262,16 +246,74 @@
   display: block;
   margin-bottom: 5px;
 }
-.modal .tag {
-  color: #0077B6;
-  background: rgba(0,180,216,0.1);
-  border: 1px solid rgba(0,180,216,0.25);
+.modal input,
+.modal select,
+.modal textarea {
+  color: #00D4AA !important;
+  background: rgba(0,212,170,0.06) !important;
+  border: 1px solid rgba(0,212,170,0.35) !important;
+  border-radius: 8px;
+  padding: 10px 14px;
+  width: 100%;
+  font-size: 13px;
+  font-family: 'Barlow', sans-serif;
+  outline: none;
+  transition: all .2s;
 }
+.modal input::placeholder,
+.modal textarea::placeholder {
+  color: rgba(0,212,170,0.4) !important;
+}
+.modal input:focus,
+.modal select:focus,
+.modal textarea:focus {
+  border-color: #00D4AA !important;
+  color: #00ffd0 !important;
+  background: rgba(0,212,170,0.1) !important;
+  box-shadow: 0 0 0 3px rgba(0,212,170,0.15);
+}
+.modal select option {
+  background: #0d1e30;
+  color: #00D4AA;
+}
+.modal .fg2 { margin-bottom: 15px; }
+.modal .fg2d { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.modal p { color: #00D4AA; }
+
+/* Statut picker */
 .statut-btn {
-  color: #4A6275;
+  color: rgba(0,212,170,0.6);
+  border-color: rgba(0,212,170,0.2);
 }
 .statut-btn.active {
-  color: #fff;
+  background: rgba(0,212,170,0.2) !important;
+  color: #00D4AA !important;
+  border-color: #00D4AA !important;
 }
+.statut-btn:hover { color: #00D4AA !important; }
+
+/* Tags */
+.modal .tag { color: #00D4AA !important; }
+.tag-input input { color: #00D4AA !important; background: rgba(0,212,170,0.06) !important; }
+
+/* Toggle */
+.toggle-label { color: #00D4AA !important; }
+
+/* ── Boutons ordre offres ── */
+.btn-ordre {
+  display: block;
+  background: rgba(0,212,170,0.08);
+  border: 1px solid rgba(0,212,170,0.2);
+  color: #00D4AA;
+  border-radius: 5px;
+  padding: 2px 7px;
+  font-size: 10px;
+  cursor: pointer;
+  font-family: 'Barlow', sans-serif;
+  transition: all .15s;
+  line-height: 1.4;
+}
+.btn-ordre:hover { background: rgba(0,212,170,0.2); }
+.ordre-btns { display: flex; flex-direction: column; gap: 3px; align-items: center; }
 
 /* ── Couleurs police compte client (édition profil) ── */

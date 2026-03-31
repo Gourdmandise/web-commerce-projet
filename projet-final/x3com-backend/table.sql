@@ -34,6 +34,8 @@ CREATE TABLE public.utilisateurs (
   CONSTRAINT utilisateurs_pkey PRIMARY KEY (id)
 );
 
+ALTER TABLE offres ADD COLUMN IF NOT EXISTS ordre integer DEFAULT 0;
+
 -- ============================================================
 -- MIGRATION — Ajouter les colonnes de profil utilisateur
 -- À exécuter dans : Supabase → SQL Editor → New query → Run

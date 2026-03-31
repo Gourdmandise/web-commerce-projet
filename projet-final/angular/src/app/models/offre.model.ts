@@ -7,4 +7,5 @@ export interface Offre {
   populaire: boolean;
   features: string[];
   options: string[];
+  ordre?: number;
 }

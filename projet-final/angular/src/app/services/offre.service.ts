@@ -28,4 +28,8 @@ export class OffreService {
   supprimer(id: number): Observable<void> {
     return this.http.delete<void>(`${this.url}/${id}`);
   }
+
+  reordonner(ordre: { id: number; ordre: number }[]): Observable<{ ok: boolean }> {
+    return this.http.post<{ ok: boolean }>(`${this.url}/reordonner`, { ordre });
+  }
 }
