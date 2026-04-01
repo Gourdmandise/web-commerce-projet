@@ -1,14 +1,22 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-terrassement',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, CommonModule],
   templateUrl: './terrassement.html',
   styleUrls: ['./terrassement.css'],
 })
-export class Terrassement {
+export class Terrassement implements OnInit {
+  http = inject(HttpClient);
+  private backend = environment.backendUrl;
+
+  offres: any[] = [];
+
   methodes = [
     { img: 'Generateur-de-frequences.png', titre: 'Générateur de fréquences',  desc: 'Induction électromagnétique haute puissance pour cartographier le tracé exact de votre réseau et en mesurer la profondeur.', tag: 'Méthode 1' },
     { img: 'fibre-optique.png',       titre: 'Aiguille traçable & sonde',  desc: 'Sonde émettrice introduite dans la gaine TPC pour identifier précisément chaque point de blocage avec marquage au sol.', tag: 'Méthode 2' },
@@ -30,4 +38,11 @@ export class Terrassement {
     { titre: 'Pré-câblage fibre optique', couleur: 'te', img: '...',
       texte: 'Lorsque le réseau existant n\'est pas réparable mais permet le passage d\'un câble, nous assurons le pré-câblage de la fibre optique jusqu\'aux points de terminaison optique. Le pré-câblage fibre optique constitue une étape essentielle dans tout projet de construction ou de rénovation nécessitant une infrastructure télécom moderne.' },
   ];
+
+  ngOnInit(): void {
+    this.http.get<any[]>(`${this.backend}/offres`).subscribe({
+      next: (data) => this.offres = data.slice(0, 3),
+      error: (err)  => console.error('Erreur chargement offres :', err),
+    });
+  }
 }
