@@ -97,12 +97,12 @@ function escHtml(str) {
   );
 }
 
-async function sendMail({ to, subject, html }) {
+async function sendMail({ to, subject, html, attachments = [] }) {
   if (!process.env.RESEND_API_KEY) { console.warn('⚠  sendMail : RESEND_API_KEY manquant'); return; }
   try {
     const from = process.env.RESEND_FROM || 'X3COM <onboarding@resend.dev>';
     const dest = to || process.env.MAIL_DESTINATAIRE;
-    const { data, error } = await resend.emails.send({ from, to: Array.isArray(dest) ? dest : [dest], subject, html });
+    const { data, error } = await resend.emails.send({ from, to: Array.isArray(dest) ? dest : [dest], subject, html, attachments });
     if (error) console.error('✗ Resend:', JSON.stringify(error));
     else       console.log(`✉  Mail → ${dest} (${data.id})`);
   } catch (err) { console.error('✗ sendMail:', err.message); }
@@ -211,6 +211,10 @@ app.post('/contact', limiterContact, upload.single('fichier'), async (req, res) 
           <p style="margin-top:24px;font-size:12px;color:#94a3b8;text-align:center">Reçu le ${new Date().toLocaleString('fr-FR')}</p>
         </div>
       </div>`,
+    attachments: req.file ? [{
+      filename: req.file.originalname,
+      content:  req.file.buffer,
+    }] : [],
   });
   res.json({ ok: true });
 });
