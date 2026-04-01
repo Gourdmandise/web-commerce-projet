@@ -6,6 +6,8 @@ const rateLimit  = require('express-rate-limit');
 const { Resend } = require('resend');
 const stripe     = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const { createClient } = require('@supabase/supabase-js');
+const multer     = require('multer');
+const upload     = multer({ storage: multer.memoryStorage(), limits: { fileSize: 8 * 1024 * 1024 } });
 
 const app   = express();
 const PORT  = process.env.PORT || 3001;
@@ -166,9 +168,13 @@ app.get('/diagnostic', async (req, res) => {
 // ══════════════════════════════════════════════════════════
 // POST /contact
 // ══════════════════════════════════════════════════════════
-app.post('/contact', limiterContact, async (req, res) => {
-  const { type, nom, email, tel, ville, adresse, besoins, operateur, message } = req.body;
+app.post('/contact', limiterContact, upload.single('fichier'), async (req, res) => {
+  const { type, nom, email, tel, ville, adresse, besoins: besoinsRaw, operateur, message } = req.body;
   if (!nom || !email) return res.status(400).json({ error: 'Nom et e-mail sont requis' });
+
+  const besoins = typeof besoinsRaw === 'string'
+    ? (() => { try { return JSON.parse(besoinsRaw); } catch { return []; } })()
+    : (besoinsRaw || []);
 
   const s = {
     type: escHtml(type), nom: escHtml(nom), email: escHtml(email),
