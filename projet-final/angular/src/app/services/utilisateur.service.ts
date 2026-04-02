@@ -4,23 +4,18 @@ import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { Utilisateur } from '../models/utilisateur.model';
 
-export interface AuthResponse {
-  utilisateur: Utilisateur;
-  token: string;
-}
-
 @Injectable({ providedIn: 'root' })
 export class UtilisateurService {
   private http    = inject(HttpClient);
   private backend = environment.backendUrl;
   private url     = `${environment.backendUrl}/utilisateurs`;
 
-  connecter(email: string, motDePasse: string): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.backend}/login`, { email, motDePasse });
+  connecter(email: string, motDePasse: string): Observable<{ utilisateur: Utilisateur }> {
+    return this.http.post<{ utilisateur: Utilisateur }>(`${this.backend}/login`, { email, motDePasse });
   }
 
-  inscrire(email: string, motDePasse: string, prenom: string, nom: string): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.backend}/register`, { email, motDePasse, prenom, nom });
+  inscrire(email: string, motDePasse: string, prenom: string, nom: string): Observable<{ utilisateur: Utilisateur }> {
+    return this.http.post<{ utilisateur: Utilisateur }>(`${this.backend}/register`, { email, motDePasse, prenom, nom });
   }
 
   mettreAJour(id: number, data: Partial<Utilisateur>): Observable<Utilisateur> {

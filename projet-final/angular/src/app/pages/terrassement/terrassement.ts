@@ -38,7 +38,7 @@ export class Terrassement implements OnInit {
     { titre: 'Pré-câblage fibre optique', couleur: 'te', img: '...',
       texte: 'Lorsque le réseau existant n\'est pas réparable mais permet le passage d\'un câble, nous assurons le pré-câblage de la fibre optique jusqu\'aux points de terminaison optique. Le pré-câblage fibre optique constitue une étape essentielle dans tout projet de construction ou de rénovation nécessitant une infrastructure télécom moderne.' },
   ];
-  
+
   ngOnInit(): void {
     this.http.get<any[]>(`${this.backend}/offres`).subscribe({
       next: (data) => this.offres = data.slice(0, 3),

@@ -2,24 +2,12 @@ require('dotenv').config();
 const express    = require('express');
 const cors       = require('cors');
 const bcrypt     = require('bcryptjs');
-const jwt        = require('jsonwebtoken');
-
-const JWT_SECRET  = process.env.JWT_SECRET || 'change_this_secret_in_production';
-const JWT_EXPIRES = '7d';
 const rateLimit  = require('express-rate-limit');
 const { Resend } = require('resend');
 const stripe     = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const { createClient } = require('@supabase/supabase-js');
 const multer     = require('multer');
-const upload     = multer({
-  storage: multer.memoryStorage(),
-  limits: { fileSize: 8 * 1024 * 1024 },
-  fileFilter: (_req, file, cb) => {
-    const TYPES_AUTORISES = ['image/jpeg', 'image/png', 'image/gif', 'application/pdf'];
-    if (TYPES_AUTORISES.includes(file.mimetype)) cb(null, true);
-    else cb(new Error('Type de fichier non autorisé (jpeg, png, gif, pdf uniquement)'), false);
-  },
-});
+const upload     = multer({ storage: multer.memoryStorage(), limits: { fileSize: 8 * 1024 * 1024 } });
 
 const app   = express();
 const PORT  = process.env.PORT || 3001;
@@ -130,9 +118,6 @@ async function sendMail({ to, subject, html, attachments = [] }) {
 // Ouvrez http://localhost:3001/diagnostic dans votre navigateur
 // ══════════════════════════════════════════════════════════
 app.get('/diagnostic', async (req, res) => {
-  if (process.env.NODE_ENV === 'production') {
-    return res.status(403).json({ error: 'Route désactivée en production.' });
-  }
   const rapport = { timestamp: new Date().toISOString(), checks: {} };
 
   // 1. Variables d'environnement
@@ -183,41 +168,6 @@ app.get('/diagnostic', async (req, res) => {
   res.json(rapport);
 });
 
-
-
-// ══════════════════════════════════════════════════════════
-// MIDDLEWARES D'AUTHENTIFICATION JWT
-// ══════════════════════════════════════════════════════════
-
-/** Vérifie le Bearer token — attache req.user = { id, role } */
-function requireAuth(req, res, next) {
-  const header = req.headers['authorization'] || '';
-  const token  = header.startsWith('Bearer ') ? header.slice(7) : null;
-  if (!token) return res.status(401).json({ error: 'Token manquant.' });
-  try {
-    req.user = jwt.verify(token, JWT_SECRET);
-    next();
-  } catch {
-    return res.status(401).json({ error: 'Token invalide ou expiré.' });
-  }
-}
-
-/** Nécessite un token valide ET role === 'admin' */
-function requireAdmin(req, res, next) {
-  requireAuth(req, res, () => {
-    if (req.user.role !== 'admin')
-      return res.status(403).json({ error: 'Accès réservé aux administrateurs.' });
-    next();
-  });
-}
-
-/** requireAuth + l'utilisateur ne peut agir que sur son propre compte (sauf admin) */
-function requireSelfOrAdmin(req, res, next) {
-  requireAuth(req, res, () => {
-    if (req.user.role === 'admin' || req.user.id === parseInt(req.params.id, 10)) return next();
-    return res.status(403).json({ error: 'Action non autorisée.' });
-  });
-}
 
 // ══════════════════════════════════════════════════════════
 // POST /contact
@@ -309,8 +259,7 @@ app.post('/login', limiterAuth, async (req, res) => {
       await supabase.from('utilisateurs').update({ motdepasse: h2 }).eq('id', row.id);
     }
 
-    const token = jwt.sign({ id: row.id, role: row.role || 'client' }, JWT_SECRET, { expiresIn: JWT_EXPIRES });
-    return res.json({ utilisateur: utilisateurToAngular(row), token });
+    return res.json({ utilisateur: utilisateurToAngular(row) });
   } catch (err) {
     console.error('[login] Exception:', err.message);
     res.status(500).json({ error: `Erreur serveur : ${err.message}` });
@@ -325,8 +274,6 @@ app.post('/register', limiterAuth, async (req, res) => {
   const { email, motDePasse, prenom, nom } = req.body;
   if (!email || !motDePasse || !prenom)
     return res.status(400).json({ error: 'Email, mot de passe et prénom requis' });
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
-    return res.status(400).json({ error: 'Format d\'email invalide' });
 
   try {
     // Doublon email
@@ -360,8 +307,7 @@ app.post('/register', limiterAuth, async (req, res) => {
     }
 
     console.log(`✓ Nouveau compte créé : ${email}`);
-    const token = jwt.sign({ id: created.id, role: created.role || 'client' }, JWT_SECRET, { expiresIn: JWT_EXPIRES });
-    return res.status(201).json({ utilisateur: utilisateurToAngular(created), token });
+    return res.status(201).json({ utilisateur: utilisateurToAngular(created) });
   } catch (err) {
     console.error('[register] Exception:', err.message);
     res.status(500).json({ error: `Erreur serveur : ${err.message}` });
@@ -372,10 +318,12 @@ app.post('/register', limiterAuth, async (req, res) => {
 // ══════════════════════════════════════════════════════════
 // GET /verify-admin/:id
 // ══════════════════════════════════════════════════════════
-app.get('/verify-admin/:id', requireAuth, async (req, res) => {
-  // Seul l'utilisateur connecté peut vérifier son propre rôle
-  if (req.user.id !== parseInt(req.params.id, 10))
-    return res.status(403).json({ error: 'Non autorisé' });
+app.get('/verify-admin/:id', async (req, res) => {
+  // Anti-énumération : l'appelant ne peut vérifier que son propre ID
+  const requesterId = req.headers['x-requester-id'];
+  if (!requesterId || requesterId !== req.params.id) {
+    return res.status(401).json({ error: 'Non autorisé' });
+  }
   try {
     const { data: user, error } = await supabase
       .from('utilisateurs').select('role').eq('id', req.params.id).single();
@@ -388,7 +336,7 @@ app.get('/verify-admin/:id', requireAuth, async (req, res) => {
 // ══════════════════════════════════════════════════════════
 // PATCH /utilisateurs/:id/password
 // ══════════════════════════════════════════════════════════
-app.patch('/utilisateurs/:id/password', requireSelfOrAdmin, async (req, res) => {
+app.patch('/utilisateurs/:id/password', async (req, res) => {
   const { motDePasse } = req.body;
   if (!motDePasse) return res.status(400).json({ error: 'Mot de passe requis' });
   try {
@@ -403,7 +351,7 @@ app.patch('/utilisateurs/:id/password', requireSelfOrAdmin, async (req, res) => 
 // ══════════════════════════════════════════════════════════
 // GET /utilisateurs  (admin — jamais motdepasse)
 // ══════════════════════════════════════════════════════════
-app.get('/utilisateurs', requireAdmin, async (req, res) => {
+app.get('/utilisateurs', async (req, res) => {
   try {
     const { data, error } = await supabase
       .from('utilisateurs').select('id, email, prenom, nom, role, datecreation, telephone, adresse, ville, codepostal');
@@ -412,7 +360,7 @@ app.get('/utilisateurs', requireAdmin, async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-app.patch('/utilisateurs/:id', requireSelfOrAdmin, async (req, res) => {
+app.patch('/utilisateurs/:id', async (req, res) => {
   const { motDePasse, motdepasse, dateCreation, datecreation, role, id, ...raw } = req.body;
   // Colonnes connues dans la table utilisateurs
   const COLONNES_AUTORISEES = ['email','prenom','nom','telephone','adresse','ville','codepostal'];
@@ -428,7 +376,7 @@ app.patch('/utilisateurs/:id', requireSelfOrAdmin, async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-app.delete('/utilisateurs/:id', requireAdmin, async (req, res) => {
+app.delete('/utilisateurs/:id', async (req, res) => {
   try {
     const { error } = await supabase.from('utilisateurs').delete().eq('id', req.params.id);
     if (error) throw new Error(error.message);
@@ -459,7 +407,7 @@ app.get('/offres/:id', async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-app.post('/offres', requireAdmin, async (req, res) => {
+app.post('/offres', async (req, res) => {
   try {
     const { data, error } = await supabase.from('offres').insert(req.body).select().single();
     if (error) throw new Error(error.message);
@@ -467,7 +415,7 @@ app.post('/offres', requireAdmin, async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-app.patch('/offres/:id', requireAdmin, async (req, res) => {
+app.patch('/offres/:id', async (req, res) => {
   try {
     const { id, ...champs } = req.body;
     const { data, error } = await supabase.from('offres').update(champs).eq('id', req.params.id).select().single();
@@ -477,7 +425,7 @@ app.patch('/offres/:id', requireAdmin, async (req, res) => {
 });
 
 // POST /offres/reordonner — met à jour l'ordre de toutes les offres
-app.post('/offres/reordonner', requireAdmin, async (req, res) => {
+app.post('/offres/reordonner', async (req, res) => {
   try {
     const { ordre } = req.body; // [{ id: 1, ordre: 0 }, { id: 2, ordre: 1 }, ...]
     if (!Array.isArray(ordre)) return res.status(400).json({ error: 'ordre doit être un tableau' });
@@ -489,7 +437,7 @@ app.post('/offres/reordonner', requireAdmin, async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-app.delete('/offres/:id', requireAdmin, async (req, res) => {
+app.delete('/offres/:id', async (req, res) => {
   try {
     const { error } = await supabase.from('offres').delete().eq('id', req.params.id);
     if (error) throw new Error(error.message);
@@ -501,7 +449,7 @@ app.delete('/offres/:id', requireAdmin, async (req, res) => {
 // ══════════════════════════════════════════════════════════
 // COMMANDES
 // ══════════════════════════════════════════════════════════
-app.get('/commandes', requireAuth, async (req, res) => {
+app.get('/commandes', async (req, res) => {
   try {
     let query = supabase.from('commandes').select('*');
     if (req.query.utilisateurId) {
@@ -513,7 +461,7 @@ app.get('/commandes', requireAuth, async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-app.get('/commandes/:id', requireAuth, async (req, res) => {
+app.get('/commandes/:id', async (req, res) => {
   try {
     const { data, error } = await supabase.from('commandes').select('*').eq('id', req.params.id).single();
     if (error || !data) return res.status(404).json({ error: 'Commande introuvable' });
@@ -521,7 +469,7 @@ app.get('/commandes/:id', requireAuth, async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-app.patch('/commandes/:id', requireAuth, async (req, res) => {
+app.patch('/commandes/:id', async (req, res) => {
   // Whitelist des seuls champs modifiables par un client
   // Prix, stripesessionid et statut sont exclus volontairement
   const CHAMPS_AUTORISES = ['adresselivraison', 'commentaire', 'dateprevue'];
@@ -538,7 +486,7 @@ app.patch('/commandes/:id', requireAuth, async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-app.delete('/commandes/:id', requireAdmin, async (req, res) => {
+app.delete('/commandes/:id', async (req, res) => {
   try {
     const { error } = await supabase.from('commandes').delete().eq('id', req.params.id);
     if (error) throw new Error(error.message);
@@ -549,7 +497,7 @@ app.delete('/commandes/:id', requireAdmin, async (req, res) => {
 // ══════════════════════════════════════════════════════════
 // POST /commandes/:id/annuler  — annulation + remboursement Stripe
 // ══════════════════════════════════════════════════════════
-app.post('/commandes/:id/annuler', requireAdmin, async (req, res) => {
+app.post('/commandes/:id/annuler', async (req, res) => {
   try {
     const { data: commande, error: fetchErr } = await supabase
       .from('commandes').select('*').eq('id', req.params.id).single();

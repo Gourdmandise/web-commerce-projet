@@ -9,6 +9,7 @@ export class AuthService {
   utilisateur = signal<Utilisateur | null>(this.chargerSession());
 
   constructor() {
+    // Synchronise automatiquement le signal avec localStorage
     effect(() => {
       const u = this.utilisateur();
       if (u) {
@@ -23,8 +24,7 @@ export class AuthService {
     return this.utilisateur() !== null;
   }
 
-  // token en paramètre optionnel pour compatibilité ascendante
-  connecter(user: Utilisateur, token?: string): void {
+  connecter(user: Utilisateur): void {
     this.utilisateur.set(user);
   }
 
