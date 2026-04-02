@@ -13,7 +13,5 @@ export interface Commande {
   statut: StatutCommande;
   dateCreation?: string;
   prix: number;
-  adresseIntervention?: string;
-  operateur?: string;
   notes?: string;
 }

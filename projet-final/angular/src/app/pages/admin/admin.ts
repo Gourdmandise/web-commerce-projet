@@ -1,5 +1,4 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { PanierService }      from '../../services/panier.service';
@@ -10,7 +9,6 @@ import { OffreService }       from '../../services/offre.service';
 import { Utilisateur }        from '../../models/utilisateur.model';
 import { Commande, StatutCommande } from '../../models/commande.model';
 import { Offre } from '../../models/offre.model';
-import { environment } from '../../../environments/environment';
 
 type OngletAdmin = 'utilisateurs' | 'commandes' | 'offres';
 
@@ -23,7 +21,6 @@ type OngletAdmin = 'utilisateurs' | 'commandes' | 'offres';
 })
 export class Admin implements OnInit {
   panier             = inject(PanierService);
-  http               = inject(HttpClient);
   utilisateurService = inject(UtilisateurService);
   commandeService    = inject(CommandeService);
   offreService       = inject(OffreService);
@@ -48,7 +45,7 @@ export class Admin implements OnInit {
   editOption   = '';
 
   readonly statuts: StatutCommande[] = [
-    'en_attente', 'paiement_confirme', 'planification', 'intervention', 'termine'
+    'en_attente', 'paiement_confirme', 'planification', 'intervention', 'termine', 'annulee'
   ];
 
   ngOnInit(): void {
@@ -82,7 +79,7 @@ export class Admin implements OnInit {
 
     // Si un nouveau mot de passe est saisi, on le change via le backend (bcrypt serveur)
     const changeMdp$ = this.nouveauMotDePasse.trim()
-      ? this.http.patch(`${environment.backendUrl}/utilisateurs/${id}/password`, { motDePasse: this.nouveauMotDePasse.trim() })
+      ? this.utilisateurService.changerMotDePasse(id, this.nouveauMotDePasse.trim())
       : null;
 
     const save = () => this.utilisateurService.mettreAJour(id, data).subscribe({

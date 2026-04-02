@@ -8,7 +8,7 @@ import { RouterLink } from '@angular/router';
   templateUrl: './home.html',
   styleUrls: ['./home.css'],
 })
-export class home {
+export class Home {
   services = [
     { img: 'fibre-optique.png',        titre: 'Fibre Optique',             desc: 'Déploiement réseaux FTTH/FTTO, raccordements, maintenance haute performance.' },
     { img: 'detection-securite.png',   titre: 'Détection & Sécurité',      desc: 'Vidéoprotection intelligente, alarmes intrusion, contrôle d\'accès et détection incendie.' },

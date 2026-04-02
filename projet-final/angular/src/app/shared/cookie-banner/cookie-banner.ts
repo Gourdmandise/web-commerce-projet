@@ -11,15 +11,15 @@ import { RouterLink } from '@angular/router';
 export class CookieBanner {
   // sessionStorage : réinitialisé à chaque fermeture du navigateur
   // (contrairement à localStorage qui persiste indéfiniment)
-  visible = signal(sessionStorage.getItem('x3com_cookies') === null);
+  visible = signal(localStorage.getItem('x3com_cookies') === null);
 
   accepter(): void {
-    sessionStorage.setItem('x3com_cookies', 'accepte');
+    localStorage.setItem('x3com_cookies', 'accepte');
     this.visible.set(false);
   }
 
   refuser(): void {
-    sessionStorage.setItem('x3com_cookies', 'refuse');
+    localStorage.setItem('x3com_cookies', 'refuse');
     this.visible.set(false);
   }
 }

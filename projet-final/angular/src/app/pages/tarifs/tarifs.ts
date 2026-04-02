@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { PanierService } from '../../services/panier.service';
 import { OffreService } from '../../services/offre.service';
@@ -11,7 +11,7 @@ import { Offre } from '../../models/offre.model';
   templateUrl: './tarifs.html',
   styleUrls: ['./tarifs.css'],
 })
-export class Tarifs {
+export class Tarifs implements OnInit {
   private router       = inject(Router);
   private offreService = inject(OffreService);
   panier               = inject(PanierService);

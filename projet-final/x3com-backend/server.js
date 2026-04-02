@@ -319,6 +319,11 @@ app.post('/register', limiterAuth, async (req, res) => {
 // GET /verify-admin/:id
 // ══════════════════════════════════════════════════════════
 app.get('/verify-admin/:id', async (req, res) => {
+  // Anti-énumération : l'appelant ne peut vérifier que son propre ID
+  const requesterId = req.headers['x-requester-id'];
+  if (!requesterId || requesterId !== req.params.id) {
+    return res.status(401).json({ error: 'Non autorisé' });
+  }
   try {
     const { data: user, error } = await supabase
       .from('utilisateurs').select('role').eq('id', req.params.id).single();
@@ -349,7 +354,7 @@ app.patch('/utilisateurs/:id/password', async (req, res) => {
 app.get('/utilisateurs', async (req, res) => {
   try {
     const { data, error } = await supabase
-      .from('utilisateurs').select('id, email, prenom, nom, role, datecreation');
+      .from('utilisateurs').select('id, email, prenom, nom, role, datecreation, telephone, adresse, ville, codepostal');
     if (error) throw new Error(error.message);
     res.json((data || []).map(utilisateurToAngular));
   } catch (err) { res.status(500).json({ error: err.message }); }
@@ -365,7 +370,7 @@ app.patch('/utilisateurs/:id', async (req, res) => {
   try {
     const { data, error } = await supabase
       .from('utilisateurs').update(champs).eq('id', req.params.id)
-      .select('id, email, prenom, nom, role, datecreation').single();
+      .select('id, email, prenom, nom, role, datecreation, telephone, adresse, ville, codepostal').single();
     if (error) throw new Error(error.message);
     res.json(utilisateurToAngular(data));
   } catch (err) { res.status(500).json({ error: err.message }); }
@@ -465,9 +470,17 @@ app.get('/commandes/:id', async (req, res) => {
 });
 
 app.patch('/commandes/:id', async (req, res) => {
+  // Whitelist des seuls champs modifiables par un client
+  // Prix, stripesessionid et statut sont exclus volontairement
+  const CHAMPS_AUTORISES = ['adresselivraison', 'commentaire', 'dateprevue'];
+  const champs = Object.fromEntries(
+    Object.entries(req.body).filter(([k]) => CHAMPS_AUTORISES.includes(k.toLowerCase()))
+  );
+  if (Object.keys(champs).length === 0)
+    return res.status(400).json({ error: 'Aucun champ modifiable fourni.' });
   try {
     const { data, error } = await supabase
-      .from('commandes').update(req.body).eq('id', req.params.id).select().single();
+      .from('commandes').update(champs).eq('id', req.params.id).select().single();
     if (error) throw new Error(error.message);
     res.json(commandeToAngular(data));
   } catch (err) { res.status(500).json({ error: err.message }); }

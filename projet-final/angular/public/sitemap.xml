@@ -21,7 +21,22 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.x3com.com/legal</loc>
+    <loc>https://www.x3com.com/mentions-legales</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://www.x3com.com/cgu</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://www.x3com.com/cgv</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://www.x3com.com/confidentialite</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>

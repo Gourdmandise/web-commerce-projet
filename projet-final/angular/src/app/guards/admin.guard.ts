@@ -1,6 +1,6 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from '../services/auth.service';
 import { environment } from '../../environments/environment';
 import { map, catchError } from 'rxjs/operators';
@@ -25,7 +25,8 @@ export const adminGuard: CanActivateFn = () => {
 
   // 2. Vérification CÔTÉ SERVEUR — le rôle est lu depuis la BDD, pas localStorage
   return http.get<{ role: string }>(
-    `${environment.backendUrl}/verify-admin/${userId}`
+    `${environment.backendUrl}/verify-admin/${userId}`,
+    { headers: new HttpHeaders({ 'X-Requester-Id': String(userId) }) }
   ).pipe(
     map(res => {
       if (res.role === 'admin') return true;
