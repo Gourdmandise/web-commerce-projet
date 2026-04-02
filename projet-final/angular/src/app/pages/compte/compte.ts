@@ -1,14 +1,14 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
-import { DatePipe } from '@angular/common';
-import { HttpErrorResponse }   from '@angular/common/http';
-import { PanierService }       from '../../services/panier.service';
-import { UtilisateurService }  from '../../services/utilisateur.service';
-import { CommandeService }     from '../../services/commande.service';
-import { AuthService }         from '../../services/auth.service';
-import { Utilisateur }         from '../../models/utilisateur.model';
-import { Commande }            from '../../models/commande.model';
+import { FormsModule }        from '@angular/forms';
+import { RouterLink }         from '@angular/router';
+import { DatePipe }           from '@angular/common';
+import { HttpErrorResponse }  from '@angular/common/http';
+import { PanierService }      from '../../services/panier.service';
+import { UtilisateurService } from '../../services/utilisateur.service';
+import { CommandeService }    from '../../services/commande.service';
+import { AuthService }        from '../../services/auth.service';
+import { Utilisateur }        from '../../models/utilisateur.model';
+import { Commande }           from '../../models/commande.model';
 
 type VueLogin = 'connexion' | 'inscription';
 
@@ -25,17 +25,13 @@ export class Compte implements OnInit {
   utilisateurService = inject(UtilisateurService);
   commandeService    = inject(CommandeService);
 
-  vueLogin      = signal<VueLogin>('connexion');
-  chargement    = signal(false);
-  commandes     = signal<Commande[]>([]);
-  vueMdp        = signal(false);
+  vueLogin   = signal<VueLogin>('connexion');
+  chargement = signal(false);
+  commandes  = signal<Commande[]>([]);
+  vueMdp     = signal(false);
 
   login       = { email: '', motDePasse: '' };
-  inscription = {
-    email: '', motDePasse: '', confirmMotDePasse: '',
-    prenom: '', nom: '',
-    accepteCgu: false
-  };
+  inscription = { email: '', motDePasse: '', confirmMotDePasse: '', prenom: '', nom: '', accepteCgu: false };
   profil: Partial<Utilisateur> = {};
   mdp = { actuel: '', nouveau: '', confirmer: '' };
 
@@ -53,9 +49,10 @@ export class Compte implements OnInit {
     }
     this.chargement.set(true);
     this.utilisateurService.connecter(this.login.email, this.login.motDePasse).subscribe({
-      next: ({ utilisateur }) => {
+      next: ({ utilisateur, token }) => {
         this.chargement.set(false);
-        this.auth.connecter(utilisateur);
+        // ✅ On passe le token — AuthService le stocke dans localStorage
+        this.auth.connecter(utilisateur, token);
         this.profil = { ...utilisateur };
         this.chargerCommandes();
         this.panier.notify('✓', `Bienvenue ${utilisateur.prenom} !`, 'Connexion réussie');
@@ -91,9 +88,10 @@ export class Compte implements OnInit {
       this.inscription.prenom,
       this.inscription.nom
     ).subscribe({
-      next: ({ utilisateur }) => {
+      next: ({ utilisateur, token }) => {
         this.chargement.set(false);
-        this.auth.connecter(utilisateur);
+        // ✅ Token stocké dès l'inscription
+        this.auth.connecter(utilisateur, token);
         this.profil = { ...utilisateur };
         this.commandes.set([]);
         this.panier.notify('✓', 'Compte créé !', `Bienvenue ${utilisateur.prenom}`);
@@ -116,7 +114,7 @@ export class Compte implements OnInit {
     const { motDePasse, dateCreation, ...profilSansMotDePasse } = this.profil as Utilisateur;
     this.utilisateurService.mettreAJour(user.id, profilSansMotDePasse).subscribe({
       next: (updated) => {
-        this.auth.connecter(updated);
+        this.auth.connecter(updated, this.auth.getToken()!);
         this.profil = { ...updated };
         this.panier.notify('✓', 'Profil mis à jour', 'Sauvegarde effectuée');
       },
@@ -140,7 +138,7 @@ export class Compte implements OnInit {
     const user = this.auth.utilisateur();
     if (!user?.id) return;
 
-    // Vérifier l'ancien mot de passe via login
+    // Vérifier l'ancien mot de passe via /login avant de changer
     this.utilisateurService.connecter(user.email, this.mdp.actuel).subscribe({
       next: () => {
         this.utilisateurService.changerMotDePasse(user.id!, this.mdp.nouveau).subscribe({
@@ -159,7 +157,7 @@ export class Compte implements OnInit {
   supprimerCompte(): void {
     const user = this.auth.utilisateur();
     if (!user?.id) return;
-    if (!confirm(`Supprimer définitivement votre compte ?\n\nCette action est irréversible. Toutes vos données seront effacées.`)) return;
+    if (!confirm(`Supprimer définitivement votre compte ?\n\nCette action est irréversible.`)) return;
     this.utilisateurService.supprimer(user.id).subscribe({
       next: () => {
         this.auth.deconnecter();
