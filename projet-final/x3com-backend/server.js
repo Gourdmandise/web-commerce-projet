@@ -43,6 +43,10 @@ function utilisateurToAngular(u) {
     prenom:       u.prenom,
     nom:          u.nom,
     role:         u.role,
+    telephone:    u.telephone    ?? '',
+    adresse:      u.adresse      ?? '',
+    ville:        u.ville        ?? '',
+    codePostal:   u.codepostal   ?? '',
     dateCreation: u.datecreation ?? null,
     // motdepasse n'est JAMAIS renvoyé
   };
@@ -506,7 +510,7 @@ app.post('/commandes/:id/annuler', async (req, res) => {
     }
 
     const { data: updated, error: updateErr } = await supabase
-      .from('commandes').update({ statut: 'annulee' }).eq('id', req.params.id).select().single();
+      .from('commandes').update({ statut: 'annulee', dateannulation: new Date().toISOString() }).eq('id', req.params.id).select().single();
     if (updateErr) throw new Error(updateErr.message);
 
     const emailClient = req.body.emailClient || null;
@@ -523,7 +527,7 @@ app.post('/commandes/:id/annuler', async (req, res) => {
               <tr><td style="padding:8px 0;color:#64748b;width:160px;font-weight:bold">Offre</td><td><strong>${escHtml(commande.notes || '')}</strong></td></tr>
               <tr style="background:#fff"><td style="padding:8px 0;color:#64748b;font-weight:bold">Montant remboursé</td><td style="font-size:18px;font-weight:bold;color:#059669">${commande.prix} €</td></tr>
               <tr><td style="padding:8px 0;color:#64748b;font-weight:bold">Délai</td><td>5 à 10 jours ouvrés selon votre banque</td></tr>
-              ${refundId ? `<tr style="background:#fff"><td style="padding:8px 0;color:#64748b;font-weight:bold">Référence</td><td style="font-size:11px;color:#94a3b8">${refundId}</td></tr>` : ''}
+
             </table>
             <p style="margin-top:20px;color:#374151">Pour toute question : <a href="mailto:contact@x3com.com">contact@x3com.com</a></p>
             <p style="margin-top:16px;font-size:12px;color:#94a3b8;text-align:center">X3COM — contact@x3com.com</p>
@@ -541,7 +545,7 @@ app.post('/commandes/:id/annuler', async (req, res) => {
 // POST /create-checkout-session
 // ══════════════════════════════════════════════════════════
 app.post('/create-checkout-session', async (req, res) => {
-  const { offreId, prix, nom, utilisateurId, emailClient } = req.body;
+  const { offreId, prix, nom, utilisateurId, emailClient, prenom, nomClient, telephone } = req.body;
   if (!offreId || !prix || !nom)
     return res.status(400).json({ error: 'offreId, prix et nom sont obligatoires' });
   try {
@@ -549,7 +553,16 @@ app.post('/create-checkout-session', async (req, res) => {
       payment_method_types: ['card'],
       mode: 'payment',
       line_items: [{ price_data: { currency: 'eur', unit_amount: Math.round(prix * 100), product_data: { name: nom, description: `X3COM — Offre #${offreId}` } }, quantity: 1 }],
-      metadata: { offreId: String(offreId), utilisateurId: String(utilisateurId || ''), nomOffre: nom, prix: String(prix), emailClient: emailClient || '' },
+      metadata: {
+        offreId:       String(offreId),
+        utilisateurId: String(utilisateurId || ''),
+        nomOffre:      nom,
+        prix:          String(prix),
+        emailClient:   emailClient || '',
+        prenom:        prenom      || '',
+        nomClient:     nomClient   || '',
+        telephone:     telephone   || '',
+      },
       customer_email: emailClient || undefined,
       success_url: `${process.env.FRONTEND_URL || "http://localhost:4200"}/commande?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url:  `${process.env.FRONTEND_URL || "http://localhost:4200"}/paiement?annule=1`,
@@ -611,6 +624,11 @@ app.post('/webhook', async (req, res) => {
       else       console.log('✓ Commande enregistrée');
     } catch (err) { console.error('✗ Supabase:', err.message); }
 
+    const prenomClient  = meta.prenom    || '';
+    const nomClient     = meta.nomClient  || '';
+    const telClient     = meta.telephone  || '—';
+    const nomComplet    = [prenomClient, nomClient].filter(Boolean).join(' ') || '—';
+
     if (emailClient) {
       await sendMail({
         to: emailClient,
@@ -618,11 +636,11 @@ app.post('/webhook', async (req, res) => {
         html: `<div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden">
           <div style="background:#1a365d;padding:24px;text-align:center"><h1 style="color:#fff;margin:0;font-size:20px">✅ Paiement confirmé — X3COM</h1></div>
           <div style="padding:28px;background:#f8fafc">
-            <p style="color:#374151">Bonjour, votre paiement pour <strong>${escHtml(meta.nomOffre)}</strong> a bien été reçu.</p>
+            <p style="color:#374151">Bonjour${prenomClient ? ' ' + escHtml(prenomClient) : ''}, votre paiement pour <strong>${escHtml(meta.nomOffre)}</strong> a bien été reçu.</p>
             <table style="width:100%;border-collapse:collapse">
               <tr><td style="padding:8px 0;color:#64748b;width:160px;font-weight:bold">Offre</td><td><strong>${escHtml(meta.nomOffre)}</strong></td></tr>
               <tr style="background:#fff"><td style="padding:8px 0;color:#64748b;font-weight:bold">Montant</td><td style="font-size:18px;font-weight:bold;color:#059669">${escHtml(meta.prix)} €</td></tr>
-              <tr><td style="padding:8px 0;color:#64748b;font-weight:bold">Référence</td><td style="font-size:11px;color:#94a3b8">${session.id}</td></tr>
+              <tr><td style="padding:8px 0;color:#64748b;font-weight:bold">Date</td><td>${new Date().toLocaleString('fr-FR')}</td></tr>
             </table>
             <p style="margin-top:20px;color:#374151">Un technicien vous contactera sous <strong>24h</strong>.</p>
             <p style="margin-top:16px;font-size:12px;color:#94a3b8;text-align:center">X3COM — contact@x3com.com</p>
@@ -632,15 +650,22 @@ app.post('/webhook', async (req, res) => {
 
     await sendMail({
       to: process.env.MAIL_DESTINATAIRE,
-      subject: `[X3COM Paiement] ${escHtml(meta.nomOffre)} — ${meta.prix} € — ${emailClient || 'inconnu'}`,
+      subject: `[X3COM Paiement] ${escHtml(meta.nomOffre)} — ${meta.prix} € — ${nomComplet}`,
       html: `<div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden">
         <div style="background:#1a365d;padding:24px;text-align:center"><h1 style="color:#fff;margin:0;font-size:20px">💰 Nouveau paiement — X3COM</h1></div>
         <div style="padding:28px;background:#f8fafc">
+          <h3 style="color:#1a365d;margin:0 0 12px">👤 Informations client</h3>
+          <table style="width:100%;border-collapse:collapse">
+            <tr><td style="padding:8px 0;color:#64748b;width:160px;font-weight:bold">Prénom</td><td>${escHtml(prenomClient) || '—'}</td></tr>
+            <tr style="background:#fff"><td style="padding:8px 0;color:#64748b;font-weight:bold">Nom</td><td>${escHtml(nomClient) || '—'}</td></tr>
+            <tr><td style="padding:8px 0;color:#64748b;font-weight:bold">Téléphone</td><td>${escHtml(telClient)}</td></tr>
+            <tr style="background:#fff"><td style="padding:8px 0;color:#64748b;font-weight:bold">E-mail</td><td>${emailClient ? `<a href="mailto:${escHtml(emailClient)}">${escHtml(emailClient)}</a>` : '—'}</td></tr>
+          </table>
+          <hr style="border:none;border-top:1px solid #e2e8f0;margin:16px 0">
+          <h3 style="color:#1a365d;margin:0 0 12px">📦 Commande</h3>
           <table style="width:100%;border-collapse:collapse">
             <tr><td style="padding:8px 0;color:#64748b;width:160px;font-weight:bold">Offre</td><td><strong>${escHtml(meta.nomOffre)}</strong></td></tr>
             <tr style="background:#fff"><td style="padding:8px 0;color:#64748b;font-weight:bold">Montant</td><td style="font-size:18px;font-weight:bold;color:#059669">${escHtml(meta.prix)} €</td></tr>
-            <tr><td style="padding:8px 0;color:#64748b;font-weight:bold">E-mail client</td><td>${emailClient ? `<a href="mailto:${escHtml(emailClient)}">${escHtml(emailClient)}</a>` : '—'}</td></tr>
-            <tr style="background:#fff"><td style="padding:8px 0;color:#64748b;font-weight:bold">ID Stripe</td><td style="font-size:11px;color:#94a3b8">${session.id}</td></tr>
             <tr><td style="padding:8px 0;color:#64748b;font-weight:bold">Date</td><td>${new Date().toLocaleString('fr-FR')}</td></tr>
           </table>
         </div></div>`,
@@ -672,12 +697,16 @@ app.get('/health', (req, res) => {
 // NETTOYAGE AUTO — supprime les commandes annulées > 3 jours
 // ══════════════════════════════════════════════════════════
 async function nettoyerCommandesAnnulees() {
+  // On filtre sur dateannulation (date réelle d'annulation), pas datecreation.
+  // Une commande annulée il y a 3 jours mais créée il y a 30 jours
+  // ne doit PAS être supprimée immédiatement — seul le délai post-annulation compte.
   const il_y_a_3_jours = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString();
   const { data, error } = await supabase
     .from('commandes')
     .delete()
     .eq('statut', 'annulee')
-    .lt('datecreation', il_y_a_3_jours)
+    .not('dateannulation', 'is', null)            // protège les anciens enregistrements sans date d'annulation
+    .lt('dateannulation', il_y_a_3_jours)
     .select('id');
   if (error) { console.error('✗ Nettoyage commandes annulées:', error.message); return; }
   if (data?.length > 0) console.log(`🗑 ${data.length} commande(s) annulée(s) supprimée(s) automatiquement`);

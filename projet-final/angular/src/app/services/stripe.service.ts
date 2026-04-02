@@ -25,6 +25,9 @@ export class StripeService {
     nom:           string;
     utilisateurId: number;
     emailClient?:  string;
+    prenom?:       string;
+    nomClient?:    string;
+    telephone?:    string;
   }): Observable<CheckoutSession> {
     return this.http.post<CheckoutSession>(
       `${this.backend}/create-checkout-session`,

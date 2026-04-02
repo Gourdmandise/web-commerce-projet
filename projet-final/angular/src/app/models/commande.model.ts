@@ -3,7 +3,8 @@ export type StatutCommande =
   | 'paiement_confirme'
   | 'planification'
   | 'intervention'
-  | 'termine';
+  | 'termine'
+  | 'annulee';
 
 export interface Commande {
   id?: number;

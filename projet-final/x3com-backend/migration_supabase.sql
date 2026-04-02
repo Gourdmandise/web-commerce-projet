@@ -27,3 +27,6 @@ SELECT table_name, column_name, data_type
 FROM information_schema.columns
 WHERE table_name IN ('utilisateurs', 'commandes', 'offres')
 ORDER BY table_name, ordinal_position;
+
+ALTER TABLE public.commandes
+  ADD COLUMN IF NOT EXISTS dateannulation timestamp with time zone;
