@@ -53,9 +53,9 @@ export class Compte implements OnInit {
     }
     this.chargement.set(true);
     this.utilisateurService.connecter(this.login.email, this.login.motDePasse).subscribe({
-      next: ({ utilisateur }) => {
+      next: ({ utilisateur, token }) => {
         this.chargement.set(false);
-        this.auth.connecter(utilisateur);
+        this.auth.connecter(utilisateur, token);
         this.profil = { ...utilisateur };
         this.chargerCommandes();
         this.panier.notify('✓', `Bienvenue ${utilisateur.prenom} !`, 'Connexion réussie');
@@ -91,9 +91,9 @@ export class Compte implements OnInit {
       this.inscription.prenom,
       this.inscription.nom
     ).subscribe({
-      next: ({ utilisateur }) => {
+      next: ({ utilisateur, token }) => {
         this.chargement.set(false);
-        this.auth.connecter(utilisateur);
+        this.auth.connecter(utilisateur, token);
         this.profil = { ...utilisateur };
         this.commandes.set([]);
         this.panier.notify('✓', 'Compte créé !', `Bienvenue ${utilisateur.prenom}`);
