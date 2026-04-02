@@ -31,14 +31,14 @@ export class Terrassement implements OnInit {
   ];
 
   travaux = [
-    { titre: 'Création de regards télécom', couleur: 'em',
+    { titre: 'Création de regards télécom', couleur: 'em', img: '...',
       texte: 'Selon la nature du terrain et l\'étendue des travaux nécessaires, nous réalisons différents types d\'interventions pour débloquer votre situation. Nos équipes peuvent intervenir sur la réalisation de tranchées, la pose de regards France Télécom ainsi que le passage de gaines télécom, que ce soit au sein de votre propriété ou en domaine public.' },
-    { titre: 'Réalisation de tranchées', couleur: 'cy',
+    { titre: 'Réalisation de tranchées', couleur: 'cy', img: '...',
       texte: 'Lorsque votre réseau ne peut être remis en état par débouchage, nous sommes en mesure de créer un réseau entièrement neuf. Issus du domaine des travaux publics, nous disposons d\'outillages spécifiquement adaptés : trancheuses de sol, pelles mécaniques, et intervention manuelle lorsque les fouilles sont sensibles.' },
-    { titre: 'Pré-câblage fibre optique', couleur: 'te',
+    { titre: 'Pré-câblage fibre optique', couleur: 'te', img: '...',
       texte: 'Lorsque le réseau existant n\'est pas réparable mais permet le passage d\'un câble, nous assurons le pré-câblage de la fibre optique jusqu\'aux points de terminaison optique. Le pré-câblage fibre optique constitue une étape essentielle dans tout projet de construction ou de rénovation nécessitant une infrastructure télécom moderne.' },
   ];
-
+  
   ngOnInit(): void {
     this.http.get<any[]>(`${this.backend}/offres`).subscribe({
       next: (data) => this.offres = data.slice(0, 3),
