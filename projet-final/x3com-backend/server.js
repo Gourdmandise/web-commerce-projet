@@ -20,9 +20,12 @@ if (!JWT_SECRET) {
   process.exit(1);
 }
 
+// Déduplique ALLOWED_ORIGINS si FRONTEND_URL est absent
 const ALLOWED_ORIGINS = [
-  process.env.FRONTEND_URL || 'http://localhost:4200',
-  'http://localhost:4200',
+  ...new Set([
+    process.env.FRONTEND_URL || 'http://localhost:4200',
+    'http://localhost:4200',
+  ])
 ].filter(Boolean);
 
 // ══════════════════════════════════════════════════════════
@@ -136,10 +139,12 @@ function requireAuth(req, res, next) {
 
 /**
  * requireAuth + role admin obligatoire.
+ * FIX : on transmet err à next() pour éviter les doubles réponses.
  */
 function requireAdmin(req, res, next) {
-  requireAuth(req, res, () => {
-    if (req.user.role !== 'admin') {
+  requireAuth(req, res, (err) => {
+    if (err) return next(err);
+    if (req.user?.role !== 'admin') {
       return res.status(403).json({ error: 'Accès refusé — droits administrateur requis.' });
     }
     next();
@@ -151,9 +156,10 @@ function requireAdmin(req, res, next) {
  * À utiliser sur les routes /utilisateurs/:id pour éviter l'IDOR.
  */
 function requireOwnerOrAdmin(req, res, next) {
-  requireAuth(req, res, () => {
+  requireAuth(req, res, (err) => {
+    if (err) return next(err);
     const targetId = parseInt(req.params.id);
-    if (req.user.role === 'admin' || req.user.id === targetId) {
+    if (req.user?.role === 'admin' || req.user?.id === targetId) {
       return next();
     }
     return res.status(403).json({ error: 'Accès refusé — vous ne pouvez modifier que votre propre compte.' });
@@ -280,7 +286,6 @@ app.post('/contact', limiterContact, upload.single('fichier'), async (req, res) 
 
 // ══════════════════════════════════════════════════════════
 // POST /login — PUBLIC
-// Retourne un JWT signé en plus de l'objet utilisateur
 // ══════════════════════════════════════════════════════════
 app.post('/login', limiterAuth, async (req, res) => {
   const { email, motDePasse } = req.body;
@@ -312,7 +317,6 @@ app.post('/login', limiterAuth, async (req, res) => {
       await supabase.from('utilisateurs').update({ motdepasse: h2 }).eq('id', row.id);
     }
 
-    // ✅ Génération du JWT — payload minimal, pas de données sensibles
     const token = jwt.sign(
       { id: row.id, role: row.role },
       JWT_SECRET,
@@ -350,7 +354,6 @@ app.post('/register', limiterAuth, async (req, res) => {
 
     if (errInsert) return res.status(500).json({ error: `Erreur création compte : ${errInsert.message}` });
 
-    // ✅ Token immédiatement après inscription
     const token = jwt.sign(
       { id: created.id, role: created.role },
       JWT_SECRET,
@@ -366,10 +369,9 @@ app.post('/register', limiterAuth, async (req, res) => {
 
 
 // ══════════════════════════════════════════════════════════
-// GET /verify-admin/:id — AUTHENTIFIÉ (admin guard Angular)
+// GET /verify-admin/:id — AUTHENTIFIÉ
 // ══════════════════════════════════════════════════════════
 app.get('/verify-admin/:id', requireAuth, async (req, res) => {
-  // Un utilisateur ne peut vérifier que son propre ID
   if (req.user.id !== parseInt(req.params.id)) {
     return res.status(403).json({ error: 'Non autorisé' });
   }
@@ -414,10 +416,14 @@ app.get('/utilisateurs', requireAdmin, async (req, res) => {
 app.patch('/utilisateurs/:id', requireOwnerOrAdmin, async (req, res) => {
   const { motDePasse, motdepasse, dateCreation, datecreation, role, id, ...raw } = req.body;
 
-  // Un client ne peut PAS changer son propre rôle
   const COLONNES_AUTORISEES = ['email', 'prenom', 'nom', 'telephone', 'adresse', 'ville', 'codepostal'];
+
+  // FIX : normalisation des clés en minuscules pour correspondre aux colonnes Supabase
+  // Ex: "codePostal" (Angular) → "codepostal" (Supabase)
   const champs = Object.fromEntries(
-    Object.entries(raw).filter(([k]) => COLONNES_AUTORISEES.includes(k.toLowerCase()))
+    Object.entries(raw)
+      .filter(([k]) => COLONNES_AUTORISEES.includes(k.toLowerCase()))
+      .map(([k, v]) => [k.toLowerCase(), v])
   );
 
   if (Object.keys(champs).length === 0)
@@ -444,12 +450,34 @@ app.delete('/utilisateurs/:id', requireOwnerOrAdmin, async (req, res) => {
 
 // ══════════════════════════════════════════════════════════
 // OFFRES — lecture publique, écriture admin uniquement
+// FIX : route statique /reordonner déclarée AVANT la route paramétrée /:id
 // ══════════════════════════════════════════════════════════
 app.get('/offres', async (req, res) => {
   try {
     const { data, error } = await supabase.from('offres').select('*').order('ordre', { ascending: true, nullsFirst: false });
     if (error) return res.status(500).json({ error: error.message });
     res.json(data || []);
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+app.post('/offres', requireAdmin, async (req, res) => {
+  try {
+    const { data, error } = await supabase.from('offres').insert(req.body).select().single();
+    if (error) throw new Error(error.message);
+    res.status(201).json(data);
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// FIX : /reordonner déclaré avant /:id
+app.post('/offres/reordonner', requireAdmin, async (req, res) => {
+  try {
+    const { ordre } = req.body;
+    if (!Array.isArray(ordre)) return res.status(400).json({ error: 'ordre doit être un tableau' });
+    const updates = ordre.map(({ id, ordre: o }) =>
+      supabase.from('offres').update({ ordre: o }).eq('id', id)
+    );
+    await Promise.all(updates);
+    res.json({ ok: true });
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
@@ -461,33 +489,12 @@ app.get('/offres/:id', async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-// ✅ Création, modification, suppression, réordonnancement → ADMIN uniquement
-app.post('/offres', requireAdmin, async (req, res) => {
-  try {
-    const { data, error } = await supabase.from('offres').insert(req.body).select().single();
-    if (error) throw new Error(error.message);
-    res.status(201).json(data);
-  } catch (err) { res.status(500).json({ error: err.message }); }
-});
-
 app.patch('/offres/:id', requireAdmin, async (req, res) => {
   try {
     const { id, ...champs } = req.body;
     const { data, error } = await supabase.from('offres').update(champs).eq('id', req.params.id).select().single();
     if (error) throw new Error(error.message);
     res.json(data);
-  } catch (err) { res.status(500).json({ error: err.message }); }
-});
-
-app.post('/offres/reordonner', requireAdmin, async (req, res) => {
-  try {
-    const { ordre } = req.body;
-    if (!Array.isArray(ordre)) return res.status(400).json({ error: 'ordre doit être un tableau' });
-    const updates = ordre.map(({ id, ordre: o }) =>
-      supabase.from('offres').update({ ordre: o }).eq('id', id)
-    );
-    await Promise.all(updates);
-    res.json({ ok: true });
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
@@ -504,18 +511,15 @@ app.delete('/offres/:id', requireAdmin, async (req, res) => {
 // COMMANDES
 // ══════════════════════════════════════════════════════════
 
-// GET /commandes — chaque client ne voit QUE ses propres commandes
 app.get('/commandes', requireAuth, async (req, res) => {
   try {
     let query = supabase.from('commandes').select('*');
 
     if (req.user.role === 'admin') {
-      // Admin : peut filtrer par utilisateur ou voir toutes les commandes
       if (req.query.utilisateurId) {
         query = query.eq('utilisateurid', req.query.utilisateurId);
       }
     } else {
-      // Client : toujours restreint à ses propres commandes, quel que soit le paramètre passé
       query = query.eq('utilisateurid', req.user.id);
     }
 
@@ -525,13 +529,11 @@ app.get('/commandes', requireAuth, async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-// GET /commandes/:id — propriétaire ou admin
 app.get('/commandes/:id', requireAuth, async (req, res) => {
   try {
     const { data, error } = await supabase.from('commandes').select('*').eq('id', req.params.id).single();
     if (error || !data) return res.status(404).json({ error: 'Commande introuvable' });
 
-    // Vérification propriété
     if (req.user.role !== 'admin' && data.utilisateurid !== req.user.id) {
       return res.status(403).json({ error: 'Accès refusé' });
     }
@@ -540,12 +542,17 @@ app.get('/commandes/:id', requireAuth, async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-// PATCH /commandes/:id — admin uniquement (changement de statut)
+// PATCH /commandes/:id — admin uniquement
 app.patch('/commandes/:id', requireAdmin, async (req, res) => {
   const CHAMPS_AUTORISES = ['statut', 'adresselivraison', 'commentaire', 'dateprevue'];
+
+  // FIX : normalisation des clés en minuscules pour correspondre aux colonnes Supabase
   const champs = Object.fromEntries(
-    Object.entries(req.body).filter(([k]) => CHAMPS_AUTORISES.includes(k.toLowerCase()))
+    Object.entries(req.body)
+      .filter(([k]) => CHAMPS_AUTORISES.includes(k.toLowerCase()))
+      .map(([k, v]) => [k.toLowerCase(), v])
   );
+
   if (Object.keys(champs).length === 0)
     return res.status(400).json({ error: 'Aucun champ modifiable fourni.' });
   try {
@@ -556,7 +563,6 @@ app.patch('/commandes/:id', requireAdmin, async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-// DELETE /commandes/:id — admin uniquement
 app.delete('/commandes/:id', requireAdmin, async (req, res) => {
   try {
     const { error } = await supabase.from('commandes').delete().eq('id', req.params.id);
@@ -565,14 +571,12 @@ app.delete('/commandes/:id', requireAdmin, async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-// POST /commandes/:id/annuler — propriétaire ou admin
 app.post('/commandes/:id/annuler', requireAuth, async (req, res) => {
   try {
     const { data: commande, error: fetchErr } = await supabase
       .from('commandes').select('*').eq('id', req.params.id).single();
     if (fetchErr || !commande) return res.status(404).json({ error: 'Commande introuvable' });
 
-    // ✅ Vérification propriété — un client ne peut annuler QUE ses propres commandes
     if (req.user.role !== 'admin' && commande.utilisateurid !== req.user.id) {
       return res.status(403).json({ error: 'Accès refusé — ce n\'est pas votre commande.' });
     }
@@ -626,7 +630,6 @@ app.post('/create-checkout-session', requireAuth, async (req, res) => {
   if (!offreId || !prix || !nom)
     return res.status(400).json({ error: 'offreId, prix et nom sont obligatoires' });
 
-  // L'utilisateurId vient du token, pas du body (évite la falsification)
   const utilisateurId = req.user.id;
 
   try {
@@ -660,7 +663,6 @@ app.get('/session/:sessionId', requireAuth, async (req, res) => {
   try {
     const session = await stripe.checkout.sessions.retrieve(req.params.sessionId);
 
-    // Vérifier que la session appartient à l'utilisateur connecté
     const sessionUserId = parseInt(session.metadata?.utilisateurId);
     if (req.user.role !== 'admin' && sessionUserId !== req.user.id) {
       return res.status(403).json({ error: 'Accès refusé' });
