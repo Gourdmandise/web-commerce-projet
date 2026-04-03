@@ -1,10 +1,10 @@
 # web-commerce-projet
 Site e-commerce développé dans le cadre d'un stage informatique
 
-==Contexte
+== Contexte
 Ce projet a été réalisé dans le cadre d'un stage et a pour objectif l'apprentissage et la mise en pratique de nouvelles technologies.
 
-==Propriété intellectuelle
+== Propriété intellectuelle
 Le code source de ce projet est partagé à des fins exclusivement éducatives.
 Les éléments graphiques présents dans le dossier /projet-final/angular/public, /Maquette et /logo (logos, illustrations, icônes, images) sont la propriété exclusive de Rayan SABOUN © 2026. Toute reproduction, modification, distribution ou utilisation de ces assets, sans autorisation écrite préalable, est strictement interdite.
 
