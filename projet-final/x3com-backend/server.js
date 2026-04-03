@@ -163,13 +163,13 @@ const limiterContact = rateLimit({
 function requireAuth(req, res, next) {
   const auth = req.headers['authorization'];
   if (!auth || !auth.startsWith('Bearer ')) {
-    return res.status(401).json({ error: 'Token manquant — authentification requise.' });
+    return res.status(401).json({ error: 'Authentification requise.' });
   }
   try {
     req.user = jwt.verify(auth.slice(7), JWT_SECRET);
     next();
   } catch (err) {
-    return res.status(401).json({ error: 'Token invalide ou expiré. Reconnectez-vous.' });
+    return res.status(401).json({ error: 'Authentification requise.' });
   }
 }
 
@@ -181,7 +181,7 @@ function requireAdmin(req, res, next) {
   requireAuth(req, res, (err) => {
     if (err) return next(err);
     if (req.user?.role !== 'admin') {
-      return res.status(403).json({ error: 'Accès refusé — droits administrateur requis.' });
+      return res.status(403).json({ error: 'Accès refusé.' });
     }
     next();
   });
@@ -198,7 +198,7 @@ function requireOwnerOrAdmin(req, res, next) {
     if (req.user?.role === 'admin' || req.user?.id === targetId) {
       return next();
     }
-    return res.status(403).json({ error: 'Accès refusé — vous ne pouvez modifier que votre propre compte.' });
+    return res.status(403).json({ error: 'Accès refusé.' });
   });
 }
 
@@ -331,7 +331,7 @@ app.post('/login', limiterAuth, async (req, res) => {
     const { data: rows, error } = await supabase
       .from('utilisateurs').select('*').eq('email', email).limit(1);
 
-    if (error) return res.status(500).json({ error: `Erreur base de données : ${error.message}` });
+    if (error) return res.status(500).json({ error: 'Une erreur est survenue.' });
     if (!rows?.length) return res.status(401).json({ error: 'Identifiants incorrects' });
 
     const row  = rows[0];
@@ -361,7 +361,7 @@ app.post('/login', limiterAuth, async (req, res) => {
 
     return res.json({ utilisateur: utilisateurToAngular(row), token });
   } catch (err) {
-    res.status(500).json({ error: `Erreur serveur : ${err.message}` });
+    res.status(500).json({ error: 'Une erreur est survenue.' });
   }
 });
 
@@ -378,7 +378,7 @@ app.post('/register', limiterAuth, async (req, res) => {
     const { data: existants, error: errSelect } = await supabase
       .from('utilisateurs').select('id').eq('email', email).limit(1);
 
-    if (errSelect) return res.status(500).json({ error: `Erreur base de données : ${errSelect.message}` });
+    if (errSelect) return res.status(500).json({ error: 'Une erreur est survenue.' });
     if (existants?.length > 0) return res.status(409).json({ error: 'Cet email est déjà utilisé' });
 
     const hash = await bcrypt.hash(motDePasse, 12);
@@ -388,7 +388,7 @@ app.post('/register', limiterAuth, async (req, res) => {
       .insert({ email, motdepasse: hash, prenom, nom: nom || '', role: 'client' })
       .select().single();
 
-    if (errInsert) return res.status(500).json({ error: `Erreur création compte : ${errInsert.message}` });
+    if (errInsert) return res.status(500).json({ error: 'Une erreur est survenue.' });
 
     const token = jwt.sign(
       { id: created.id, role: created.role },
@@ -399,7 +399,7 @@ app.post('/register', limiterAuth, async (req, res) => {
     console.log(`✓ Nouveau compte créé : ${email}`);
     return res.status(201).json({ utilisateur: utilisateurToAngular(created), token });
   } catch (err) {
-    res.status(500).json({ error: `Erreur serveur : ${err.message}` });
+    res.status(500).json({ error: 'Une erreur est survenue.' });
   }
 });
 
@@ -416,7 +416,7 @@ app.get('/verify-admin/:id', requireAuth, async (req, res) => {
       .from('utilisateurs').select('role').eq('id', req.params.id).single();
     if (error || !user) return res.status(404).json({ error: 'Introuvable' });
     return res.json({ role: user.role || 'client' });
-  } catch (err) { res.status(500).json({ error: err.message }); }
+  } catch (err) { res.status(500).json({ error: 'Une erreur est survenue.' }); }
 });
 
 
@@ -430,9 +430,9 @@ app.patch('/utilisateurs/:id/password', requireOwnerOrAdmin, async (req, res) =>
   try {
     const hash = await bcrypt.hash(motDePasse, 12);
     const { error } = await supabase.from('utilisateurs').update({ motdepasse: hash }).eq('id', req.params.id);
-    if (error) return res.status(500).json({ error: error.message });
+    if (error) return res.status(500).json({ error: 'Une erreur est survenue.' });
     res.json({ ok: true });
-  } catch (err) { res.status(500).json({ error: err.message }); }
+  } catch (err) { res.status(500).json({ error: 'Une erreur est survenue.' }); }
 });
 
 
@@ -445,7 +445,7 @@ app.get('/utilisateurs', requireAdmin, async (req, res) => {
       .from('utilisateurs').select('id, email, prenom, nom, role, datecreation, telephone, adresse, ville, codepostal');
     if (error) throw new Error(error.message);
     res.json((data || []).map(utilisateurToAngular));
-  } catch (err) { res.status(500).json({ error: err.message }); }
+  } catch (err) { res.status(500).json({ error: 'Une erreur est survenue.' }); }
 });
 
 // PATCH /utilisateurs/:id — PROPRIÉTAIRE UNIQUEMENT (ou admin)
@@ -471,7 +471,7 @@ app.patch('/utilisateurs/:id', requireOwnerOrAdmin, async (req, res) => {
       .select('id, email, prenom, nom, role, datecreation, telephone, adresse, ville, codepostal').single();
     if (error) throw new Error(error.message);
     res.json(utilisateurToAngular(data));
-  } catch (err) { res.status(500).json({ error: err.message }); }
+  } catch (err) { res.status(500).json({ error: 'Une erreur est survenue.' }); }
 });
 
 // DELETE /utilisateurs/:id — PROPRIÉTAIRE UNIQUEMENT (ou admin)
@@ -480,7 +480,7 @@ app.delete('/utilisateurs/:id', requireOwnerOrAdmin, async (req, res) => {
     const { error } = await supabase.from('utilisateurs').delete().eq('id', req.params.id);
     if (error) throw new Error(error.message);
     res.status(204).send();
-  } catch (err) { res.status(500).json({ error: err.message }); }
+  } catch (err) { res.status(500).json({ error: 'Une erreur est survenue.' }); }
 });
 
 
@@ -491,9 +491,9 @@ app.delete('/utilisateurs/:id', requireOwnerOrAdmin, async (req, res) => {
 app.get('/offres', async (req, res) => {
   try {
     const { data, error } = await supabase.from('offres').select('*').order('ordre', { ascending: true, nullsFirst: false });
-    if (error) return res.status(500).json({ error: error.message });
+    if (error) return res.status(500).json({ error: 'Une erreur est survenue.' });
     res.json(data || []);
-  } catch (err) { res.status(500).json({ error: err.message }); }
+  } catch (err) { res.status(500).json({ error: 'Une erreur est survenue.' }); }
 });
 
 app.post('/offres', requireAdmin, async (req, res) => {
@@ -501,7 +501,7 @@ app.post('/offres', requireAdmin, async (req, res) => {
     const { data, error } = await supabase.from('offres').insert(req.body).select().single();
     if (error) throw new Error(error.message);
     res.status(201).json(data);
-  } catch (err) { res.status(500).json({ error: err.message }); }
+  } catch (err) { res.status(500).json({ error: 'Une erreur est survenue.' }); }
 });
 
 // FIX : /reordonner déclaré avant /:id
@@ -514,7 +514,7 @@ app.post('/offres/reordonner', requireAdmin, async (req, res) => {
     );
     await Promise.all(updates);
     res.json({ ok: true });
-  } catch (err) { res.status(500).json({ error: err.message }); }
+  } catch (err) { res.status(500).json({ error: 'Une erreur est survenue.' }); }
 });
 
 app.get('/offres/:id', async (req, res) => {
@@ -522,7 +522,7 @@ app.get('/offres/:id', async (req, res) => {
     const { data, error } = await supabase.from('offres').select('*').eq('id', req.params.id).single();
     if (error || !data) return res.status(404).json({ error: 'Offre introuvable' });
     res.json(data);
-  } catch (err) { res.status(500).json({ error: err.message }); }
+  } catch (err) { res.status(500).json({ error: 'Une erreur est survenue.' }); }
 });
 
 app.patch('/offres/:id', requireAdmin, async (req, res) => {
@@ -531,7 +531,7 @@ app.patch('/offres/:id', requireAdmin, async (req, res) => {
     const { data, error } = await supabase.from('offres').update(champs).eq('id', req.params.id).select().single();
     if (error) throw new Error(error.message);
     res.json(data);
-  } catch (err) { res.status(500).json({ error: err.message }); }
+  } catch (err) { res.status(500).json({ error: 'Une erreur est survenue.' }); }
 });
 
 app.delete('/offres/:id', requireAdmin, async (req, res) => {
@@ -539,7 +539,7 @@ app.delete('/offres/:id', requireAdmin, async (req, res) => {
     const { error } = await supabase.from('offres').delete().eq('id', req.params.id);
     if (error) throw new Error(error.message);
     res.status(204).send();
-  } catch (err) { res.status(500).json({ error: err.message }); }
+  } catch (err) { res.status(500).json({ error: 'Une erreur est survenue.' }); }
 });
 
 
@@ -562,7 +562,7 @@ app.get('/commandes', requireAuth, async (req, res) => {
     const { data, error } = await query;
     if (error) throw new Error(error.message);
     res.json((data || []).map(commandeToAngular));
-  } catch (err) { res.status(500).json({ error: err.message }); }
+  } catch (err) { res.status(500).json({ error: 'Une erreur est survenue.' }); }
 });
 
 app.get('/commandes/:id', requireAuth, async (req, res) => {
@@ -575,7 +575,7 @@ app.get('/commandes/:id', requireAuth, async (req, res) => {
     }
 
     res.json(commandeToAngular(data));
-  } catch (err) { res.status(500).json({ error: err.message }); }
+  } catch (err) { res.status(500).json({ error: 'Une erreur est survenue.' }); }
 });
 
 // PATCH /commandes/:id — admin uniquement
@@ -596,7 +596,7 @@ app.patch('/commandes/:id', requireAdmin, async (req, res) => {
       .from('commandes').update(champs).eq('id', req.params.id).select().single();
     if (error) throw new Error(error.message);
     res.json(commandeToAngular(data));
-  } catch (err) { res.status(500).json({ error: err.message }); }
+  } catch (err) { res.status(500).json({ error: 'Une erreur est survenue.' }); }
 });
 
 app.delete('/commandes/:id', requireAdmin, async (req, res) => {
@@ -604,7 +604,7 @@ app.delete('/commandes/:id', requireAdmin, async (req, res) => {
     const { error } = await supabase.from('commandes').delete().eq('id', req.params.id);
     if (error) throw new Error(error.message);
     res.status(204).send();
-  } catch (err) { res.status(500).json({ error: err.message }); }
+  } catch (err) { res.status(500).json({ error: 'Une erreur est survenue.' }); }
 });
 
 app.post('/commandes/:id/annuler', requireAuth, async (req, res) => {
@@ -631,13 +631,8 @@ app.post('/commandes/:id/annuler', requireAuth, async (req, res) => {
           console.log('✓ Remboursement Stripe : ' + refundId);
         }
       } catch (stripeErr) {
-        const alreadyRefunded = stripeErr.message?.includes('already been refunded');
-        if (alreadyRefunded) {
-          console.log('⚠ Déjà remboursé, on continue l\'annulation en base.');
-        } else {
-          console.error('✗ Stripe refund:', stripeErr.message);
-          return res.status(502).json({ error: 'Remboursement Stripe échoué : ' + stripeErr.message });
-        }
+        console.error('✗ Stripe refund:', stripeErr.message);
+        return res.status(502).json({ error: 'Remboursement Stripe échoué : ' + stripeErr.message });
       }
     }
 
@@ -659,7 +654,7 @@ app.post('/commandes/:id/annuler', requireAuth, async (req, res) => {
     }
 
     res.json({ ...commandeToAngular(updated), refundId });
-  } catch (err) { res.status(500).json({ error: err.message }); }
+  } catch (err) { res.status(500).json({ error: 'Une erreur est survenue.' }); }
 });
 
 
@@ -693,7 +688,7 @@ app.post('/create-checkout-session', requireAuth, async (req, res) => {
       cancel_url:  `${process.env.FRONTEND_URL || 'http://localhost:4200'}/paiement?annule=1`,
     });
     res.json({ url: session.url, sessionId: session.id });
-  } catch (err) { res.status(500).json({ error: err.message }); }
+  } catch (err) { res.status(500).json({ error: 'Une erreur est survenue.' }); }
 });
 
 
@@ -710,7 +705,7 @@ app.get('/session/:sessionId', requireAuth, async (req, res) => {
     }
 
     res.json({ status: session.payment_status, customerEmail: session.customer_details?.email, metadata: session.metadata });
-  } catch (err) { res.status(500).json({ error: err.message }); }
+  } catch (err) { res.status(500).json({ error: 'Une erreur est survenue.' }); }
 });
 
 
