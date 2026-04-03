@@ -12,23 +12,11 @@ Les éléments graphiques présents dans le dossier `/projet-final/angular/publi
 == Gestion de projet & Qualité
 
 ==== Lien important
-===== Version
-[cols="5*", options="header"]
-|============================================================================
-| Date       | Nom                                       | Lien | Retour | lien fonctionel
-|            | Version courante                          | https://github.com/Gourdmandise/web-commerce-projet/releases/tag/Version-1[v1]     |  | ✓
-|            | Version courante                          | https://github.com/Gourdmandise/web-commerce-projet/releases/tag/Version-2[v2]     |  | ✓
-|            | Version courante                          | https://github.com/Gourdmandise/web-commerce-projet/releases/tag/Version-3[v3]     |  | ✓
-|            | Version courante                          | https://github.com/Gourdmandise/web-commerce-projet/releases/tag/Version-4[v4]     |  | ✓
-|            | Version courante                          | https://github.com/Gourdmandise/web-commerce-projet/releases/tag/Version-5[v5]     |  | ✓
-|            | Version courante                          | https://github.com/Gourdmandise/web-commerce-projet/releases/tag/Version-6[v6]     |  | ✓
-|            | Version courante                          | https://github.com/Gourdmandise/web-commerce-projet/releases/tag/Version-7[v7]     |  | ✓
-|============================================================================
-
 ===== Navigation
 [cols="5*", options="header"]
 |============================================================================
 | Date       | Nom                                       | Lien | Retour | lien fonctionel
+|            | Version courante                          | https://github.com/Gourdmandise/web-commerce-projet/releases/tag/Version-1[v1]     |  | ✓
 |            | Template                                  | link:https://github.com/users/Gourdmandise/projects/2[Template]     |  | ✓
 |            | Issue                                     | link:https://github.com/Gourdmandise/web-commerce-projet/issues?q=is%3Aissue%20state%3Aopen%20no%3Amilestone[Issue]     |  | ✓
 |            | Maquette V1                               | link:https://github.com/Gourdmandise/web-commerce-projet/tree/main/Maquette/v1[Maquette]     |  | ✓
