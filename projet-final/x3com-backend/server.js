@@ -646,10 +646,23 @@ app.post('/commandes/:id/annuler', requireAuth, async (req, res) => {
       await sendMail({
         to: emailClient,
         subject: `🔄 Annulation confirmée — ${escHtml(commande.notes || 'votre commande')}`,
-        html: `<div style="font-family:Arial,sans-serif;max-width:600px;margin:auto">
-          <p>Votre commande <strong>${escHtml(commande.notes || '')}</strong> a bien été annulée.</p>
-          <p>Montant remboursé : <strong>${commande.prix} €</strong> sous 5-10 jours ouvrés.</p>
-        </div>`,
+        html: `
+<div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden">
+  <div style="background:#1a365d;padding:24px;text-align:center">
+    <h1 style="color:#fff;margin:0;font-size:22px">🔄 Annulation confirmée — X3COM</h1>
+  </div>
+  <div style="padding:28px;background:#f8fafc">
+    <p style="color:#374151;font-size:15px;margin:0 0 16px">Votre commande <strong>${escHtml(commande.notes || '')}</strong> a bien été annulée.</p>
+    <table style="width:100%;border-collapse:collapse">
+      <tr><td style="padding:8px 0;color:#64748b;width:160px;font-weight:bold">Commande</td><td style="padding:8px 0"><strong>${escHtml(commande.notes || '—')}</strong></td></tr>
+      <tr style="background:#fff"><td style="padding:8px 0;color:#64748b;font-weight:bold">Montant remboursé</td><td style="padding:8px 0"><strong style="color:#1a365d">${commande.prix} €</strong></td></tr>
+      <tr><td style="padding:8px 0;color:#64748b;font-weight:bold">Délai</td><td style="padding:8px 0">5-10 jours ouvrés</td></tr>
+    </table>
+    <hr style="border:none;border-top:1px solid #e2e8f0;margin:20px 0">
+    <p style="color:#374151;font-size:14px;margin:0">Pour toute question, contactez-nous à <a href="mailto:contact@x3com.com">contact@x3com.com</a>.</p>
+    <p style="margin-top:24px;font-size:12px;color:#94a3b8;text-align:center">Reçu le ${new Date().toLocaleString('fr-FR')}</p>
+  </div>
+</div>`,
       });
     }
 
