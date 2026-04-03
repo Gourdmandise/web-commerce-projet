@@ -6,7 +6,7 @@ Ce projet a été réalisé dans le cadre d'un stage et a pour objectif l'appren
 
 == Propriété intellectuelle
 Le code source de ce projet est partagé à des fins exclusivement éducatives.
-Les éléments graphiques présents dans le dossier /projet-final/angular/public, /Maquette et /logo (logos, illustrations, icônes, images) sont la propriété exclusive de Rayan SABOUN © 2026. Toute reproduction, modification, distribution ou utilisation de ces assets, sans autorisation écrite préalable, est strictement interdite.
+Les éléments graphiques présents dans le dossier `/projet-final/angular/public`, `/Maquette` et `/logo` (logos, illustrations, icônes, images) sont la propriété exclusive de Rayan SABOUN © 2026. Toute reproduction, modification, distribution ou utilisation de ces assets, sans autorisation écrite préalable, est strictement interdite.
 
 
 == Gestion de projet & Qualité
