@@ -787,7 +787,7 @@ app.get('/health', (req, res) => {
 // NETTOYAGE AUTO — commandes annulées > 3 jours
 // ══════════════════════════════════════════════════════════
 async function nettoyerCommandesAnnulees() {
-  const il_y_a_3_jours = new Date(Date.now() - 10 * 1000).toISOString();
+  const il_y_a_3_jours = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString();
   const { data, error } = await supabase
     .from('commandes').delete()
     .eq('statut', 'annulee')
@@ -798,7 +798,8 @@ async function nettoyerCommandesAnnulees() {
   if (data?.length > 0) console.log(`🗑 ${data.length} commande(s) annulée(s) supprimée(s)`);
 }
 nettoyerCommandesAnnulees();
-setInterval(nettoyerCommandesAnnulees, 10 * 1000);
+setInterval(nettoyerCommandesAnnulees, 24 * 60 * 60 * 1000);
+
 
 // ══════════════════════════════════════════════════════════
 // DÉMARRAGE
