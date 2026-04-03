@@ -78,19 +78,55 @@ function commandeToAngular(c) {
 // ══════════════════════════════════════════════════════════
 // MIDDLEWARES GLOBAUX
 // ══════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════
+// HEADERS DE SÉCURITÉ
+// ══════════════════════════════════════════════════════════
 app.use(helmet({
+  // ── Content-Security-Policy ────────────────────────────
+  // Le backend (API JSON) ne sert pas de HTML — la CSP ici
+  // protège les rares réponses texte/HTML d'erreur Express.
   contentSecurityPolicy: {
     directives: {
-      defaultSrc:     ["'self'"],
-      scriptSrc:      ["'self'"],
+      defaultSrc:     ["'none'"],   // API pure : rien par défaut
+      scriptSrc:      ["'none'"],
       objectSrc:      ["'none'"],
-      frameAncestors: ["'none'"],
+      frameAncestors: ["'none'"],   // Personne ne peut encadrer l'API
       baseUri:        ["'self'"],
     },
   },
-  frameguard:     { action: 'sameorigin' },
+
+  // ── X-Frame-Options ────────────────────────────────────
+  frameguard: { action: 'sameorigin' },
+
+  // ── X-Content-Type-Options: nosniff ────────────────────
+  // Activé par défaut par Helmet — pas besoin de déclaration
+
+  // ── Referrer-Policy ────────────────────────────────────
   referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
+
+  // ── HSTS — Render force déjà HTTPS, on l'indique aux navigateurs
+  hsts: {
+    maxAge:            31536000,  // 1 an
+    includeSubDomains: true,
+    preload:           true,
+  },
 }));
+
+// ── Permissions-Policy (absent de Helmet v8 — ajout manuel) ──
+app.use((_req, res, next) => {
+  res.setHeader(
+    'Permissions-Policy',
+    [
+      'camera=()',
+      'microphone=()',
+      'geolocation=()',
+      'usb=()',
+      'fullscreen=(self)',
+      'payment=(self)',
+    ].join(', ')
+  );
+  next();
+});
 
 app.use(cors({
   origin: (origin, cb) => {

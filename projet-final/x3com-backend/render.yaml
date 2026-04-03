@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: x3com-backend
+    runtime: node
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "3001"
+      - key: FRONTEND_URL
+        value: https://web-commerce-projet.vercel.app   # ← adapter à ton domaine Vercel exact
