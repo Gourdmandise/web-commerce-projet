@@ -693,17 +693,11 @@ app.post('/create-checkout-session', requireAuth, async (req, res) => {
 
 
 // ══════════════════════════════════════════════════════════
-// GET /session/:sessionId — AUTHENTIFIÉ
+// GET /session/:sessionId — PUBLIC (session_id Stripe = token unique)
 // ══════════════════════════════════════════════════════════
-app.get('/session/:sessionId', requireAuth, async (req, res) => {
+app.get('/session/:sessionId', async (req, res) => {
   try {
     const session = await stripe.checkout.sessions.retrieve(req.params.sessionId);
-
-    const sessionUserId = parseInt(session.metadata?.utilisateurId);
-    if (req.user.role !== 'admin' && sessionUserId !== req.user.id) {
-      return res.status(403).json({ error: 'Accès refusé' });
-    }
-
     res.json({ status: session.payment_status, customerEmail: session.customer_details?.email, metadata: session.metadata });
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
@@ -754,45 +748,14 @@ app.post('/webhook', async (req, res) => {
       await sendMail({
         to: emailClient,
         subject: `✅ Confirmation — ${escHtml(meta.nomOffre)}`,
-        html: `
-<div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden">
-  <div style="background:#1a365d;padding:24px;text-align:center">
-    <h1 style="color:#fff;margin:0;font-size:22px">✅ Paiement confirmé — X3COM</h1>
-  </div>
-  <div style="padding:28px;background:#f8fafc">
-    <p style="color:#374151;font-size:15px;margin:0 0 24px">Bonjour${prenomClient ? ' <strong>' + escHtml(prenomClient) + '</strong>' : ''},</p>
-    <p style="color:#374151;font-size:15px;margin:0 0 24px">Nous avons bien reçu votre paiement. Voici le récapitulatif de votre commande :</p>
-    <table style="width:100%;border-collapse:collapse">
-      <tr><td style="padding:8px 0;color:#64748b;width:160px;font-weight:bold">Prestation</td><td style="padding:8px 0"><strong>${escHtml(meta.nomOffre)}</strong></td></tr>
-      <tr style="background:#fff"><td style="padding:8px 0;color:#64748b;font-weight:bold">Montant</td><td style="padding:8px 0"><strong style="color:#1a365d">${escHtml(meta.prix)} €</strong></td></tr>
-    </table>
-    <hr style="border:none;border-top:1px solid #e2e8f0;margin:20px 0">
-    <p style="color:#374151;font-size:14px;margin:0">Notre équipe prendra contact avec vous prochainement pour planifier l'intervention.</p>
-    <p style="margin-top:24px;font-size:12px;color:#94a3b8;text-align:center">Reçu le ${new Date().toLocaleString('fr-FR')}</p>
-  </div>
-</div>`,
+        html: `<p>Bonjour${prenomClient ? ' ' + escHtml(prenomClient) : ''}, votre paiement pour <strong>${escHtml(meta.nomOffre)}</strong> de ${escHtml(meta.prix)} € a bien été reçu.</p>`,
       });
     }
 
     await sendMail({
       to: process.env.MAIL_DESTINATAIRE,
       subject: `[X3COM Paiement] ${escHtml(meta.nomOffre)} — ${meta.prix} € — ${nomComplet}`,
-      html: `
-<div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden">
-  <div style="background:#1a365d;padding:24px;text-align:center">
-    <h1 style="color:#fff;margin:0;font-size:22px">💳 Nouveau paiement — X3COM</h1>
-  </div>
-  <div style="padding:28px;background:#f8fafc">
-    <table style="width:100%;border-collapse:collapse">
-      <tr><td style="padding:8px 0;color:#64748b;width:160px;font-weight:bold">Prestation</td><td style="padding:8px 0"><strong>${escHtml(meta.nomOffre)}</strong></td></tr>
-      <tr style="background:#fff"><td style="padding:8px 0;color:#64748b;font-weight:bold">Montant</td><td style="padding:8px 0"><strong style="color:#1a365d">${escHtml(meta.prix)} €</strong></td></tr>
-      <tr><td style="padding:8px 0;color:#64748b;font-weight:bold">Client</td><td style="padding:8px 0">${escHtml(nomComplet)}</td></tr>
-      <tr style="background:#fff"><td style="padding:8px 0;color:#64748b;font-weight:bold">E-mail</td><td style="padding:8px 0"><a href="mailto:${emailClient || ''}">${emailClient || '—'}</a></td></tr>
-      <tr><td style="padding:8px 0;color:#64748b;font-weight:bold">Téléphone</td><td style="padding:8px 0">${escHtml(telClient)}</td></tr>
-    </table>
-    <p style="margin-top:24px;font-size:12px;color:#94a3b8;text-align:center">Reçu le ${new Date().toLocaleString('fr-FR')}</p>
-  </div>
-</div>`,
+      html: `<p>Nouveau paiement : ${escHtml(meta.nomOffre)} — ${meta.prix} € — ${escHtml(nomComplet)} — ${emailClient || '—'} — ${escHtml(telClient)}</p>`,
     });
   }
 
