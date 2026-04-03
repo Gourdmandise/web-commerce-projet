@@ -1,6 +1,5 @@
-import { Component, ViewEncapsulation, signal } from '@angular/core';
+import { Component, ViewEncapsulation, signal, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { inject } from '@angular/core';
 
 type PageLegale = 'mentions' | 'cgu' | 'confidentialite' | 'cgv';
 
