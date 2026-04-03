@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, ViewEncapsulation, inject, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
@@ -10,6 +10,7 @@ import { environment } from '../../../environments/environment';
   imports: [RouterLink, CommonModule],
   templateUrl: './terrassement.html',
   styleUrls: ['./terrassement.css'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class Terrassement implements OnInit {
   http = inject(HttpClient);

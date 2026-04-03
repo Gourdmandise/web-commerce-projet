@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, ViewEncapsulation, inject } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -23,6 +23,7 @@ interface ContactForm {
   imports: [FormsModule, RouterLink],
   templateUrl: './contact.html',
   styleUrls: ['./contact.css'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class Contact {
   panier  = inject(PanierService);

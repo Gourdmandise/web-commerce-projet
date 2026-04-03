@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, ViewEncapsulation, inject, signal, OnInit } from '@angular/core';
 import { FormsModule }        from '@angular/forms';
 import { RouterLink }         from '@angular/router';
 import { DatePipe }           from '@angular/common';
@@ -18,6 +18,7 @@ type VueLogin = 'connexion' | 'inscription';
   imports: [FormsModule, RouterLink, DatePipe],
   templateUrl: './compte.html',
   styleUrls: ['./compte.css'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class Compte implements OnInit {
   panier             = inject(PanierService);

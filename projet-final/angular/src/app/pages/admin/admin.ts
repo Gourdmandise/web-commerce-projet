@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, ViewEncapsulation, inject, signal, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { PanierService }      from '../../services/panier.service';
@@ -18,6 +18,7 @@ type OngletAdmin = 'utilisateurs' | 'commandes' | 'offres';
   imports: [FormsModule, DatePipe],
   templateUrl: './admin.html',
   styleUrls: ['./admin.css'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class Admin implements OnInit {
   panier             = inject(PanierService);

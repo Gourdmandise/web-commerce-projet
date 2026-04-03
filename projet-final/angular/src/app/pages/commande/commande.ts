@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, ViewEncapsulation, inject, signal, OnInit } from '@angular/core';
 import { RouterLink, ActivatedRoute } from '@angular/router';
 import { PanierService }   from '../../services/panier.service';
 import { StripeService }   from '../../services/stripe.service';
@@ -10,6 +10,7 @@ import { Offre }           from '../../models/offre.model';
   imports: [RouterLink],
   templateUrl: './commande.html',
   styleUrls: ['./commande.css'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class Commande implements OnInit {
   panier        = inject(PanierService);

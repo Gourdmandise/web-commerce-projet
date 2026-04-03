@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewEncapsulation, ViewEncapsulation } from '@angular/core';
 
 @Component({
   selector: 'app-topbar',
@@ -6,5 +6,6 @@ import { Component } from '@angular/core';
   imports: [],
   templateUrl: './topbar.html',
   styleUrls: ['./topbar.css'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class Topbar {}

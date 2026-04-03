@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewEncapsulation, ViewEncapsulation } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -7,6 +7,7 @@ import { RouterLink } from '@angular/router';
   imports: [RouterLink],
   templateUrl: './footer.html',
   styleUrls: ['./footer.css'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class FooterComp {
   annee = new Date().getFullYear();

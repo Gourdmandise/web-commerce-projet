@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, ViewEncapsulation, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
@@ -8,6 +8,7 @@ import { AuthService } from '../../services/auth.service';
   imports: [RouterLink, RouterLinkActive],
   templateUrl: './nav.html',
   styleUrls: ['./nav.css'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class Nav {
   auth = inject(AuthService);

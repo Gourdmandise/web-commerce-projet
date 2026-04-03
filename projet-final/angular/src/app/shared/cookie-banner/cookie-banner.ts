@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, ViewEncapsulation, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -7,6 +7,7 @@ import { RouterLink } from '@angular/router';
   imports: [RouterLink],
   templateUrl: './cookie-banner.html',
   styleUrls: ['./cookie-banner.css'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class CookieBanner {
   // sessionStorage : réinitialisé à chaque fermeture du navigateur

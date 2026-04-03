@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, ViewEncapsulation, inject, signal, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { PanierService }  from '../../services/panier.service';
@@ -11,6 +11,7 @@ import { StripeService }  from '../../services/stripe.service';
   imports: [FormsModule, RouterLink],
   templateUrl: './paiement.html',
   styleUrls: ['./paiement.css'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class Paiement implements OnInit {
   panier  = inject(PanierService);

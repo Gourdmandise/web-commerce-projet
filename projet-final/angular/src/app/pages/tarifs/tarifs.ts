@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, ViewEncapsulation, inject, signal, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { PanierService } from '../../services/panier.service';
 import { OffreService } from '../../services/offre.service';
@@ -10,6 +10,7 @@ import { Offre } from '../../models/offre.model';
   imports: [],
   templateUrl: './tarifs.html',
   styleUrls: ['./tarifs.css'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class Tarifs implements OnInit {
   private router       = inject(Router);

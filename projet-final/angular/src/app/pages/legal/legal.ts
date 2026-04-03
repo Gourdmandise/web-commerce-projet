@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, ViewEncapsulation, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { inject } from '@angular/core';
 
@@ -10,6 +10,7 @@ type PageLegale = 'mentions' | 'cgu' | 'confidentialite' | 'cgv';
   imports: [RouterLink],
   templateUrl: './legal.html',
   styleUrls: ['./legal.css'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class Legal {
   route = inject(ActivatedRoute);
