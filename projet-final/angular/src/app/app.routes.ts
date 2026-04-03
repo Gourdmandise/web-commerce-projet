@@ -18,7 +18,7 @@ export const routes: Routes = [
   { path: 'contact',          component: Contact },
   { path: 'compte',           component: Compte },
   { path: 'paiement',         component: Paiement,  canActivate: [authGuard] },
-  { path: 'commande',         component: Commande,  canActivate: [authGuard] },
+  { path: 'commande',         component: Commande },
   { path: 'admin',            component: Admin,     canActivate: [adminGuard] },
   { path: 'mentions-legales', component: Legal,     data: { page: 'mentions' } },
   { path: 'cgu',              component: Legal,     data: { page: 'cgu' } },
