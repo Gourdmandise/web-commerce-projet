@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
-import { Home }         from './pages/home/home';
+import { Home }        from './pages/home/home';
+import { Entreprise }  from './pages/entreprise/entreprise';
 import { Terrassement } from './pages/terrassement/terrassement';
 import { Tarifs }       from './pages/tarifs/tarifs';
 import { Contact }      from './pages/contact/contact';
@@ -13,6 +14,7 @@ import { adminGuard }   from './guards/admin.guard';
 
 export const routes: Routes = [
   { path: '',                 component: Home,         pathMatch: 'full' },
+  { path: 'entreprise',       component: Entreprise },
   { path: 'terrassement',     component: Terrassement },
   { path: 'tarifs',           component: Tarifs },
   { path: 'contact',          component: Contact },

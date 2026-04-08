@@ -2,54 +2,24 @@ import { Component, ViewEncapsulation } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 @Component({
-  selector: 'app-entreprise',
+  selector: 'app-home',
   standalone: true,
   imports: [RouterLink],
-  templateUrl: './entreprise.html',
-  styleUrls: ['./entreprise.css'],
+  templateUrl: './home.html',
+  styleUrls: ['./home.css'],
   encapsulation: ViewEncapsulation.None,
 })
-export class Entreprise {
-  profils = [
-    {
-      icon: '🏠',
-      color: '#2dd4bf',
-      bg: 'linear-gradient(135deg,#2dd4bf,#0ea5e9)',
-      titre: 'Particuliers',
-      desc: 'Détection et raccordement fibre pour votre domicile. Accédez au très haut débit simplement.',
-    },
-    {
-      icon: '🏛️',
-      color: '#10b981',
-      bg: 'linear-gradient(135deg,#10b981,#06b6d4)',
-      titre: 'Collectivités',
-      desc: 'Solutions adaptées aux communes et établissements publics. Accélérez le déploiement sur votre territoire.',
-    },
-    {
-      icon: '🏢',
-      color: '#f97316',
-      bg: 'linear-gradient(135deg,#f97316,#fbbf24)',
-      titre: 'Entreprises',
-      desc: 'Diagnostic fibre et accompagnement professionnel. Boostez la connectivité de votre activité.',
-    },
-    {
-      icon: '💡',
-      color: '#a855f7',
-      bg: 'linear-gradient(135deg,#a855f7,#ec4899)',
-      titre: 'Le saviez-vous ?',
-      desc: 'Découvrez la réglementation fibre optique, vos droits et les aides au raccordement.',
-    },
-  ];
-
-  atouts = [
-    { icon: '🛡️', titre: 'Expertise Garantie',   desc: 'Détection fibre avec précision' },
-    { icon: '🕐', titre: 'Disponibilité',          desc: 'Intervention selon vos horaires' },
-    { icon: '⚡', titre: 'Trois Offres',            desc: 'Adaptées à votre budget' },
+export class Home {
+  services = [
+    { img: 'fibre-optique.png',        titre: 'Fibre Optique',             desc: 'Déploiement réseaux FTTH/FTTO, raccordements, maintenance haute performance.' },
+    { img: 'detection-securite.png',   titre: 'Détection & Sécurité',      desc: 'Vidéoprotection intelligente, alarmes intrusion, contrôle d\'accès et détection incendie.' },
+    { img: 'energie-renouvelable.png', titre: 'Énergie Renouvelable',       desc: 'Installations photovoltaïques, solutions d\'autoconsommation, stockage d\'énergie.' },
+    { img: 'irve.png',                 titre: 'IRVE (Recharge Électrique)', desc: 'Infrastructure de recharge pour VE, installation de bornes pour entreprises et copropriétés.' },
   ];
 
   temoignages = [
-    { nom: 'Thomas Dupont',   date: '05/05/2025', texte: 'Service rapide et professionnel. L\'équipe X3COM a détecté et résolu notre problème de raccordement en un temps record.' },
-    { nom: 'Michelle Durand', date: '23/04/2025', texte: 'Excellente prise en charge. Nous avons enfin la fibre grâce à leur intervention précise et efficace.' },
-    { nom: 'Jérôme Radot',    date: '04/01/2025', texte: 'Très satisfait du diagnostic réseau. Une équipe compétente qui connaît parfaitement le territoire.' },
+    { initiales:'JD', nom:'Jean Dupont',      role:'Particulier — Toulouse',  note:5, texte:'Intervention rapide et efficace. L\'équipe a localisé le blocage en moins d\'une heure, diagnostic complet fourni par email le soir même.' },
+    { initiales:'SM', nom:'Sophie Martin',    role:'Syndic de copropriété',   note:5, texte:'Excellente prestation pour notre syndic. X3COM a géoréférencé l\'ensemble du réseau de notre résidence. Travail sérieux, documentation parfaite.' },
+    { initiales:'PL', nom:'Pierre Laurent',   role:'Professionnel — Blagnac', note:4, texte:'Professionnel, ponctuel et pédagogue. La fibre était enfin raccordable après l\'intervention. Très satisfait du résultat.' },
   ];
 }
