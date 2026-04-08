@@ -709,7 +709,6 @@ app.post('/create-checkout-session', requireAuth, async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-
 // ══════════════════════════════════════════════════════════
 // GET /session/:sessionId — AUTHENTIFIÉ
 // ══════════════════════════════════════════════════════════
