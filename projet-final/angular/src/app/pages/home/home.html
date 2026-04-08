@@ -1,148 +1,138 @@
-<!-- ══════════════════════════════════════════
-     SECTION 1 — HERO
-══════════════════════════════════════════ -->
+<!-- HERO -->
 <section class="hero">
   <div class="hbg"></div>
-
+  <div class="hgrid"></div>
+  <div class="hglow"></div>
+  <div class="hlines"><div class="hl-"></div><div class="hl-"></div><div class="hl-"></div></div>
+  <div class="hhex right">
+    <svg width="420" height="420" viewBox="0 0 420 420" fill="none">
+      <polygon points="210,20 378,116 378,308 210,404 42,308 42,116" stroke="#00D4AA" stroke-width="1.5" fill="none"/>
+      <polygon points="210,60 348,138 348,282 210,360 72,282 72,138" stroke="#00B4D8" stroke-width="1" fill="none"/>
+      <polygon points="210,100 318,160 318,260 210,320 102,260 102,160" stroke="#0077B6" stroke-width="0.8" fill="none"/>
+    </svg>
+  </div>
   <div class="hcnt">
-    <div class="hbadge">📶 Solutions Connectées &amp; Durables</div>
+    <div class="hbadge">Solutions Connectées &amp; Durables</div>
     <h1 class="hero-title">
-      Nous détectons votre<br>
-      <span class="hl">réseau télécom</span>
+      <span class="hl">Détection</span><br>
+      <span class="hl2">Génie Civil</span><br>
+      <span class="hl3">Fibre Optique</span>
     </h1>
-    <div class="htag">
-      <span class="htag-i">VOUS</span>
-      <span class="htag-i">NOUS</span>
-      <span class="htag-i">NOS PARTENAIRES</span>
-    </div>
-    <p class="hero-sub">
-      Fibre optique, diagnostic réseau et raccordement pour particuliers,
-      entreprises et collectivités en Haute-Garonne et Tarn.
-    </p>
+    <p class="hero-sub">X3COM s'engage à vos côtés pour garantir la réussite et la sécurité de chaque projet d'infrastructure souterraine avec les technologies les plus innovantes du marché.</p>
     <div class="hbtns">
-      <a routerLink="/tarifs" class="btn-x1">↓ Découvrir nos services</a>
+      <a routerLink="/tarifs"  class="btn-x1">Voir nos offres</a>
+      <a routerLink="/contact" class="btn-x2">Nous contacter</a>
+    </div>
+    <div class="htag">
+      <div class="htag-i hl">Innovation</div>
+      <div class="htag-i hl2">Performance</div>
+      <div class="htag-i hl3">Durabilité</div>
     </div>
   </div>
 </section>
 
-<!-- ══════════════════════════════════════════
-     SECTION 2 — Comment peut-on vous aider ?
-══════════════════════════════════════════ -->
+<!-- STRIP -->
+<div class="strip">
+  <div class="si"><div class="sd em"></div>Pré-câblage Optique</div>
+  <div class="si"><div class="sd cy"></div>Détection Réseaux</div>
+  <div class="si"><div class="sd te"></div>Génie Civil</div>
+  <div class="si"><div class="sd em"></div>Énergies Renouvelables</div>
+  <div class="si"><div class="sd cy"></div>IRVE</div>
+  <div class="si"><div class="sd te"></div>Géoréférencement</div>
+</div>
+
+<!-- DOMAINES -->
 <section class="sec tc">
-  <h2 class="big" style="margin-bottom:8px">
-    Comment peut-on <span class="hl">vous aider</span> ?
-  </h2>
-  <p class="ep-sub">Cliquez sur le profil qui vous correspond pour découvrir nos solutions adaptées.</p>
-  <div class="ep-profils">
-    @for (p of profils; track p.titre) {
-      <div class="ep-profil">
-        <div class="ep-profil__icon" [style.background]="p.bg">{{ p.emoji }}</div>
-        <h3 class="ep-profil__titre">{{ p.titre }}</h3>
-        <p class="ep-profil__desc">{{ p.desc }}</p>
+  <div class="lbl" style="justify-content:center">Domaines d'intervention</div>
+  <h2 class="big">Domaine <span class="hl">privé</span> &amp; <span class="hl2">public</span></h2>
+  <p class="sub" style="margin:0 auto 36px">Du particulier à la collectivité, nous intervenons pour tous vos besoins en détection et infrastructure souterraine.</p>
+  <div class="dg">
+    <div class="dc dc1">
+      <div class="dic">🏠</div>
+      <h3>Domaine privé</h3>
+      <p>Nous mettons notre expertise au service des particuliers comme des professionnels pour toutes vos missions : détection, géoréférencement et création de réseaux en propriété privée.</p>
+    </div>
+    <div class="dc dc2">
+      <div class="dic">🏛️</div>
+      <h3>Domaine public</h3>
+      <p>Du particulier à la collectivité, professionnels et syndics inclus, nous intervenons pour tous vos besoins en domaine public dans le strict respect des normes réglementaires.</p>
+    </div>
+  </div>
+</section>
+
+<!-- À PROPOS -->
+<section class="sec-alt">
+  <div class="aw">
+    <div>
+      <div class="lbl">Notre entreprise</div>
+      <h2 class="big">À propos de <span class="hl">X3COM</span></h2>
+      <p class="at">Implantée à Toulouse, X3COM est une société spécialisée dans les réseaux enterrés. Avec un savoir-faire reconnu, des habilitations et des certifications à jour, nous prenons en charge toutes vos missions.</p>
+      <p class="at">Détection et géoréférencement de réseaux enterrés, recherche de regards, localisation des blocages fibre optique, travaux de génie civil, énergies renouvelables et installation IRVE.</p>
+      <a routerLink="/contact" class="btn-x1" style="margin-top:16px">Faites appel à nos experts</a>
+      <div class="sr">
+        <div class="sb"><span class="sn hl">500+</span><div class="sl">Interventions</div></div>
+        <div class="sb"><span class="sn hl2">12+</span><div class="sl">Ans d'expérience</div></div>
+        <div class="sb"><span class="sn hl3">100%</span><div class="sl">Certifié</div></div>
+      </div>
+    </div>
+    <div class="av2">
+      <svg width="280" height="260" viewBox="0 0 280 260" fill="none">
+        <polygon points="140,28 202,64 202,136 140,172 78,136 78,64" fill="none" stroke="#00D4AA" stroke-width="1.5" opacity=".6"/>
+        <polygon points="140,52 188,79 188,133 140,160 92,133 92,79" fill="rgba(0,180,216,0.07)" stroke="#00B4D8" stroke-width="1" opacity=".7"/>
+        <polygon points="140,74 170,91 170,126 140,143 110,126 110,91" fill="rgba(0,119,182,0.12)" stroke="#0077B6" stroke-width="1"/>
+        <polygon points="140,94 157,104 157,123 140,133 123,123 123,104" fill="rgba(0,212,170,0.2)" stroke="#00D4AA" stroke-width="1.5"/>
+        <circle cx="140" cy="98" r="7" fill="#00D4AA" opacity=".8"/>
+        <circle cx="202" cy="64" r="4" fill="#00B4D8" opacity=".7"/>
+        <circle cx="78" cy="64" r="4" fill="#00D4AA" opacity=".6"/>
+        <text x="140" y="230" text-anchor="middle" fill="#00D4AA" font-size="11" font-family="Barlow Condensed,sans-serif" font-weight="900" opacity=".7" letter-spacing="4">X3COM</text>
+        <text x="140" y="246" text-anchor="middle" fill="#4A6275" font-size="9" font-family="Barlow,sans-serif" opacity=".7">Solutions Connectées &amp; Durables</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES 2×2 -->
+<section class="sec tc">
+  <div class="lbl" style="justify-content:center">Ce que nous faisons</div>
+  <h2 class="big">Nos <span class="hl">services</span></h2>
+  <p class="sub" style="margin:0 auto 40px">Une expertise complète pour toutes vos infrastructures souterraines et énergétiques.</p>
+  <div class="sg4">
+    @for (s of services; track s.titre) {
+      <div class="sc4">
+        <div class="sc4-icon"><img [src]="s.img" [alt]="s.titre" class="sc4-img"></div>
+        <div>
+          <h3>{{ s.titre }}</h3>
+          <p>{{ s.desc }}</p>
+        </div>
+        <a routerLink="/terrassement" class="sm">En savoir plus →</a>
       </div>
     }
   </div>
 </section>
 
-<!-- ══════════════════════════════════════════
-     SECTION 3 — Qui nous sommes
-══════════════════════════════════════════ -->
-<section class="sec-alt">
-  <div class="ep-about">
-    <div class="ep-about__left">
-      <h2 class="big">Qui <span class="hl">nous sommes</span></h2>
-      <p class="ep-about__para">
-        X3COM est spécialisée dans la détection de la fibre optique. Grâce à des outils de
-        diagnostic de pointe et une équipe d'experts, nous intervenons rapidement pour
-        identifier la disponibilité du réseau fibre et accompagner nos clients dans leur raccordement.
-      </p>
-      <p class="ep-about__para">
-        Nous contribuons à accélérer l'accès au très haut débit sur l'ensemble du territoire,
-        avec un service fiable et adapté à chaque type de client.
-      </p>
-      <div class="ep-atouts">
-        @for (a of atouts; track a.titre) {
-          <div class="ep-atout">
-            <div class="ep-atout__icon">{{ a.icon }}</div>
-            <div>
-              <strong>{{ a.titre }}</strong>
-              <span>{{ a.desc }}</span>
-            </div>
-          </div>
-        }
-      </div>
-    </div>
-    <div class="ep-about__right">
-      <svg width="280" height="320" viewBox="0 0 280 320" fill="none" aria-hidden="true">
-        <rect x="10" y="10" width="260" height="300" rx="20" fill="#1a1f2e" stroke="rgba(0,180,216,0.15)" stroke-width="1"/>
-        <polygon points="140,60 188,87 188,141 140,168 92,141 92,87"   fill="none" stroke="#00D4AA" stroke-width="1.5" opacity=".5"/>
-        <polygon points="140,82 176,103 176,145 140,166 104,145 104,103" fill="rgba(0,180,216,0.07)" stroke="#00B4D8" stroke-width="1" opacity=".6"/>
-        <polygon points="140,102 164,116 164,143 140,157 116,143 116,116" fill="rgba(0,119,182,0.12)" stroke="#0077B6" stroke-width="1"/>
-        <circle cx="140" cy="114" r="8" fill="#00D4AA" opacity=".8"/>
-        <text x="140" y="230" text-anchor="middle" fill="#00B4D8" font-size="42" font-family="'Barlow Condensed',sans-serif" font-weight="900" letter-spacing="-1">X3</text>
-        <text x="140" y="268" text-anchor="middle" fill="#ffffff" font-size="28" font-family="'Barlow Condensed',sans-serif" font-weight="700" letter-spacing="2">COM</text>
-        <text x="140" y="292" text-anchor="middle" fill="#8892a4" font-size="9" font-family="Outfit,sans-serif" letter-spacing="3">Solutions Connectées &amp; Durables</text>
-      </svg>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════════════════════════════════════
-     SECTION 4 — Notre territoire
-══════════════════════════════════════════ -->
-<section class="sec">
-  <div class="ep-territory">
-    <div class="ep-map-wrap">
-      <svg viewBox="0 0 400 450" xmlns="http://www.w3.org/2000/svg" class="ep-map-svg" aria-hidden="true">
-        <defs>
-          <linearGradient id="mapg" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%"   stop-color="#00D4AA" stop-opacity="0.9"/>
-            <stop offset="100%" stop-color="#0077B6" stop-opacity="0.7"/>
-          </linearGradient>
-        </defs>
-        <path d="M155 18 L175 12 L195 22 L220 18 L240 30 L258 25 L272 38 L285 30 L295 45 L310 55 L318 70 L310 85 L320 100 L315 118 L328 135 L325 155 L335 168 L330 185 L318 195 L322 215 L312 228 L300 240 L288 255 L275 268 L260 278 L248 292 L235 298 L220 310 L208 325 L195 338 L180 348 L168 360 L155 368 L142 360 L130 348 L118 335 L108 320 L100 305 L92 290 L88 275 L80 260 L78 245 L85 230 L80 215 L72 200 L68 185 L75 170 L70 155 L78 138 L72 120 L80 105 L78 88 L90 72 L102 58 L112 45 L125 35 L138 25 L155 18 Z" fill="url(#mapg)" opacity="0.25"/>
-        <path d="M155 18 L175 12 L195 22 L220 18 L240 30 L258 25 L272 38 L285 30 L295 45 L310 55 L318 70 L310 85 L320 100 L315 118 L328 135 L325 155 L335 168 L330 185 L318 195 L322 215 L312 228 L300 240 L288 255 L275 268 L260 278 L248 292 L235 298 L220 310 L208 325 L195 338 L180 348 L168 360 L155 368 L142 360 L130 348 L118 335 L108 320 L100 305 L92 290 L88 275 L80 260 L78 245 L85 230 L80 215 L72 200 L68 185 L75 170 L70 155 L78 138 L72 120 L80 105 L78 88 L90 72 L102 58 L112 45 L125 35 L138 25 L155 18 Z" fill="none" stroke="#00D4AA" stroke-width="1.5" opacity="0.5"/>
-        <circle cx="175" cy="288" r="10" fill="#00D4AA" opacity="0.9"/>
-        <circle cx="200" cy="270" r="8"  fill="#00B4D8" opacity="0.8"/>
-        <text x="175" y="312" text-anchor="middle" fill="#00D4AA" font-size="13" font-weight="800" font-family="Outfit,sans-serif">31</text>
-        <text x="200" y="292" text-anchor="middle" fill="#00B4D8" font-size="13" font-weight="800" font-family="Outfit,sans-serif">81</text>
-      </svg>
-    </div>
-    <div class="ep-territory__info">
-      <div class="lbl">📍 Zone d'intervention</div>
-      <h2 class="big">Notre présence sur le <span class="hl">territoire</span></h2>
-      <p class="ep-about__para" style="margin-top:16px">
-        Nous proposons nos services en <strong style="color:#fff">Haute-Garonne (31)</strong> et dans le <strong style="color:#fff">Tarn (81)</strong>,
-        avec pour objectif d'accompagner particuliers et professionnels grâce à des solutions fiables, locales et réactives.
-      </p>
-      <p class="ep-about__para">
-        Notre priorité : être disponibles, efficaces, et à l'écoute de vos besoins.
-      </p>
-      <a routerLink="/contact" class="btn-x1" style="margin-top:8px">Nous contacter</a>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════════════════════════════════════
-     SECTION 5 — Ce que disent nos clients
-══════════════════════════════════════════ -->
+<!-- TÉMOIGNAGES -->
 <section class="sec-alt tc">
-  <h2 class="big" style="margin-bottom:48px">Ce que disent <span class="hl">nos clients</span></h2>
-  <div class="ep-temoignages">
+  <div class="lbl" style="justify-content:center">Ils nous font confiance</div>
+  <h2 class="big" style="margin-bottom:40px">Témoignages <span class="hl">clients</span></h2>
+  <div class="tg">
     @for (t of temoignages; track t.nom) {
-      <div class="ep-temoignage">
-        <div class="ep-temoignage__quote">❝❝</div>
-        <p class="ep-temoignage__texte">{{ t.texte }}</p>
-        <div class="ep-temoignage__footer">
-          <strong>{{ t.nom }}</strong>
-          <span>{{ t.role }}</span>
+      <div class="tc2">
+        <div class="stars">
+          @for (i of [1,2,3,4,5]; track i) {
+            <span [class.active]="i <= t.note">★</span>
+          }
+        </div>
+        <p>{{ t.texte }}</p>
+        <div class="ta">
+          <div class="av3">{{ t.initiales }}</div>
+          <div class="an"><strong>{{ t.nom }}</strong><span>{{ t.role }}</span></div>
         </div>
       </div>
     }
   </div>
 
-  <div class="ep-cta-block">
-    <h2 class="big">Raccordement fibre <span class="hl">bloqué ?</span></h2>
+  <div class="ctab">
+    <h2>Raccordement fibre bloqué ?</h2>
     <p>X3COM dispose des équipements et de l'expertise pour lever chaque obstacle.</p>
     <a routerLink="/tarifs" class="btn-x1">Découvrir nos offres</a>
   </div>
