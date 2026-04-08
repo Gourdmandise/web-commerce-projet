@@ -12,10 +12,13 @@ import { authGuard }    from './guards/auth.guard';
 import { adminGuard }   from './guards/admin.guard';
 
 export const routes: Routes = [
-  { path: '',                 component: Home,         pathMatch: 'full' },
-  { path: 'terrassement',     component: Terrassement },
-  { path: 'tarifs',           component: Tarifs },
-  { path: 'contact',          component: Contact },
+  { path: '',                   component: Home,         pathMatch: 'full' },
+  { path: 'nos-services',       component: Tarifs },
+  { path: 'qui-sommes-nous',    component: Terrassement },
+  { path: 'notre-territoire',   component: Contact },
+  { path: 'terrassement',       component: Terrassement },
+  { path: 'tarifs',             component: Tarifs },
+  { path: 'contact',            component: Contact },
   { path: 'compte',           component: Compte },
   { path: 'paiement',         component: Paiement,  canActivate: [authGuard] },
   { path: 'commande',         component: Commande },

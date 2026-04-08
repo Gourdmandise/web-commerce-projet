@@ -11,15 +11,15 @@ import { RouterLink } from '@angular/router';
 })
 export class Home {
   services = [
-    { img: 'fibre-optique.png',        titre: 'Fibre Optique',             desc: 'Déploiement réseaux FTTH/FTTO, raccordements, maintenance haute performance.' },
-    { img: 'detection-securite.png',   titre: 'Détection & Sécurité',      desc: 'Vidéoprotection intelligente, alarmes intrusion, contrôle d\'accès et détection incendie.' },
-    { img: 'energie-renouvelable.png', titre: 'Énergie Renouvelable',       desc: 'Installations photovoltaïques, solutions d\'autoconsommation, stockage d\'énergie.' },
-    { img: 'irve.png',                 titre: 'IRVE (Recharge Électrique)', desc: 'Infrastructure de recharge pour VE, installation de bornes pour entreprises et copropriétés.' },
+    { img: 'fibre-optique.png',        titre: 'Fibre Optique FTTH/FTTO',   desc: 'Déploiement et raccordement fibre optique pour particuliers, entreprises et collectivités. Accès au très haut débit garanti.' },
+    { img: 'detection-securite.png',   titre: 'Diagnostic Réseau',         desc: 'Détection et localisation des blocages fibre, diagnostic complet avec rapport technique détaillé fourni après intervention.' },
+    { img: 'energie-renouvelable.png', titre: 'Accompagnement Collectivités', desc: 'Solutions adaptées aux communes et établissements publics pour accélérer le déploiement fibre sur votre territoire.' },
+    { img: 'irve.png',                 titre: 'Expertise Professionnelle',  desc: 'Diagnostic fibre pour entreprises, boostez la connectivité de votre activité avec un accompagnement sur mesure.' },
   ];
 
   temoignages = [
-    { initiales:'JD', nom:'Jean Dupont',      role:'Particulier — Toulouse',  note:5, texte:'Intervention rapide et efficace. L\'équipe a localisé le blocage en moins d\'une heure, diagnostic complet fourni par email le soir même.' },
-    { initiales:'SM', nom:'Sophie Martin',    role:'Syndic de copropriété',   note:5, texte:'Excellente prestation pour notre syndic. X3COM a géoréférencé l\'ensemble du réseau de notre résidence. Travail sérieux, documentation parfaite.' },
-    { initiales:'PL', nom:'Pierre Laurent',   role:'Professionnel — Blagnac', note:4, texte:'Professionnel, ponctuel et pédagogue. La fibre était enfin raccordable après l\'intervention. Très satisfait du résultat.' },
+    { initiales:'TD', nom:'Thomas Dupont',    role:'Particulier',             note:5, texte:'Service rapide et professionnel. L\'équipe X3COM a détecté et résolu notre problème de raccordement en un temps record.' },
+    { initiales:'MD', nom:'Michelle Durand',  role:'Collectivité',            note:5, texte:'Excellente prise en charge. Nous avons enfin la fibre grâce à leur intervention précise et efficace.' },
+    { initiales:'JR', nom:'Jérôme Radot',     role:'Professionnel — Blagnac', note:5, texte:'Très satisfait du diagnostic réseau. Une équipe compétente qui connaît parfaitement le territoire.' },
   ];
 }

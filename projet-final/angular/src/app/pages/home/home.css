@@ -65,12 +65,17 @@
 
 /* ── DOMAINES ── */
 .dg { display:grid; grid-template-columns:1fr 1fr; gap:24px; max-width:900px; margin:0 auto; }
+.dg4 { grid-template-columns:repeat(4,1fr); max-width:1100px; }
 .dc { border-radius:16px; padding:38px; position:relative; overflow:hidden; transition:all .3s; backdrop-filter:blur(10px); }
 .dc1 { background:linear-gradient(135deg,rgba(0,212,170,0.06),rgba(0,212,170,0.02)); border:1px solid rgba(0,212,170,0.3); }
 .dc2 { background:linear-gradient(135deg,rgba(0,180,216,0.06),rgba(0,119,182,0.03)); border:1px solid rgba(0,180,216,0.3); }
 .dc::before { content:''; position:absolute; top:0; left:0; right:0; height:4px; }
 .dc1::before { background:linear-gradient(90deg,#00D4AA,#00B4D8); }
 .dc2::before { background:linear-gradient(90deg,#00B4D8,#0077B6); }
+.dc3 { background:linear-gradient(135deg,rgba(255,140,0,0.06),rgba(255,100,0,0.02)); border:1px solid rgba(255,140,0,0.3); }
+.dc3::before { background:linear-gradient(90deg,#ff8c00,#ff4500); }
+.dc4 { background:linear-gradient(135deg,rgba(128,0,200,0.06),rgba(90,0,180,0.02)); border:1px solid rgba(128,0,200,0.3); }
+.dc4::before { background:linear-gradient(90deg,#8000c8,#5a00b4); }
 .dc:hover { transform:translateY(-4px); box-shadow:0 12px 40px rgba(0,119,182,0.12); }
 .dic { width:54px; height:54px; border-radius:14px; display:flex; align-items:center; justify-content:center; margin-bottom:18px; font-size:26px; background:rgba(0,212,170,0.1); border:1px solid rgba(0,212,170,.3); }
 .dc h3 { font-family:'Barlow Condensed',sans-serif; font-size:22px; font-weight:800; color:#1A202C; margin-bottom:12px; text-transform:uppercase; }
@@ -131,7 +136,7 @@
 
 @media (max-width:768px) {
   .hero { padding:60px 20px; }
-  .dg, .sg4, .tg { grid-template-columns:1fr; }
+  .dg, .dg4, .sg4, .tg { grid-template-columns:1fr; }
   .aw { grid-template-columns:1fr; }
   .av2 { display:none; }
   .sr { justify-content:center; }
