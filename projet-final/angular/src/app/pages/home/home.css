@@ -143,3 +143,199 @@
   .strip { padding:12px 16px; }
   .si { padding:0 12px; }
 }
+
+/* ── TERRITOIRE ── */
+.terr-sec { padding-top: 80px; padding-bottom: 80px; }
+
+.terr-wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  max-width: 1100px;
+  margin: 0 auto;
+  align-items: center;
+}
+
+/* ── Carte ── */
+.terr-map-box { display: flex; justify-content: center; }
+
+.terr-map-card {
+  background: linear-gradient(145deg, rgba(0,212,170,0.06), rgba(0,180,216,0.04), rgba(0,119,182,0.03));
+  border: 1px solid rgba(0,212,170,0.22);
+  border-radius: 24px;
+  padding: 32px 24px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 4px 32px rgba(0,212,170,0.08);
+  transition: box-shadow .3s;
+}
+.terr-map-card:hover { box-shadow: 0 8px 48px rgba(0,212,170,0.16); }
+
+.france-map {
+  width: 100%;
+  max-width: 320px;
+  height: auto;
+  display: block;
+}
+
+/* Silhouette pays */
+.france-shape {
+  fill: rgba(0,180,216,0.10);
+  stroke: #00B4D8;
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+}
+.france-corsica {
+  fill: rgba(0,180,216,0.08);
+  stroke: #00B4D8;
+  stroke-width: 1;
+}
+
+/* Zone de rayonnement */
+.terr-zone-glow {
+  fill: url(#zoneGrad);
+}
+
+/* Ligne entre marqueurs */
+.terr-dept-line {
+  stroke: rgba(0,212,170,0.45);
+  stroke-width: 1.5;
+  stroke-dasharray: 4 3;
+}
+
+/* Anneaux pulsants */
+.terr-pulse-ring {
+  fill: none;
+  stroke-width: 1.5;
+  opacity: 0;
+}
+.terr-pulse-ring1 {
+  stroke: #00D4AA;
+  animation: terrPulse 2.4s ease-out infinite;
+}
+.terr-pulse-ring2 {
+  stroke: #00B4D8;
+  animation: terrPulse 2.4s ease-out infinite 0.8s;
+}
+@keyframes terrPulse {
+  0%   { opacity: .7; r: 10px; }
+  100% { opacity: 0; r: 28px; }
+}
+
+/* Points centraux */
+.terr-dot {
+  stroke-width: 2;
+}
+.terr-dot1 { fill: #00D4AA; stroke: #fff; }
+.terr-dot2 { fill: #00B4D8; stroke: #fff; }
+
+/* Labels département sur la carte */
+.terr-dept-label {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 11px;
+  font-weight: 900;
+  fill: #00D4AA;
+  text-anchor: middle;
+  letter-spacing: .06em;
+}
+.terr-dept-label2 { fill: #00B4D8; }
+
+/* Légende */
+.terr-legend {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.terr-legend-dot {
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.terr-legend-dot1 { background: #00D4AA; box-shadow: 0 0 6px rgba(0,212,170,.7); }
+.terr-legend-dot2 { background: #00B4D8; box-shadow: 0 0 6px rgba(0,180,216,.7); margin-left: 12px; }
+.terr-legend-txt {
+  font-size: 11px;
+  font-weight: 700;
+  color: #4A6275;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+/* ── Infos droite ── */
+.terr-info { display: flex; flex-direction: column; }
+
+.terr-depts {
+  display: flex;
+  gap: 16px;
+  margin-top: 28px;
+  flex-wrap: wrap;
+}
+
+.terr-dept {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 20px;
+  border-radius: 14px;
+  flex: 1;
+  min-width: 150px;
+  border: 1px solid;
+  transition: transform .25s, box-shadow .25s;
+}
+.terr-dept:hover { transform: translateY(-3px); }
+
+.terr-dept1 {
+  background: linear-gradient(135deg, rgba(0,212,170,0.07), rgba(0,212,170,0.02));
+  border-color: rgba(0,212,170,0.3);
+  box-shadow: 0 2px 12px rgba(0,212,170,0.06);
+}
+.terr-dept1:hover { box-shadow: 0 8px 24px rgba(0,212,170,0.14); }
+
+.terr-dept2 {
+  background: linear-gradient(135deg, rgba(0,180,216,0.07), rgba(0,119,182,0.02));
+  border-color: rgba(0,180,216,0.3);
+  box-shadow: 0 2px 12px rgba(0,180,216,0.06);
+}
+.terr-dept2:hover { box-shadow: 0 8px 24px rgba(0,180,216,0.14); }
+
+.terr-dept-num {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 32px;
+  font-weight: 900;
+  line-height: 1;
+  color: #00D4AA;
+  flex-shrink: 0;
+}
+.terr-dept-num2 { color: #00B4D8; }
+
+.terr-dept-detail {
+  display: flex;
+  flex-direction: column;
+}
+.terr-dept-detail strong {
+  font-size: 14px;
+  color: #1A202C;
+  font-weight: 800;
+}
+.terr-dept-detail span {
+  font-size: 11px;
+  color: #4A6275;
+  margin-top: 2px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .terr-wrap {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+  .france-map { max-width: 260px; }
+  .terr-depts { flex-direction: column; }
+  .terr-dept { min-width: unset; }
+}
