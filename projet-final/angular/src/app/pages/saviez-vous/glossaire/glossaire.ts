@@ -1,7 +1,7 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, ChangeDetectorRef } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { environment } from '../../../../environments/environment'; 
+import { environment } from '../../../../environments/environment';
 
 interface TermeGlossaire {
   id: number;
@@ -18,30 +18,30 @@ interface TermeGlossaire {
   styleUrls: ['./glossaire.css'],
   encapsulation: ViewEncapsulation.None,
 })
-
 export class Glossaire implements OnInit {
 
-  // État
-  chargement    = true;
-  erreur        = false;
-  searchQuery   = '';
-  lettreActive  = 'A';
+  chargement   = true;
+  erreur       = false;
+  searchQuery  = '';
+  lettreActive = 'A';
 
-  // Données
-  tousLesTermes: TermeGlossaire[]    = [];
-  termesFiltres: TermeGlossaire[]    = [];
-  lettresDisponibles: string[]       = [];
+  tousLesTermes:      TermeGlossaire[] = [];
+  termesFiltres:      TermeGlossaire[] = [];
+  lettresDisponibles: string[]         = [];
+
+  // ✅ Injection du ChangeDetectorRef
+  constructor(private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     this.chargerTermes();
   }
-  
-   async chargerTermes(): Promise<void> {
+
+  async chargerTermes(): Promise<void> {
     this.chargement = true;
     this.erreur     = false;
 
     const controller = new AbortController();
-    const timeoutId  = setTimeout(() => controller.abort(), 12000); // 12s max
+    const timeoutId  = setTimeout(() => controller.abort(), 12000);
 
     try {
       const response = await fetch(
@@ -62,10 +62,10 @@ export class Glossaire implements OnInit {
     } finally {
       clearTimeout(timeoutId);
       this.chargement = false;
+      this.cdr.detectChanges(); // ✅ Force la mise à jour de la vue
     }
   }
 
-  // ── Filtrage par recherche ──────────────────────────────────────────────────
   filtrerTermes(): void {
     if (!this.searchQuery.trim()) {
       this.termesFiltres = [];
@@ -77,17 +77,13 @@ export class Glossaire implements OnInit {
     );
   }
 
-  // ── Groupement par lettre ───────────────────────────────────────────────────
   getTermesByLettre(lettre: string): TermeGlossaire[] {
     return this.tousLesTermes.filter(t => t.lettre === lettre);
   }
 
-  // ── Scroll vers une lettre ──────────────────────────────────────────────────
   scrollVersLettre(lettre: string): void {
     this.lettreActive = lettre;
     const el = document.getElementById(`lettre-${lettre}`);
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 }
