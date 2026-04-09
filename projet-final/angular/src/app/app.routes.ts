@@ -8,6 +8,7 @@ import { Paiement }     from './pages/paiement/paiement';
 import { Commande }     from './pages/commande/commande';
 import { Admin }        from './pages/admin/admin';
 import { Legal }        from './pages/legal/legal';
+import { SaviezVous }   from './pages/saviez-vous/saviez-vous';
 import { authGuard }    from './guards/auth.guard';
 import { adminGuard }   from './guards/admin.guard';
 
@@ -27,5 +28,6 @@ export const routes: Routes = [
   { path: 'cgu',              component: Legal,     data: { page: 'cgu' } },
   { path: 'confidentialite',  component: Legal,     data: { page: 'confidentialite' } },
   { path: 'cgv',              component: Legal,     data: { page: 'cgv' } },
+  { path: 'saviez-vous',        component: SaviezVous },
   { path: '**',               redirectTo: '' },
 ];

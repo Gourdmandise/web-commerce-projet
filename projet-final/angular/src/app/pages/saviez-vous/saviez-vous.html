@@ -1,0 +1,64 @@
+<!-- HEADER -->
+<div class="sv-page">
+
+  <div class="sv-header">
+    <a routerLink="/" class="sv-back">← Retour</a>
+    <div class="sv-title-wrap">
+      <span class="sv-emoji">💡</span>
+      <h1 class="sv-title">Le saviez-vous ?</h1>
+    </div>
+    <p class="sv-subtitle">Réglementation, aides, glossaire... Tout ce qu'il faut savoir sur la fibre et les télécoms.</p>
+  </div>
+
+  <!-- GRILLE DES 4 RUBRIQUES -->
+  <div class="sv-grid">
+
+    <!-- Carte 1 : Aide aux travaux -->
+    <div class="sv-card" routerLink="/saviez-vous/aide-travaux">
+      <div class="sv-card-icon sv-icon-blue">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+        </svg>
+      </div>
+      <h3 class="sv-card-title">L'État vous aide pour la réparation de votre gaine sur votre parcelle</h3>
+      <p class="sv-card-desc">Découvrez les aides au raccordement fibre jusqu'à 1 200 €, les conditions d'éligibilité et déposez votre demande.</p>
+    </div>
+
+    <!-- Carte 2 : Arrêt du cuivre -->
+    <div class="sv-card" routerLink="/saviez-vous/arret-cuivre">
+      <div class="sv-card-icon sv-icon-orange">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/>
+        </svg>
+      </div>
+      <h3 class="sv-card-title">Arrêt du cuivre</h3>
+      <p class="sv-card-desc">Tout savoir sur la fermeture progressive du réseau cuivre et le calendrier de migration vers la fibre.</p>
+    </div>
+
+    <!-- Carte 3 : Glossaire -->
+    <div class="sv-card sv-card-active" routerLink="/saviez-vous/glossaire">
+      <div class="sv-card-icon sv-icon-purple">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+        </svg>
+      </div>
+      <h3 class="sv-card-title sv-card-title-accent">Glossaire</h3>
+      <p class="sv-card-desc">Les termes techniques de la fibre optique et des télécoms expliqués simplement.</p>
+      <a routerLink="/saviez-vous/glossaire" class="sv-card-link">En savoir plus →</a>
+    </div>
+
+    <!-- Carte 4 : Résilience -->
+    <div class="sv-card" routerLink="/saviez-vous/resilience">
+      <div class="sv-card-icon sv-icon-green">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          <polyline points="9 12 11 14 15 10"/>
+        </svg>
+      </div>
+      <h3 class="sv-card-title">Résilience des réseaux</h3>
+      <p class="sv-card-desc">Comprendre les enjeux de la résilience des infrastructures télécoms en France.</p>
+    </div>
+
+  </div>
+
+</div>

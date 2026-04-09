@@ -1,0 +1,174 @@
+/* ══════════════════════════════════════════
+   PAGE : LE SAVIEZ-VOUS ?
+   Thème sombre – cohérent avec le site
+   ══════════════════════════════════════════ */
+
+/* ── Fond global de la page ── */
+:host, .sv-page {
+  display: block;
+  min-height: 100vh;
+  background: #0d1117;
+  color: #ffffff;
+  font-family: 'Barlow', sans-serif;
+}
+
+/* ── HEADER ── */
+.sv-header {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 56px 32px 48px;
+  text-align: center;
+}
+
+/* Bouton retour */
+.sv-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #00D4AA;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  margin-bottom: 32px;
+  transition: opacity .2s;
+}
+.sv-back:hover { opacity: .7; }
+
+/* Titre */
+.sv-title-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+.sv-emoji { font-size: 42px; line-height: 1; }
+.sv-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: clamp(32px, 5vw, 56px);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -1px;
+  color: #ffffff;
+  margin: 0;
+}
+.sv-subtitle {
+  font-size: 15px;
+  color: #7a8fa6;
+  line-height: 1.7;
+  max-width: 580px;
+  margin: 0 auto;
+}
+
+/* ── GRILLE 4 CARTES ── */
+.sv-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 32px 80px;
+}
+
+/* ── CARTE ── */
+.sv-card {
+  background: #161b27;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 18px;
+  padding: 32px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  cursor: pointer;
+  transition: transform .25s, box-shadow .25s, border-color .25s, background .25s;
+  position: relative;
+  overflow: hidden;
+}
+.sv-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: transparent;
+  transition: background .25s;
+}
+.sv-card:hover {
+  transform: translateY(-5px);
+  background: #1e2535;
+  border-color: rgba(0, 212, 170, 0.2);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, .4);
+}
+.sv-card:hover::before {
+  background: linear-gradient(90deg, #00D4AA, #00B4D8);
+}
+
+/* Carte active (glossaire dans la maquette) */
+.sv-card-active {
+  border-color: rgba(0, 212, 170, 0.35);
+  box-shadow: 0 0 0 1px rgba(0, 212, 170, 0.15), 0 8px 32px rgba(0, 0, 0, .3);
+}
+.sv-card-active::before {
+  background: linear-gradient(90deg, #00D4AA, #00B4D8);
+}
+
+/* ── ICÔNES ── */
+.sv-card-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.sv-icon-blue   { background: linear-gradient(135deg, #2196f3, #0d47a1); color: #ffffff; }
+.sv-icon-orange { background: linear-gradient(135deg, #ff9800, #e65100); color: #ffffff; }
+.sv-icon-purple { background: linear-gradient(135deg, #9c27b0, #4a148c); color: #ffffff; }
+.sv-icon-green  { background: linear-gradient(135deg, #00D4AA, #00796b); color: #ffffff; }
+
+/* ── TEXTES ── */
+.sv-card-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 18px;
+  font-weight: 800;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+  line-height: 1.3;
+  margin: 0;
+}
+.sv-card-title-accent { color: #00D4AA; }
+
+.sv-card-desc {
+  font-size: 13px;
+  color: #7a8fa6;
+  line-height: 1.7;
+  margin: 0;
+  flex: 1;
+}
+
+.sv-card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #00D4AA;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  margin-top: 4px;
+  transition: gap .2s, color .2s;
+}
+.sv-card-link:hover { gap: 8px; color: #00B4D8; }
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+  .sv-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px) {
+  .sv-header { padding: 40px 20px 32px; }
+  .sv-grid { grid-template-columns: 1fr; padding: 0 20px 60px; }
+  .sv-title-wrap { flex-direction: column; gap: 8px; }
+}

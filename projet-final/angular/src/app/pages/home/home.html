@@ -59,7 +59,7 @@
       <h3>Entreprises</h3>
       <p>Diagnostic fibre et accompagnement professionnel. Boostez la connectivité de votre activité.</p>
     </div>
-    <div class="dc dc4" style="cursor:pointer" routerLink="/nos-services">
+    <div class="dc dc4" style="cursor:pointer" routerLink="/saviez-vous">
       <div class="dic">💡</div>
       <h3>Le saviez-vous ?</h3>
       <p>Découvrez la réglementation fibre optique, vos droits et les aides au raccordement.</p>
@@ -115,65 +115,58 @@
 <section class="sec terr-sec">
   <div class="terr-wrap">
 
-    <!-- Carte SVG France -->
+    <!-- Carte image France + marqueurs overlay -->
     <div class="terr-map-box">
       <div class="terr-map-card">
-        <svg class="france-map" viewBox="0 0 500 540" xmlns="http://www.w3.org/2000/svg" aria-label="Carte de France – zones d'intervention X3COM">
 
-          <!-- Définitions : filtres de lueur -->
-          <defs>
-            <filter id="glow31" x="-60%" y="-60%" width="220%" height="220%">
-              <feGaussianBlur stdDeviation="8" result="blur"/>
-              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-            </filter>
-            <filter id="glow81" x="-60%" y="-60%" width="220%" height="220%">
-              <feGaussianBlur stdDeviation="6" result="blur"/>
-              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-            </filter>
-            <radialGradient id="zoneGrad" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stop-color="#00D4AA" stop-opacity="0.22"/>
-              <stop offset="100%" stop-color="#00B4D8" stop-opacity="0"/>
-            </radialGradient>
-          </defs>
+        <!-- Conteneur image + overlay SVG superposé -->
+        <div class="terr-img-wrap">
 
-          <!-- Silhouette France métropolitaine -->
-          <path class="france-shape" d="
-            M 280,22 L 310,16 L 348,20 L 382,34 L 418,58
-            L 440,96 L 448,132 L 452,168 L 446,198
-            L 456,228 L 452,262 L 436,292 L 416,318
-            L 386,342 L 356,362 L 318,375 L 280,378
-            L 244,370 L 208,354 L 172,332 L 146,320
-            L 120,324 L 96,314 L 72,292 L 66,264
-            L 76,240 L 60,212 L 46,186 L 50,158
-            L 40,130 L 54,106 L 78,88 L 102,76
-            L 128,60 L 158,42 L 184,30 L 216,22
-            L 250,18 Z
-          "/>
+          <!-- Image carte fournie -->
+          <img src="carte.png" alt="Carte de France – zones d'intervention X3COM" class="terr-img-france"/>
 
-          <!-- Corse -->
-          <path class="france-shape france-corsica" d="
-            M 416,360 L 430,346 L 442,354
-            L 444,370 L 438,388 L 426,400
-            L 412,397 L 405,382 L 408,366 Z
-          "/>
+          <!-- SVG overlay : marqueurs positionnés en % sur l'image -->
+          <!-- viewBox calé sur les dimensions réelles de l'image (960×900) -->
+          <svg class="terr-overlay-svg"
+               viewBox="0 0 960 900"
+               xmlns="http://www.w3.org/2000/svg"
+               aria-hidden="true">
 
-          <!-- Zone de rayonnement SW (31 + 81) -->
-          <ellipse class="terr-zone-glow" cx="212" cy="316" rx="72" ry="54"/>
+            <defs>
+              <filter id="glow31" x="-80%" y="-80%" width="260%" height="260%">
+                <feGaussianBlur stdDeviation="9" result="blur"/>
+                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+              <filter id="glow81" x="-80%" y="-80%" width="260%" height="260%">
+                <feGaussianBlur stdDeviation="7" result="blur"/>
+                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+              <radialGradient id="zoneGrad2" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#ffffff" stop-opacity="0.20"/>
+                <stop offset="100%" stop-color="#00D4AA" stop-opacity="0"/>
+              </radialGradient>
+            </defs>
 
-          <!-- Ligne de connexion entre les 2 départements -->
-          <line class="terr-dept-line" x1="210" y1="318" x2="244" y2="306"/>
+            <!-- Halo de zone (31 + 81) -->
+            <ellipse class="terr-zone-glow" cx="368" cy="630" rx="85" ry="65"/>
 
-          <!-- Marqueur Haute-Garonne (31) -->
-          <circle class="terr-pulse-ring terr-pulse-ring1" cx="205" cy="322" r="22"/>
-          <circle class="terr-dot terr-dot1" cx="205" cy="322" r="9" filter="url(#glow31)"/>
-          <text class="terr-dept-label" x="205" y="350">31</text>
+            <!-- Ligne de connexion entre les 2 marqueurs -->
+            <line class="terr-dept-line" x1="372" y1="632" x2="430" y2="594"/>
 
-          <!-- Marqueur Tarn (81) -->
-          <circle class="terr-pulse-ring terr-pulse-ring2" cx="248" cy="308" r="17"/>
-          <circle class="terr-dot terr-dot2" cx="248" cy="308" r="7" filter="url(#glow81)"/>
-          <text class="terr-dept-label terr-dept-label2" x="248" y="333">81</text>
+            <!-- ── Haute-Garonne (31) – Toulouse ── -->
+            <!-- Position : ~38% left, ~70% top de l'image 960×900 -->
+            <circle class="terr-pulse-ring terr-pulse-ring1" cx="365" cy="636" r="28"/>
+            <circle class="terr-dot terr-dot1" cx="365" cy="636" r="11" filter="url(#glow31)"/>
+            <text class="terr-dept-label" x="365" y="672">31</text>
 
-        </svg>
+            <!-- ── Tarn (81) – Albi ── -->
+            <!-- Position : ~44% left, ~65% top de l'image 960×900 -->
+            <circle class="terr-pulse-ring terr-pulse-ring2" cx="432" cy="590" r="22"/>
+            <circle class="terr-dot terr-dot2" cx="432" cy="590" r="9" filter="url(#glow81)"/>
+            <text class="terr-dept-label terr-dept-label2" x="432" y="622">81</text>
+
+          </svg>
+        </div>
 
         <!-- Légende sous la carte -->
         <div class="terr-legend">
