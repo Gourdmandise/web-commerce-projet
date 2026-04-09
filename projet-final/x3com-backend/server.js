@@ -675,7 +675,6 @@ app.post('/commandes/:id/annuler', requireAuth, async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-
 // ══════════════════════════════════════════════════════════
 // POST /create-checkout-session — AUTHENTIFIÉ
 // ══════════════════════════════════════════════════════════
