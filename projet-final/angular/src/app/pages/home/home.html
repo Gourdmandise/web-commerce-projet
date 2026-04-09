@@ -44,10 +44,45 @@
   <h2 class="big">Comment peut-on <span class="hl">vous aider</span> ?</h2>
   <p class="sub" style="margin:0 auto 36px">Cliquez sur le profil qui vous correspond pour découvrir nos solutions adaptées.</p>
   <div class="dg dg4">
-    <div class="dc dc1" style="cursor:pointer" routerLink="/nos-services">
+    <!-- PARTICULIERS — avec prévisualisation des offres -->
+    <div class="dc dc1 dc-particuliers" style="cursor:pointer" (click)="togglePreview($event)">
       <div class="dic">🏠</div>
       <h3>Particuliers</h3>
       <p>Détection et raccordement fibre pour votre domicile. Accédez au très haut débit simplement.</p>
+      <div class="dc-hint">🔍 Voir nos offres</div>
+
+      <!-- PANEL PREVIEW -->
+      @if (previewOuvert) {
+        <div class="offres-preview" (click)="$event.stopPropagation()">
+          <div class="op-header">
+            <span class="op-title">🔧 Nos offres détection fibre</span>
+            <button class="op-close" (click)="previewOuvert = false">✕</button>
+          </div>
+          @if (offres().length === 0) {
+            <div class="op-loading">Chargement…</div>
+          }
+          @for (offre of offres(); track offre.id) {
+            <a class="op-card" routerLink="/tarifs">
+              @if (offre.populaire) {
+                <span class="op-badge">⭐ Populaire</span>
+              }
+              <div class="op-card-top">
+                <span class="op-nom">{{ offre.nom }}</span>
+                <span class="op-prix">{{ offre.prix }}€ <small>TTC</small></span>
+              </div>
+              @for (f of offre.features.slice(0, 3); track f) {
+                <div class="op-feat">✓ {{ f }}</div>
+              }
+              @if (offre.options.length > 0) {
+                <div class="op-options">{{ offre.options.join(' · ') }}</div>
+              }
+            </a>
+          }
+          <a class="op-voir-tout" routerLink="/tarifs" (click)="previewOuvert = false">
+            Voir toutes les offres →
+          </a>
+        </div>
+      }
     </div>
     <div class="dc dc2" style="cursor:pointer" routerLink="/nos-services">
       <div class="dic">🏛️</div>
