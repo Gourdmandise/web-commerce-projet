@@ -1,0 +1,161 @@
+<div class="sv-page">
+
+  <!-- HEADER -->
+  <div class="sv-header">
+    <a routerLink="/saviez-vous" class="sv-back">← Retour</a>
+    <div class="sv-title-wrap">
+      <span class="sv-emoji">🔧</span>
+      <h1 class="sv-h1">Aide aux travaux sur emprise privée</h1>
+    </div>
+    <p class="sv-subtitle">L'ADSL disparaît d'ici 2030. <strong>Une aide existe</strong> pour votre raccordement fibre.</p>
+  </div>
+
+  <!-- ALERTE DATE -->
+  <div class="sv-alert">
+    <span class="sv-alert-icon">⚠️</span>
+    <span><strong>Depuis le 09/03/2026</strong> — Tous les particuliers et TPE avec un ou plusieurs échecs de raccordement peuvent déposer une demande, sous conditions.</span>
+  </div>
+
+  <!-- MONTANTS -->
+  <section class="sv-sec tc">
+    <h2 class="sv-sec-title">Jusqu'à combien ?</h2>
+    <p class="sv-sec-sub">Aide forfaitaire déduite de votre facture</p>
+    <div class="at-montants">
+      <div class="at-montant at-m1"><div class="at-m-emoji">🏠</div><div class="at-m-val hl">400€</div></div>
+      <div class="at-montant at-m2"><div class="at-m-emoji">🏡</div><div class="at-m-val hl2">800€</div></div>
+      <div class="at-montant at-m3"><div class="at-m-emoji">🏘️</div><div class="at-m-val hl3">1 200€</div></div>
+    </div>
+  </section>
+
+  <!-- QUI PEUT EN BÉNÉFICIER -->
+  <div class="sv-sec-alt">
+    <div class="sv-sec-alt-inner tc">
+      <h2 class="sv-sec-title">Qui peut en bénéficier ?</h2>
+      <div class="sv-cards2" style="margin-top:32px">
+
+        <div class="sv-card">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
+            <div class="sv-card-icon-wrap">🏠</div>
+            <h3 style="margin:0;font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:800;text-transform:uppercase;color:#00D4AA">Vous êtes un Particulier</h3>
+          </div>
+          <ul class="at-list">
+            <li>✅ Une ou plusieurs tentatives de raccordement ont échoué</li>
+            <li>✅ Propriétaire de votre résidence principale</li>
+            <li>✅ Une seule demande de réaliser par propriétaire</li>
+            <li>✅ Quotient familial &lt; 29 316 €</li>
+          </ul>
+        </div>
+
+        <div class="sv-card sv-card2">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
+            <div class="sv-card-icon-wrap" style="background:rgba(0,180,216,0.1);border-color:rgba(0,180,216,0.3)">🏢</div>
+            <h3 style="margin:0;font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:800;text-transform:uppercase;color:#00B4D8">Vous êtes une TPE</h3>
+          </div>
+          <ul class="at-list">
+            <li>✅ Une ou plusieurs tentatives de raccordement de votre local professionnel ont échoué</li>
+            <li>✅ CA &lt; 2M€ et &lt; 10 salariés</li>
+            <li>✅ Activité &gt; 1 an, pas en liquidation</li>
+            <li>✅ Local individuel, pas d'aide déjà reçue</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- SIMULATEUR -->
+  <section class="sv-sec tc">
+    <div class="lbl" style="justify-content:center">Simulateur</div>
+    <h2 class="sv-sec-title" style="margin-bottom:8px">Êtes-vous concerné par l'aide ?</h2>
+    <div class="at-simulateur">
+      @if (!simulChoix) {
+        <div class="at-sim-intro">
+          <div style="font-size:42px;margin-bottom:12px">👤</div>
+          <p style="color:#4A6275;margin-bottom:24px">Vous êtes...</p>
+          <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
+            <button class="at-sim-btn" (click)="choisir('particulier')">🏠 Un Particulier</button>
+            <button class="at-sim-btn at-sim-btn2" (click)="choisir('tpe')">🏢 Une TPE</button>
+          </div>
+          <p style="font-size:11px;color:#4A6275;margin-top:16px">* Simulation indicative — la décision finale revient à l'ASP après enregistrement de votre dossier.</p>
+        </div>
+      }
+      @if (simulChoix === 'particulier') {
+        <div class="at-sim-result at-sim-ok">
+          <div style="font-size:36px;margin-bottom:12px">✅</div>
+          <h3>Vous pouvez être éligible</h3>
+          <p>En tant que particulier, si vos tentatives de raccordement ont échoué et que votre quotient familial est inférieur à 29 316 €, vous pouvez déposer une demande d'aide allant jusqu'à <strong>1 200 €</strong>.</p>
+          <a routerLink="/contact" class="btn-x1" style="margin-top:16px;display:inline-block">X3COM s'occupe de tout →</a>
+          <button class="at-sim-reset" (click)="simulChoix = ''">Recommencer</button>
+        </div>
+      }
+      @if (simulChoix === 'tpe') {
+        <div class="at-sim-result at-sim-ok">
+          <div style="font-size:36px;margin-bottom:12px">✅</div>
+          <h3>Vous pouvez être éligible</h3>
+          <p>En tant que TPE, si votre CA est inférieur à 2M€, que vous avez moins de 10 salariés et que des tentatives de raccordement ont échoué, une aide est disponible.</p>
+          <a routerLink="/contact" class="btn-x1" style="margin-top:16px;display:inline-block">X3COM s'occupe de tout →</a>
+          <button class="at-sim-reset" (click)="simulChoix = ''">Recommencer</button>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- 4 ÉTAPES -->
+  <div class="sv-sec-alt">
+    <div class="sv-sec-alt-inner tc">
+      <h2 class="sv-sec-title">4 étapes simples</h2>
+      <div class="at-etapes">
+        <div class="at-etape">
+          <div class="at-etape-icon">📋</div>
+          <div class="at-etape-num hl">Étape 1</div>
+          <div class="at-etape-lbl">Attestation d'échec</div>
+        </div>
+        <div class="at-etape-arrow">→</div>
+        <div class="at-etape">
+          <div class="at-etape-icon">📤</div>
+          <div class="at-etape-num hl2">Étape 2</div>
+          <div class="at-etape-lbl">Dépôt en ligne</div>
+        </div>
+        <div class="at-etape-arrow">→</div>
+        <div class="at-etape">
+          <div class="at-etape-icon">🔍</div>
+          <div class="at-etape-num hl3">Étape 3</div>
+          <div class="at-etape-lbl">Instruction ASP</div>
+        </div>
+        <div class="at-etape-arrow">→</div>
+        <div class="at-etape">
+          <div class="at-etape-icon">🔧</div>
+          <div class="at-etape-num hl">Étape 4</div>
+          <div class="at-etape-lbl">Travaux réalisés</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- X3COM S'OCCUPE DE TOUT -->
+  <section class="sv-sec">
+    <div class="ctab" style="text-align:center">
+      <h2>🚀 X3COM s'occupe de tout</h2>
+      <p>Téléservice ouvert — avant le 31/01/2027</p>
+      <div class="at-services">
+        <div class="at-service">📧 <span>Dépose</span></div>
+        <div class="at-service">📄 <span>Devis</span></div>
+        <div class="at-service">🔧 <span>Travaux</span></div>
+      </div>
+      <a routerLink="/contact" class="btn-x1" style="margin-top:24px;display:inline-block">Prendre rendez-vous — X3COM vous rappelle →</a>
+    </div>
+  </section>
+
+  <!-- LIENS OFFICIELS -->
+  <div class="sv-links">
+    <div class="sv-links-title">Liens officiels</div>
+    <div class="sv-links-row">
+      <a href="https://www.arcep.fr" target="_blank" class="sv-link-chip">↗ Très Haut Débit</a>
+      <a href="https://www.asp-public.fr" target="_blank" class="sv-link-chip">↗ FAQ Particuliers – Aide aux travaux</a>
+      <a href="https://www.asp-public.fr" target="_blank" class="sv-link-chip">↗ FAQ Entreprises – Aide aux travaux</a>
+      <a href="https://www.arcep.fr" target="_blank" class="sv-link-chip">↗ Arrêt du cuivre : Pilotage ARCEP</a>
+      <a href="https://www.arcep.fr" target="_blank" class="sv-link-chip">↗ Résilience des réseaux</a>
+    </div>
+  </div>
+
+</div>

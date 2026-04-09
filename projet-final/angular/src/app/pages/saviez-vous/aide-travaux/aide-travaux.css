@@ -1,0 +1,84 @@
+/* Imports du thème partagé sv */
+.sv-page { display:block; min-height:100vh; background:#f0f8ff; font-family:'Barlow',sans-serif; color:#1A202C; }
+.sv-header { background:linear-gradient(160deg,#e8faf5 0%,#e0f4fc 50%,#e8f4ff 100%); border-bottom:2px solid rgba(0,212,170,0.2); padding:48px 32px 40px; text-align:center; }
+.sv-back { display:inline-flex;align-items:center;gap:6px; color:#00D4AA;font-size:13px;font-weight:700; text-decoration:none;letter-spacing:.06em;text-transform:uppercase; margin-bottom:24px;transition:opacity .2s; }
+.sv-back:hover { opacity:.7; }
+.sv-title-wrap { display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:14px; }
+.sv-emoji { font-size:36px;line-height:1; }
+.sv-h1 { font-family:'Barlow Condensed',sans-serif;font-size:clamp(26px,4vw,48px);font-weight:900;text-transform:uppercase;letter-spacing:-1px;color:#1A202C;margin:0; }
+.sv-subtitle { font-size:15px;color:#4A6275;line-height:1.7;max-width:600px;margin:0 auto; }
+.sv-alert { background:linear-gradient(90deg,rgba(0,180,216,0.08),rgba(0,212,170,0.06)); border-top:1px solid rgba(0,180,216,0.2); border-bottom:1px solid rgba(0,180,216,0.2); padding:16px 48px; display:flex;align-items:center;justify-content:center;gap:12px;font-size:14px;color:#4A6275; }
+.sv-alert-icon { font-size:20px;flex-shrink:0; }
+.sv-alert strong { color:#00B4D8; }
+.sv-sec { padding:64px 48px; max-width:1100px; margin:0 auto; }
+.sv-sec-alt { background:linear-gradient(160deg,#e8faf5 0%,#e0f4fc 50%,#e8f4ff 100%); border-top:1px solid rgba(0,212,170,0.15); border-bottom:1px solid rgba(0,180,216,0.12); padding:64px 48px; }
+.sv-sec-alt-inner { max-width:1100px;margin:0 auto; }
+.sv-sec-title { font-family:'Barlow Condensed',sans-serif;font-size:clamp(22px,3vw,34px);font-weight:900;text-transform:uppercase;color:#1A202C;text-align:center;margin-bottom:8px; }
+.sv-sec-sub { font-size:14px;color:#4A6275;text-align:center;margin-bottom:40px; }
+.sv-cards2 { display:grid;grid-template-columns:repeat(2,1fr);gap:20px;max-width:860px;margin:0 auto; }
+.sv-card { background:#fff;border:1px solid rgba(0,212,170,0.25);border-radius:16px;padding:28px;transition:transform .25s,box-shadow .25s; }
+.sv-card:hover { transform:translateY(-3px);box-shadow:0 12px 36px rgba(0,119,182,.1); }
+.sv-card2 { border-color:rgba(0,180,216,0.25); }
+.sv-card-icon-wrap { width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:rgba(0,212,170,0.12);border:1px solid rgba(0,212,170,0.3);font-size:22px; }
+.sv-links { text-align:center;padding:40px 48px;border-top:1px solid rgba(0,180,216,0.15); }
+.sv-links-title { font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#00B4D8;font-weight:800;margin-bottom:16px; }
+.sv-links-row { display:flex;gap:12px;justify-content:center;flex-wrap:wrap; }
+.sv-link-chip { display:inline-flex;align-items:center;gap:6px;padding:8px 18px;background:#fff;border:1px solid rgba(0,180,216,0.3);border-radius:100px;font-size:12px;font-weight:700;color:#00B4D8;text-decoration:none;transition:background .2s; }
+.sv-link-chip:hover { background:rgba(0,180,216,0.06); }
+
+/* ── MONTANTS ── */
+.at-montants { display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:8px; }
+.at-montant {
+  background:#fff;border:1px solid rgba(0,212,170,0.25);border-radius:16px;
+  padding:28px 36px;display:flex;flex-direction:column;align-items:center;gap:8px;
+  min-width:160px;transition:transform .25s,box-shadow .25s;
+}
+.at-montant:hover { transform:translateY(-4px);box-shadow:0 12px 36px rgba(0,119,182,.1); }
+.at-m2 { border-color:rgba(0,180,216,0.25); }
+.at-m3 { border-color:rgba(0,119,182,0.2); }
+.at-m-emoji { font-size:36px; }
+.at-m-val { font-family:'Barlow Condensed',sans-serif;font-size:36px;font-weight:900; }
+
+/* ── LISTE CONDITIONS ── */
+.at-list { list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px; }
+.at-list li { font-size:14px;color:#4A6275;line-height:1.5; }
+
+/* ── SIMULATEUR ── */
+.at-simulateur { max-width:580px;margin:32px auto 0;background:#fff;border:1px solid rgba(0,212,170,0.25);border-radius:20px;padding:40px;text-align:center; }
+.at-sim-intro p { color:#4A6275;font-size:15px; }
+.at-sim-btn {
+  background:linear-gradient(135deg,#00D4AA,#00B4D8);color:#fff;border:none;
+  border-radius:12px;padding:14px 32px;font-family:'Barlow Condensed',sans-serif;
+  font-size:17px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;
+  cursor:pointer;transition:opacity .2s;
+}
+.at-sim-btn2 { background:linear-gradient(135deg,#00B4D8,#0077B6); }
+.at-sim-btn:hover { opacity:.85; }
+.at-sim-result { padding:8px; }
+.at-sim-result h3 { font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:900;color:#00D4AA;text-transform:uppercase;margin-bottom:12px; }
+.at-sim-result p { color:#4A6275;font-size:14px;line-height:1.7; }
+.at-sim-reset { background:none;border:1px solid rgba(0,180,216,0.3);color:#00B4D8;border-radius:8px;padding:8px 20px;cursor:pointer;font-size:12px;margin-top:16px;display:block;margin-left:auto;margin-right:auto;transition:background .2s; }
+.at-sim-reset:hover { background:rgba(0,180,216,0.06); }
+
+/* ── ÉTAPES ── */
+.at-etapes { display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:32px; }
+.at-etape { text-align:center;background:#fff;border:1px solid rgba(0,212,170,0.2);border-radius:14px;padding:20px 24px;min-width:130px; }
+.at-etape-icon { font-size:28px;margin-bottom:8px; }
+.at-etape-num { font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;text-transform:uppercase;letter-spacing:.06em; }
+.at-etape-lbl { font-size:12px;color:#4A6275;margin-top:4px; }
+.at-etape-arrow { font-size:20px;color:#00B4D8;opacity:.5; }
+
+/* ── SERVICES ── */
+.at-services { display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:24px; }
+.at-service { background:#fff;border:1px solid rgba(0,212,170,0.25);border-radius:14px;padding:18px 28px;font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:800;text-transform:uppercase;color:#1A202C;display:flex;flex-direction:column;align-items:center;gap:8px;min-width:110px; }
+.at-service > span { font-size:13px;color:#4A6275; }
+
+@media (max-width:768px) {
+  .sv-sec { padding:48px 20px; }
+  .sv-sec-alt { padding:48px 20px; }
+  .sv-cards2 { grid-template-columns:1fr; }
+  .at-montants { flex-direction:column;align-items:center; }
+  .at-etapes { flex-direction:column; }
+  .at-etape-arrow { transform:rotate(90deg); }
+  .sv-alert { padding:14px 20px;font-size:13px; }
+}

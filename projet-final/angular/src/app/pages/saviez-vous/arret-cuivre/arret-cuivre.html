@@ -1,0 +1,83 @@
+<div class="sv-page">
+
+  <!-- HEADER -->
+  <div class="sv-header">
+    <a routerLink="/saviez-vous" class="sv-back">← Retour</a>
+    <div class="sv-title-wrap">
+      <span class="sv-emoji">📡</span>
+      <h1 class="sv-h1">Arrêt du cuivre</h1>
+    </div>
+    <p class="sv-subtitle">La fermeture progressive du réseau cuivre est en marche. Préparez votre transition vers la fibre.</p>
+  </div>
+
+  <!-- ALERTE -->
+  <div class="sv-alert">
+    <span class="sv-alert-icon">⚠️</span>
+    <span><strong>Objectif 2030</strong> — Orange prévoit la fermeture complète du réseau cuivre d'ici 2030.</span>
+  </div>
+
+  <!-- RECHERCHE COMMUNE -->
+  <section class="sv-sec tc">
+    <h2 class="sv-sec-title">🔍 Votre commune est-elle concernée ?</h2>
+    <p class="sv-sec-sub">Recherchez votre commune pour connaître les dates de fermeture du réseau cuivre.</p>
+    <div class="ac-search-wrap">
+      <div class="ac-search-box">
+        <span class="ac-search-icon">🔍</span>
+        <input
+          class="ac-search-input"
+          type="text"
+          placeholder="Saisissez le nom de votre commune..."
+          [(ngModel)]="communeQuery"
+          (input)="rechercherCommune()"
+        />
+      </div>
+      @if (communeQuery && !communeResult) {
+        <div class="ac-search-hint">Consultez directement le site de l'ARCEP pour votre commune.</div>
+      }
+      @if (communeResult) {
+        <div class="ac-search-result">
+          <span>📍 <strong>{{ communeQuery }}</strong> — Consultez l'ARCEP pour les dates précises.</span>
+          <a href="https://www.arcep.fr/la-regulation/grands-dossiers-reseaux-fixes/la-fin-du-reseau-cuivre-et-la-transition-vers-la-fibre.html" target="_blank" class="sv-link-chip" style="margin-top:12px;display:inline-flex">↗ Voir sur ARCEP</a>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- CE QU'IL FAUT SAVOIR -->
+  <div class="sv-sec-alt">
+    <div class="sv-sec-alt-inner tc">
+      <h2 class="sv-sec-title">Ce qu'il faut savoir</h2>
+      <div class="sv-cards3" style="margin-top:32px">
+
+        <div class="sv-card">
+          <div class="sv-card-icon-wrap">📅</div>
+          <h3>Calendrier</h3>
+          <p>La fermeture se fait par lots de communes, avec un préavis minimum de 18 mois avant la coupure effective.</p>
+        </div>
+
+        <div class="sv-card sv-card2">
+          <div class="sv-card-icon-wrap" style="background:rgba(0,180,216,0.1);border-color:rgba(0,180,216,0.3)">📶</div>
+          <h3>Services concernés</h3>
+          <p>Téléphonie fixe (RTC), ADSL et VDSL seront définitivement arrêtés sur les zones fermées.</p>
+        </div>
+
+        <div class="sv-card sv-card3">
+          <div class="sv-card-icon-wrap" style="background:rgba(0,119,182,0.1);border-color:rgba(0,119,182,0.25)">📍</div>
+          <h3>Votre commune</h3>
+          <p>Consultez le site de l'ARCEP pour savoir si votre commune est concernée par une fermeture programmée.</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- LIENS OFFICIELS -->
+  <div class="sv-links">
+    <div class="sv-links-title">Liens officiels</div>
+    <div class="sv-links-row">
+      <a href="https://www.arcep.fr/la-regulation/grands-dossiers-reseaux-fixes/la-fin-du-reseau-cuivre-et-la-transition-vers-la-fibre.html" target="_blank" class="sv-link-chip">↗ Pilotage ARCEP — Fermeture du cuivre</a>
+      <a href="https://www.gouvernement.fr/france-tres-haut-debit" target="_blank" class="sv-link-chip">↗ Plan France Très Haut Débit</a>
+    </div>
+  </div>
+
+</div>
