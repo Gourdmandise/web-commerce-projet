@@ -40,10 +40,13 @@ export class Glossaire implements OnInit {
     this.chargement = true;
     this.erreur     = false;
 
+    const controller = new AbortController();
+    const timeoutId  = setTimeout(() => controller.abort(), 12000); // 12s max
+
     try {
       const response = await fetch(
-        `${environment.backendUrl}/glossaire` // ← pointe vers Render
-        // ✅ Aucun header, aucune clé nécessaire
+        `${environment.backendUrl}/glossaire`,
+        { signal: controller.signal }
       );
 
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -53,10 +56,11 @@ export class Glossaire implements OnInit {
       this.lettreActive       = this.lettresDisponibles[0] ?? 'A';
       this.termesFiltres      = [];
 
-    } catch (e) {
+    } catch (e: any) {
       console.error('Erreur chargement glossaire :', e);
       this.erreur = true;
     } finally {
+      clearTimeout(timeoutId);
       this.chargement = false;
     }
   }
