@@ -19,8 +19,7 @@ import { adminGuard }   from './guards/admin.guard';
 export const routes: Routes = [
   { path: '',                          component: Home,         pathMatch: 'full' },
   { path: 'nos-services',              component: Tarifs },
-  { path: 'qui-sommes-nous',           component: Terrassement },
-  { path: 'notre-territoire',          component: Contact },
+  { path: 'nos-prestations',           component: Terrassement },
   { path: 'terrassement',              component: Terrassement },
   { path: 'tarifs',                    component: Tarifs },
   { path: 'contact',                   component: Contact },

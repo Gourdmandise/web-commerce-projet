@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { environment } from '../../../../environments/environment'; 
 
 interface TermeGlossaire {
   id: number;
@@ -8,10 +9,6 @@ interface TermeGlossaire {
   definition: string;
   lettre: string;
 }
-
-// ── Supabase REST API ──────────────────────────────────────────────────────────
-const SUPABASE_URL = 'https://saijwfaavvsvzrcczkpw.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNhaWp3ZmFhdnZzdnpyY2N6a3B3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NTU2OTEsImV4cCI6MjA5MDAzMTY5MX0.tOU3dOkIdlNNuLEACUjamDwzUbo1WsiGjzcT3h6rngU';
 
 @Component({
   selector: 'app-glossaire',
@@ -21,6 +18,7 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
   styleUrls: ['./glossaire.css'],
   encapsulation: ViewEncapsulation.None,
 })
+
 export class Glossaire implements OnInit {
 
   // État
@@ -37,26 +35,20 @@ export class Glossaire implements OnInit {
   ngOnInit(): void {
     this.chargerTermes();
   }
-
-  async chargerTermes(): Promise<void> {
+  
+   async chargerTermes(): Promise<void> {
     this.chargement = true;
     this.erreur     = false;
 
     try {
       const response = await fetch(
-        `${SUPABASE_URL}/rest/v1/glossaire?select=id,terme,definition,lettre&order=lettre.asc,terme.asc`,
-        {
-          headers: {
-            'apikey':        SUPABASE_KEY,
-            'Authorization': `Bearer ${SUPABASE_KEY}`,
-            'Content-Type':  'application/json',
-          },
-        }
+        `${environment.backendUrl}/glossaire` // ← pointe vers Render
+        // ✅ Aucun header, aucune clé nécessaire
       );
 
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
-      this.tousLesTermes     = await response.json();
+      this.tousLesTermes      = await response.json();
       this.lettresDisponibles = [...new Set(this.tousLesTermes.map(t => t.lettre))].sort();
       this.lettreActive       = this.lettresDisponibles[0] ?? 'A';
       this.termesFiltres      = [];

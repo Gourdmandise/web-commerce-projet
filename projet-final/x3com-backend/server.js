@@ -937,3 +937,20 @@ function hexToBuf(hex) {
   for (let i = 0; i < a.length; i++) a[i] = parseInt(hex.slice(i*2, i*2+2), 16);
   return a;
 }
+
+// ── GLOSSAIRE ──────────────────────────────────────────────
+app.get('/glossaire', async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from('glossaire')
+      .select('id, terme, definition, lettre')
+      .order('lettre', { ascending: true })
+      .order('terme',  { ascending: true });
+
+    if (error) throw error;
+    res.json(data);
+  } catch (err) {
+    console.error('Erreur glossaire :', err);
+    res.status(500).json({ message: 'Erreur serveur glossaire' });
+  }
+});

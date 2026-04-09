@@ -6,8 +6,7 @@
   <div class="nav-links">
     <a routerLink="/"              routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">Accueil</a>
     <a routerLink="/nos-services"  routerLinkActive="active">Nos Services</a>
-    <a routerLink="/qui-sommes-nous" routerLinkActive="active">Qui sommes-nous</a>
-    <a routerLink="/notre-territoire" routerLinkActive="active">Notre Territoire</a>
+    <a routerLink="/nos-prestations" routerLinkActive="active">Nos Prestations</a>
     <a routerLink="/contact"       routerLinkActive="active">Contact</a>
     @if (auth.utilisateur()?.role === 'admin') {
       <a routerLink="/admin" routerLinkActive="active" class="nav-admin">⚙ Admin</a>
