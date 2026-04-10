@@ -296,13 +296,13 @@
           </div>
           <div class="ardv-actions">
             @if (rdv.statut !== 'confirme') {
-              <button class="ardv-btn-confirm" (click)="changerStatutRdv(rdv, 'confirme')">✅ Confirmer</button>
+              <button class="ardv-btn-confirm" (click)="changerStatut(rdv, 'confirme')">✅ Confirmer</button>
             }
             @if (rdv.statut !== 'annule') {
-              <button class="ardv-btn-annul" (click)="changerStatutRdv(rdv, 'annule')">✕ Annuler</button>
+              <button class="ardv-btn-annul" (click)="changerStatut(rdv, 'annule')">✕ Annuler</button>
             }
             @if (rdv.statut === 'annule') {
-              <button class="ardv-btn-confirm" (click)="changerStatutRdv(rdv, 'en_attente')">↩ Remettre</button>
+              <button class="ardv-btn-confirm" (click)="changerStatut(rdv, 'en_attente')">↩ Remettre</button>
             }
           </div>
         </div>
