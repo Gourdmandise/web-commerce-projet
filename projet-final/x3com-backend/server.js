@@ -20,15 +20,11 @@ if (!JWT_SECRET) {
   process.exit(1);
 }
 
-// Origines autorisées — FRONTEND_URL peut contenir plusieurs URL séparées par des virgules
-// Ex sur Render : FRONTEND_URL=https://x3com.fr,https://www.x3com.fr
+// Déduplique ALLOWED_ORIGINS si FRONTEND_URL est absent
 const ALLOWED_ORIGINS = [
   ...new Set([
-    ...(process.env.FRONTEND_URL
-      ? process.env.FRONTEND_URL.split(',').map(u => u.trim()).filter(Boolean)
-      : []),
+    process.env.FRONTEND_URL || 'http://localhost:4200',
     'http://localhost:4200',
-    'http://localhost:4201',
   ])
 ].filter(Boolean);
 
@@ -129,22 +125,6 @@ app.use((_req, res, next) => {
       'payment=(self)',
     ].join(', ')
   );
-  next();
-});
-
-// Middleware CORS — doit être déclaré AVANT tout le reste pour couvrir
-// les réponses d'erreur (502 cold-start Render, 4xx, 5xx).
-// Sans ça, le navigateur signale une "erreur CORS" même quand c'est en réalité
-// un problème serveur, ce qui rend le debug très difficile.
-app.use((req, res, next) => {
-  const origin = req.headers.origin;
-  if (!origin || ALLOWED_ORIGINS.includes(origin)) {
-    if (origin) res.setHeader('Access-Control-Allow-Origin', origin);
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
-    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization');
-  }
-  if (req.method === 'OPTIONS') return res.sendStatus(204);
   next();
 });
 
