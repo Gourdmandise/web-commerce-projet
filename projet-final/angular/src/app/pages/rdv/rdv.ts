@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation, ChangeDetectorRef, inject } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -13,12 +13,12 @@ import { environment } from '../../../environments/environment';
   encapsulation: ViewEncapsulation.None,
 })
 export class Rdv implements OnInit {
-  private cdr  = inject(ChangeDetectorRef);
   private http = inject(HttpClient);
 
   // ── Calendrier ──
-  today       = new Date();
-  moisAffiche = new Date(this.today.getFullYear(), this.today.getMonth(), 1);
+  readonly today = new Date();
+  // Signal pour garantir la réactivité du template lors du changement de mois
+  moisAffiche = signal(new Date(this.today.getFullYear(), this.today.getMonth(), 1));
   dateSelectionnee: string = '';
   dateLabel: string = '';
 
@@ -34,7 +34,7 @@ export class Rdv implements OnInit {
 
   // ── Formulaire ──
   nom       = '';
-  email     = '';
+  email     = ''  ;
   telephone = '';
   adresse   = '';
   notes     = '';
@@ -48,37 +48,43 @@ export class Rdv implements OnInit {
     const y = d.getFullYear();
     const m = String(d.getMonth() + 1).padStart(2, '0');
     const j = String(d.getDate()).padStart(2, '0');
-    console.log('DEBUG dateVersString → y:', y, 'm:', m, 'j:', j, 'résultat:', `${y}-${m}-${j}`);
     return `${y}-${m}-${j}`;
   }
 
   get joursCalendrier(): (Date | null)[] {
-    const premier   = new Date(this.moisAffiche.getFullYear(), this.moisAffiche.getMonth(), 1);
-    const dernier   = new Date(this.moisAffiche.getFullYear(), this.moisAffiche.getMonth() + 1, 0);
+    // Lecture du signal → Angular détecte le changement et recalcule
+    const mois    = this.moisAffiche();
+    const annee   = mois.getFullYear();
+    const moisIdx = mois.getMonth();
+
+    const premier    = new Date(annee, moisIdx, 1);
+    const dernierNum = new Date(annee, moisIdx + 1, 0).getDate();
     const jours: (Date | null)[] = [];
+
     let premierJour = premier.getDay();
-    premierJour     = premierJour === 0 ? 6 : premierJour - 1;
+    premierJour = premierJour === 0 ? 6 : premierJour - 1; // lundi = 0
+
     for (let i = 0; i < premierJour; i++) jours.push(null);
-    for (let d = 1; d <= dernier.getDate(); d++) {
-      jours.push(new Date(this.moisAffiche.getFullYear(), this.moisAffiche.getMonth(), d));
+    for (let d = 1; d <= dernierNum; d++) {
+      jours.push(new Date(annee, moisIdx, d)); // heure locale, pas UTC
     }
     return jours;
   }
 
   get moisLabel(): string {
-    return this.moisAffiche.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
+    return this.moisAffiche().toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
   }
 
   ngOnInit(): void {}
 
   moisPrecedent(): void {
-    this.moisAffiche = new Date(this.moisAffiche.getFullYear(), this.moisAffiche.getMonth() - 1, 1);
-    this.cdr.detectChanges();
+    const m = this.moisAffiche();
+    this.moisAffiche.set(new Date(m.getFullYear(), m.getMonth() - 1, 1));
   }
 
   moisSuivant(): void {
-    this.moisAffiche = new Date(this.moisAffiche.getFullYear(), this.moisAffiche.getMonth() + 1, 1);
-    this.cdr.detectChanges();
+    const m = this.moisAffiche();
+    this.moisAffiche.set(new Date(m.getFullYear(), m.getMonth() + 1, 1));
   }
 
   estPasse(d: Date): boolean {
@@ -101,26 +107,21 @@ export class Rdv implements OnInit {
 
   choisirDate(d: Date): void {
     if (this.estPasse(d) || this.estWeekend(d)) return;
-    console.log('DEBUG choisirDate → d.toString():', d.toString());
-    console.log('DEBUG choisirDate → getFullYear:', d.getFullYear(), 'getMonth:', d.getMonth(), 'getDate:', d.getDate());
 
     this.dateSelectionnee   = this.dateVersString(d);
     this.dateLabel          = d.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
     this.creneauxPris       = [];
     this.chargementCreneaux = true;
     this.etape              = 'creneau';
-    this.cdr.detectChanges();
 
     this.http.get<string[]>(`${environment.backendUrl}/rdv/creneaux-pris?date=${this.dateSelectionnee}`)
       .subscribe({
         next: pris => {
           this.creneauxPris       = pris;
           this.chargementCreneaux = false;
-          this.cdr.detectChanges();
         },
         error: () => {
           this.chargementCreneaux = false;
-          this.cdr.detectChanges();
         }
       });
   }
@@ -129,7 +130,6 @@ export class Rdv implements OnInit {
     if (this.estCreneauPris(h)) return;
     this.heureSelectionnee = h;
     this.etape = 'form';
-    this.cdr.detectChanges();
   }
 
   retourDate(): void    { this.etape = 'date'; this.heureSelectionnee = ''; }
@@ -138,7 +138,6 @@ export class Rdv implements OnInit {
   async confirmer(): Promise<void> {
     if (!this.nom || !this.email || !this.telephone) return;
     this.envoi = true;
-    console.log('DEBUG confirmer → dateSelectionnee envoyée:', this.dateSelectionnee);
     try {
       const r = await fetch(`${environment.backendUrl}/rdv`, {
         method: 'POST',
@@ -158,7 +157,7 @@ export class Rdv implements OnInit {
 
       if (r.status === 409) {
         this.http.get<string[]>(`${environment.backendUrl}/rdv/creneaux-pris?date=${this.dateSelectionnee}`)
-          .subscribe(pris => { this.creneauxPris = pris; this.cdr.detectChanges(); });
+          .subscribe(pris => { this.creneauxPris = pris; });
         this.msgErreur         = 'Ce créneau vient d\'être réservé. Veuillez en choisir un autre.';
         this.etape             = 'creneau';
         this.heureSelectionnee = '';
@@ -172,7 +171,6 @@ export class Rdv implements OnInit {
       this.etape     = 'erreur';
     } finally {
       this.envoi = false;
-      this.cdr.detectChanges();
     }
   }
 }
