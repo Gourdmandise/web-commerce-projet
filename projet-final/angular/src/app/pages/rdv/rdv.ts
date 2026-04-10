@@ -41,8 +41,9 @@ export class Rdv implements OnInit {
 
   // ── État ──
   etape: 'date' | 'creneau' | 'form' | 'succes' | 'erreur' = 'date';
-  envoi     = false;
-  msgErreur = '';
+  envoi            = false;
+  msgErreur        = '';
+  erreurCreneaux   = false;
 
   private dateVersString(d: Date): string {
     const y = d.getFullYear();
@@ -112,6 +113,7 @@ export class Rdv implements OnInit {
     this.dateLabel          = d.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
     this.creneauxPris       = [];
     this.chargementCreneaux = true;
+    this.erreurCreneaux     = false;
     this.etape              = 'creneau';
 
     this.http.get<string[]>(`${environment.backendUrl}/rdv/creneaux-pris?date=${this.dateSelectionnee}`)
@@ -122,6 +124,7 @@ export class Rdv implements OnInit {
         },
         error: () => {
           this.chargementCreneaux = false;
+          this.erreurCreneaux     = true;
         }
       });
   }

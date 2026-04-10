@@ -98,7 +98,14 @@
             <div class="rdv-creneaux-loading">⏳ Vérification des disponibilités…</div>
           }
 
-          @if (!chargementCreneaux) {
+          @if (!chargementCreneaux && erreurCreneaux) {
+            <p class="rdv-tous-pris">
+              ⚠️ Impossible de vérifier les disponibilités. Veuillez choisir une autre date ou réessayer.
+              <button class="rdv-back-step" style="margin-left:8px" (click)="retourDate()">← Retour</button>
+            </p>
+          }
+
+          @if (!chargementCreneaux && !erreurCreneaux) {
             <div class="rdv-creneaux">
               @for (h of creneaux; track h) {
                 <button
