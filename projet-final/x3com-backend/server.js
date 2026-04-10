@@ -899,9 +899,31 @@ async function nettoyerCommandesAnnulees() {
 nettoyerCommandesAnnulees();
 setInterval(nettoyerCommandesAnnulees, 24 * 60 * 60 * 1000);
 
+
 // ══════════════════════════════════════════════════════════
 // RENDEZ-VOUS (RDV)
 // ══════════════════════════════════════════════════════════
+
+// GET /rdv/creneaux-pris — public : créneaux déjà réservés pour une date donnée
+app.get('/rdv/creneaux-pris', async (req, res) => {
+  const { date } = req.query;
+  if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+    return res.status(400).json({ error: 'Paramètre date invalide (attendu : YYYY-MM-DD).' });
+  }
+  try {
+    const { data, error } = await supabase
+      .from('rdv')
+      .select('heure')
+      .eq('date', date)
+      .neq('statut', 'annule');   // les annulés libèrent le créneau
+    if (error) throw error;
+    const heures = data.map(r => r.heure);
+    res.json(heures);
+  } catch (err) {
+    console.error('Erreur creneaux-pris :', err);
+    res.status(500).json({ error: 'Erreur serveur.' });
+  }
+});
 
 // POST /rdv — public : créer un RDV
 app.post('/rdv', async (req, res) => {
@@ -910,23 +932,17 @@ app.post('/rdv', async (req, res) => {
     return res.status(400).json({ error: 'Champs obligatoires manquants.' });
   }
   try {
-    // ✅ AJOUT : vérification de conflit de créneau
-    const { data: existing } = await supabase
-      .from('rdv')
-      .select('id')
-      .eq('date', date)
-      .eq('heure', heure)
-      .neq('statut', 'annule')   // les annulés libèrent le créneau
-      .limit(1);
-
-    if (existing && existing.length > 0) {
-      return res.status(409).json({
-        error: 'Ce créneau est déjà réservé. Veuillez choisir une autre date ou heure.'
-      });
-    }
-
     const { data, error } = await supabase.from('rdv').insert([{
-      // ... reste inchangé
+      nom: nom.trim(),
+      email: email.trim().toLowerCase(),
+      telephone: telephone.trim(),
+      adresse: adresse?.trim() || '',
+      date,
+      heure,
+      service: service || 'diagnostic',
+      rubrique: rubrique || '',
+      notes: notes?.trim() || '',
+      statut: 'en_attente',
     }]).select().single();
     if (error) throw error;
     res.status(201).json(data);

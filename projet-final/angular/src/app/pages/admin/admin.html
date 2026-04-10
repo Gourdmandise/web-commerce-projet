@@ -271,10 +271,10 @@
       }
 
       @for (rdv of rdvFiltres; track rdv.id) {
-        <div class="ardv-card" [class.confirme]="rdv.statut === 'confirme'" [class.annule]="rdv.statut === 'annule'">
+        <div class="ardv-card" [class.confirme]="rdv.statut === 'confirme'" [class.annule]="rdv.statut === 'annule'" [class.en_attente]="rdv.statut === 'en_attente'">
           <div class="ardv-card-main">
             <div class="ardv-row1">
-              <span class="ardv-nom">👤 {{ rdv.nom }}</span>
+              <span class="ardv-nom"><span class="ardv-client-label">Client</span>{{ rdv.nom }}</span>
               <span class="ardv-statut" [class]="'s-' + rdv.statut">
                 @if (rdv.statut === 'confirme') { ✅ Confirmé }
                 @if (rdv.statut === 'en_attente') { 🟡 En attente }
