@@ -899,7 +899,6 @@ async function nettoyerCommandesAnnulees() {
 nettoyerCommandesAnnulees();
 setInterval(nettoyerCommandesAnnulees, 24 * 60 * 60 * 1000);
 
-
 // ══════════════════════════════════════════════════════════
 // RENDEZ-VOUS (RDV)
 // ══════════════════════════════════════════════════════════
