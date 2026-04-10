@@ -330,12 +330,14 @@
 .ardv-badge.c { background:rgba(0,212,170,.15); color:#00D4AA; }
 .ardv-badge.x { background:rgba(200,50,50,.15); color:#e05050; }
 
-.ardv-card { background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.07); border-radius:12px; padding:16px 18px; margin-bottom:10px; display:flex; align-items:flex-start; justify-content:space-between; gap:14px; }
+.ardv-card { background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.12); border-radius:12px; padding:16px 18px; margin-bottom:16px; display:flex; align-items:flex-start; justify-content:space-between; gap:14px; }
 .ardv-card.confirme { border-left:3px solid #00D4AA; }
+.ardv-card.en_attente { border-left:3px solid #ffc800; }
+.ardv-client-label { font-size:10px; font-weight:600; color:#4A6275; text-transform:uppercase; letter-spacing:.08em; margin-right:5px; }
 .ardv-card.annule { border-left:3px solid #e05050; opacity:.65; }
 .ardv-card-main { flex:1; min-width:0; }
 .ardv-row1 { display:flex; align-items:center; gap:10px; margin-bottom:7px; flex-wrap:wrap; }
-.ardv-nom { font-size:14px; font-weight:800; color:#e2e8f0; font-family:'Barlow Condensed',sans-serif; }
+.ardv-nom { font-size:16px; font-weight:900; color:#ffffff; font-family:'Barlow Condensed',sans-serif; }
 .ardv-statut { font-size:11px; font-weight:700; padding:2px 9px; border-radius:20px; }
 .s-confirme { background:rgba(0,212,170,.15); color:#00D4AA; }
 .s-en_attente { background:rgba(255,200,0,.12); color:#ffc800; }

@@ -92,15 +92,37 @@
             2. Choisissez un créneau
           </div>
           <p class="rdv-date-choisie">📅 {{ dateLabel }}</p>
-          <div class="rdv-creneaux">
-            @for (h of creneaux; track h) {
-              <button
-                class="rdv-creneau-btn"
-                [class.active]="heureSelectionnee === h"
-                (click)="choisirHeure(h)"
-              >🕐 {{ h }}</button>
+
+          <!-- Spinner pendant le chargement des créneaux -->
+          @if (chargementCreneaux) {
+            <div class="rdv-creneaux-loading">⏳ Vérification des disponibilités…</div>
+          }
+
+          @if (!chargementCreneaux) {
+            <div class="rdv-creneaux">
+              @for (h of creneaux; track h) {
+                <button
+                  class="rdv-creneau-btn"
+                  [class.active]="heureSelectionnee === h"
+                  [class.pris]="estCreneauPris(h)"
+                  [disabled]="estCreneauPris(h)"
+                  [title]="estCreneauPris(h) ? 'Créneau déjà réservé' : ''"
+                  (click)="choisirHeure(h)"
+                >
+                  @if (estCreneauPris(h)) { 🔒 {{ h }} }
+                  @else { 🕐 {{ h }} }
+                </button>
+              }
+            </div>
+
+            <!-- Message si tous les créneaux sont pris -->
+            @if (creneaux.every(h => estCreneauPris(h))) {
+              <p class="rdv-tous-pris">
+                ⚠️ Tous les créneaux de cette journée sont réservés.
+                <button class="rdv-back-step" style="margin-left:8px" (click)="retourDate()">← Choisir une autre date</button>
+              </p>
             }
-          </div>
+          }
         }
 
         <!-- ════ ÉTAPE 3 : FORMULAIRE ════ -->
@@ -114,19 +136,19 @@
           <div class="rdv-form">
             <div class="rdv-field">
               <span class="rdv-field-icon">👤</span>
-              <input type="text" placeholder="Nom complet *" [(ngModel)]="nom" class="rdv-input" />
+              <input type="text"  placeholder="Nom complet *"  [(ngModel)]="nom"       class="rdv-input" />
             </div>
             <div class="rdv-field">
               <span class="rdv-field-icon">✉</span>
-              <input type="email" placeholder="E-mail *" [(ngModel)]="email" class="rdv-input" />
+              <input type="email" placeholder="E-mail *"        [(ngModel)]="email"     class="rdv-input" />
             </div>
             <div class="rdv-field">
               <span class="rdv-field-icon">📞</span>
-              <input type="tel" placeholder="Téléphone *" [(ngModel)]="telephone" class="rdv-input" />
+              <input type="tel"   placeholder="Téléphone *"     [(ngModel)]="telephone" class="rdv-input" />
             </div>
             <div class="rdv-field">
               <span class="rdv-field-icon">📍</span>
-              <input type="text" placeholder="Adresse postale *" [(ngModel)]="adresse" class="rdv-input" />
+              <input type="text"  placeholder="Adresse postale *" [(ngModel)]="adresse" class="rdv-input" />
             </div>
             <div class="rdv-field rdv-field-area">
               <span class="rdv-field-icon">💬</span>

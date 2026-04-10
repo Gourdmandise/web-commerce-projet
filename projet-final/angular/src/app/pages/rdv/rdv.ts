@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewEncapsulation, signal, ChangeDetectorRef, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 
 @Component({
@@ -12,7 +13,8 @@ import { environment } from '../../../environments/environment';
   encapsulation: ViewEncapsulation.None,
 })
 export class Rdv implements OnInit {
-  private cdr = inject(ChangeDetectorRef);
+  private cdr  = inject(ChangeDetectorRef);
+  private http = inject(HttpClient);
 
   // ── Calendrier ──
   today       = new Date();
@@ -26,7 +28,9 @@ export class Rdv implements OnInit {
     '11:00','11:30','14:00','14:30',
     '15:00','15:30','16:00','16:30',
   ];
-  heureSelectionnee = '';
+  heureSelectionnee  = '';
+  creneauxPris: string[] = [];   // ← heures déjà réservées pour la date choisie
+  chargementCreneaux = false;
 
   // ── Formulaire ──
   nom       = '';
@@ -41,12 +45,11 @@ export class Rdv implements OnInit {
   msgErreur = '';
 
   get joursCalendrier(): (Date | null)[] {
-    const premier = new Date(this.moisAffiche.getFullYear(), this.moisAffiche.getMonth(), 1);
-    const dernier = new Date(this.moisAffiche.getFullYear(), this.moisAffiche.getMonth() + 1, 0);
+    const premier    = new Date(this.moisAffiche.getFullYear(), this.moisAffiche.getMonth(), 1);
+    const dernier    = new Date(this.moisAffiche.getFullYear(), this.moisAffiche.getMonth() + 1, 0);
     const jours: (Date | null)[] = [];
-    // Padding début (lundi = 1, dimanche = 0 → 6)
-    let premierJour = premier.getDay(); // 0=dim
-    premierJour = premierJour === 0 ? 6 : premierJour - 1; // lundi = 0
+    let premierJour  = premier.getDay();
+    premierJour      = premierJour === 0 ? 6 : premierJour - 1;
     for (let i = 0; i < premierJour; i++) jours.push(null);
     for (let d = 1; d <= dernier.getDate(); d++) {
       jours.push(new Date(this.moisAffiche.getFullYear(), this.moisAffiche.getMonth(), d));
@@ -80,25 +83,56 @@ export class Rdv implements OnInit {
     return d.getDay() === 0 || d.getDay() === 6;
   }
 
-  choisirDate(d: Date): void {
-    if (this.estPasse(d) || this.estWeekend(d)) return;
-    this.dateSelectionnee = d.toISOString().split('T')[0];
-    this.dateLabel = d.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
-    this.etape = 'creneau';
-    this.cdr.detectChanges();
-  }
-
   estSelectionne(d: Date): boolean {
     return d.toISOString().split('T')[0] === this.dateSelectionnee;
   }
 
+  // Indique si tous les créneaux du jour sont pris (pour griser le jour dans le calendrier)
+  estJourComplet(d: Date): boolean {
+    const dateStr = d.toISOString().split('T')[0];
+    if (dateStr !== this.dateSelectionnee) return false;
+    return this.creneaux.every(h => this.creneauxPris.includes(h));
+  }
+
+  // Vrai si le créneau est déjà pris
+  estCreneauPris(h: string): boolean {
+    return this.creneauxPris.includes(h);
+  }
+
+  choisirDate(d: Date): void {
+    if (this.estPasse(d) || this.estWeekend(d)) return;
+    this.dateSelectionnee = d.toISOString().split('T')[0];
+    this.dateLabel        = d.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+    this.creneauxPris     = [];
+    this.chargementCreneaux = true;
+    this.etape = 'creneau';
+
+    // Récupère les créneaux déjà pris pour cette date
+    this.http.get<string[]>(`${environment.backendUrl}/rdv/creneaux-pris?date=${this.dateSelectionnee}`)
+      .subscribe({
+        next: pris => {
+          this.creneauxPris       = pris;
+          this.chargementCreneaux = false;
+          this.cdr.detectChanges();
+        },
+        error: () => {
+          // En cas d'erreur réseau : on laisse tous les créneaux disponibles
+          this.chargementCreneaux = false;
+          this.cdr.detectChanges();
+        }
+      });
+
+    this.cdr.detectChanges();
+  }
+
   choisirHeure(h: string): void {
+    if (this.estCreneauPris(h)) return;
     this.heureSelectionnee = h;
     this.etape = 'form';
     this.cdr.detectChanges();
   }
 
-  retourDate(): void { this.etape = 'date'; this.heureSelectionnee = ''; }
+  retourDate(): void    { this.etape = 'date'; this.heureSelectionnee = ''; }
   retourCreneau(): void { this.etape = 'creneau'; }
 
   async confirmer(): Promise<void> {
@@ -109,22 +143,35 @@ export class Rdv implements OnInit {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          nom: this.nom,
-          email: this.email,
+          nom:       this.nom,
+          email:     this.email,
           telephone: this.telephone,
-          adresse: this.adresse,
-          date: this.dateSelectionnee,
-          heure: this.heureSelectionnee,
-          service: 'diagnostic',
-          rubrique: 'site',
-          notes: this.notes,
+          adresse:   this.adresse,
+          date:      this.dateSelectionnee,
+          heure:     this.heureSelectionnee,
+          service:   'diagnostic',
+          rubrique:  'site',
+          notes:     this.notes,
         }),
       });
+      if (r.status === 409) {
+        // Créneau pris entre-temps (race condition) → on recharge et on revient
+        this.creneauxPris = await r.json().then((d: any) => {
+          // On recharge les créneaux pris pour cette date
+          this.http.get<string[]>(`${environment.backendUrl}/rdv/creneaux-pris?date=${this.dateSelectionnee}`)
+            .subscribe(pris => { this.creneauxPris = pris; this.cdr.detectChanges(); });
+          return this.creneauxPris;
+        });
+        this.msgErreur = 'Ce créneau vient d\'être réservé. Veuillez en choisir un autre.';
+        this.etape     = 'creneau';
+        this.heureSelectionnee = '';
+        return;
+      }
       if (!r.ok) throw new Error(`HTTP ${r.status}`);
       this.etape = 'succes';
-    } catch (e: any) {
+    } catch {
       this.msgErreur = 'Une erreur est survenue. Veuillez réessayer.';
-      this.etape = 'erreur';
+      this.etape     = 'erreur';
     } finally {
       this.envoi = false;
       this.cdr.detectChanges();
