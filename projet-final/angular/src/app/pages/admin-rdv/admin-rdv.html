@@ -1,0 +1,93 @@
+<div class="ardv-page">
+
+  <div class="ardv-head">
+    <a routerLink="/" class="ardv-back">← Retour au site</a>
+    <h1 class="ardv-title">📋 Tableau de bord RDV</h1>
+    @if (!chargement) {
+      <p class="ardv-nb">{{ nbParStatut.tous }} rendez-vous</p>
+    }
+  </div>
+
+  <!-- FILTRES -->
+  <div class="ardv-filtres">
+    <button class="ardv-filtre" [class.active]="filtre() === 'tous'"       (click)="filtre.set('tous')">
+      Tous <span class="ardv-badge">{{ nbParStatut.tous }}</span>
+    </button>
+    <button class="ardv-filtre" [class.active]="filtre() === 'en_attente'" (click)="filtre.set('en_attente')">
+      En attente <span class="ardv-badge attente">{{ nbParStatut.en_attente }}</span>
+    </button>
+    <button class="ardv-filtre" [class.active]="filtre() === 'confirme'"   (click)="filtre.set('confirme')">
+      Confirmés <span class="ardv-badge confirme">{{ nbParStatut.confirme }}</span>
+    </button>
+    <button class="ardv-filtre" [class.active]="filtre() === 'annule'"     (click)="filtre.set('annule')">
+      Annulés <span class="ardv-badge annule">{{ nbParStatut.annule }}</span>
+    </button>
+  </div>
+
+  <!-- CONTENU -->
+  <div class="ardv-body">
+
+    @if (chargement) {
+      <div class="ardv-loading">
+        <div class="ardv-spinner"></div>
+        <p>Chargement des rendez-vous…</p>
+      </div>
+    }
+
+    @if (erreur) {
+      <div class="ardv-erreur">
+        ⚠️ Impossible de charger les rendez-vous.
+        <button (click)="charger()">Réessayer</button>
+      </div>
+    }
+
+    @if (!chargement && !erreur) {
+      @if (rdvFiltres.length === 0) {
+        <div class="ardv-vide">Aucun rendez-vous{{ filtre() !== 'tous' ? ' dans cette catégorie' : '' }}.</div>
+      }
+      @for (rdv of rdvFiltres; track rdv.id) {
+        <div class="ardv-card" [class.confirme]="rdv.statut === 'confirme'" [class.annule]="rdv.statut === 'annule'">
+          <div class="ardv-card-main">
+            <!-- Ligne 1 : nom + statut -->
+            <div class="ardv-row1">
+              <span class="ardv-nom">👤 {{ rdv.nom }}</span>
+              <span class="ardv-statut" [class]="'s-' + rdv.statut">
+                @if (rdv.statut === 'confirme') { ✅ Confirmé }
+                @if (rdv.statut === 'en_attente') { 🟡 En attente }
+                @if (rdv.statut === 'annule') { 🔴 Annulé }
+              </span>
+            </div>
+            <!-- Ligne 2 : infos -->
+            <div class="ardv-infos">
+              <span>📅 {{ formatDate(rdv.date) }}</span>
+              <span>🕐 {{ rdv.heure }}</span>
+              <span>✉ {{ rdv.email }}</span>
+              <span>📞 {{ rdv.telephone }}</span>
+              @if (rdv.adresse) { <span>📍 {{ rdv.adresse }}</span> }
+            </div>
+            <!-- Ligne 3 : service/rubrique/notes -->
+            <div class="ardv-meta">
+              Service : {{ rdv.service }}
+              @if (rdv.rubrique) { · Rubrique : {{ rdv.rubrique }} }
+              @if (rdv.notes) { · <em>{{ rdv.notes }}</em> }
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="ardv-actions">
+            @if (rdv.statut !== 'confirme') {
+              <button class="ardv-btn-confirm" (click)="changerStatut(rdv, 'confirme')">✅ Confirmer</button>
+            }
+            @if (rdv.statut !== 'annule') {
+              <button class="ardv-btn-annul" (click)="changerStatut(rdv, 'annule')">✕ Annuler</button>
+            }
+            @if (rdv.statut === 'annule') {
+              <button class="ardv-btn-confirm" (click)="changerStatut(rdv, 'en_attente')">↩ Remettre</button>
+            }
+          </div>
+        </div>
+      }
+    }
+
+  </div>
+</div>
