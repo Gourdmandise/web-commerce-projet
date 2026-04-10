@@ -966,7 +966,7 @@ app.get('/rdv', requireAdmin, async (req, res) => {
     console.error('Erreur liste RDV :', err);
     res.status(500).json({ error: 'Erreur serveur RDV.' });
   }
-});S
+});
 
 // PATCH /rdv/:id/statut — admin : confirmer ou annuler
 app.patch('/rdv/:id/statut', requireAdmin, async (req, res) => {
