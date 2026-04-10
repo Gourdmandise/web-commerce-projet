@@ -968,6 +968,7 @@ app.get('/rdv', requireAdmin, async (req, res) => {
   }
 });
 
+
 // PATCH /rdv/:id/statut — admin : confirmer ou annuler
 app.patch('/rdv/:id/statut', requireAdmin, async (req, res) => {
   const id = parseInt(req.params.id);
