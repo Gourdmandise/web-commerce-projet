@@ -1,16 +1,25 @@
 import { Component, ViewEncapsulation, inject, signal, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { PanierService }      from '../../services/panier.service';
 import { UtilisateurService } from '../../services/utilisateur.service';
 import { CommandeService }    from '../../services/commande.service';
 import { OffreService }       from '../../services/offre.service';
+import { AuthService }        from '../../services/auth.service';
 
 import { Utilisateur }        from '../../models/utilisateur.model';
 import { Commande, StatutCommande } from '../../models/commande.model';
 import { Offre } from '../../models/offre.model';
+import { environment } from '../../../environments/environment';
 
-type OngletAdmin = 'utilisateurs' | 'commandes' | 'offres';
+export interface Rdv {
+  id: number; nom: string; email: string; telephone: string; adresse: string;
+  date: string; heure: string; service: string; rubrique: string; notes: string;
+  statut: 'en_attente' | 'confirme' | 'annule'; datecreation: string;
+}
+type FiltreRdv = 'tous' | 'en_attente' | 'confirme' | 'annule';
+type OngletAdmin = 'utilisateurs' | 'commandes' | 'offres' | 'rdv';
 
 @Component({
   selector: 'app-admin',
@@ -25,12 +34,39 @@ export class Admin implements OnInit {
   utilisateurService = inject(UtilisateurService);
   commandeService    = inject(CommandeService);
   offreService       = inject(OffreService);
-
+  private http       = inject(HttpClient);
+  private auth       = inject(AuthService);
 
   onglet       = signal<OngletAdmin>('utilisateurs');
   utilisateurs = signal<Utilisateur[]>([]);
   commandes    = signal<Commande[]>([]);
   offres       = signal<Offre[]>([]);
+
+  // ── RDV ──
+  rdvs          = signal<Rdv[]>([]);
+  rdvFiltre     = signal<FiltreRdv>('tous');
+  rdvChargement = false;
+
+  get rdvFiltres(): Rdv[] {
+    const f = this.rdvFiltre();
+    if (f === 'tous') return this.rdvs();
+    return this.rdvs().filter(r => r.statut === f);
+  }
+
+  get rdvNbParStatut() {
+    const all = this.rdvs();
+    return {
+      tous:       all.length,
+      en_attente: all.filter(r => r.statut === 'en_attente').length,
+      confirme:   all.filter(r => r.statut === 'confirme').length,
+      annule:     all.filter(r => r.statut === 'annule').length,
+    };
+  }
+
+  private rdvHeaders(): HttpHeaders {
+    const token = this.auth.getToken();
+    return new HttpHeaders(token ? { Authorization: `Bearer ${token}` } : {});
+  }
 
   // ── Édition utilisateur ──
   editUser: Utilisateur | null = null;
@@ -57,6 +93,30 @@ export class Admin implements OnInit {
     this.utilisateurService.getAll().subscribe(d => this.utilisateurs.set(d));
     this.commandeService.getAll().subscribe(d => this.commandes.set(d));
     this.offreService.getAll().subscribe(d => this.offres.set(d));
+    this.chargerRdvs();
+  }
+
+  chargerRdvs(): void {
+    this.rdvChargement = true;
+    this.http.get<Rdv[]>(`${environment.backendUrl}/rdv`, { headers: this.rdvHeaders() })
+      .subscribe({ next: d => { this.rdvs.set(d); this.rdvChargement = false; }, error: () => { this.rdvChargement = false; } });
+  }
+
+  changerStatutRdv(rdv: Rdv, statut: 'confirme' | 'annule' | 'en_attente'): void {
+    this.http.patch<Rdv>(`${environment.backendUrl}/rdv/${rdv.id}/statut`, { statut }, { headers: this.rdvHeaders() })
+      .subscribe({
+        next: updated => {
+          this.rdvs.update(list => list.map(r => r.id === updated.id ? updated : r));
+          this.panier.notify('✓', 'RDV mis à jour', `${updated.nom} — ${statut}`);
+        },
+        error: () => this.panier.notify('⚠', 'Erreur', 'Impossible de mettre à jour le RDV')
+      });
+  }
+
+  formatDateRdv(dateStr: string): string {
+    if (!dateStr) return '';
+    const d = new Date(dateStr + 'T00:00:00');
+    return d.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
   }
 
   // ════════════════════════════════

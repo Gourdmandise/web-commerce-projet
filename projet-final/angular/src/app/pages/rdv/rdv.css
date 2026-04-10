@@ -1,0 +1,83 @@
+/* ══ PAGE ══════════════════════════════════════════════════ */
+.rdv-page { min-height:100vh; background:#0d1117; color:#e2e8f0; font-family:'Barlow',sans-serif; }
+
+/* ══ HEADER ════════════════════════════════════════════════ */
+.rdv-header { background:linear-gradient(135deg,rgba(0,212,170,.08),rgba(0,180,216,.05)); border-bottom:1px solid rgba(0,212,170,.2); padding:32px 24px 28px; text-align:center; }
+.rdv-back { display:inline-flex; align-items:center; gap:6px; color:#00D4AA; font-size:13px; font-weight:700; text-decoration:none; letter-spacing:.06em; text-transform:uppercase; margin-bottom:16px; transition:opacity .2s; }
+.rdv-back:hover { opacity:.7; }
+.rdv-title { font-family:'Barlow Condensed',sans-serif; font-size:clamp(20px,3vw,32px); font-weight:900; color:#e2e8f0; margin:0 0 8px; }
+.rdv-subtitle { font-size:14px; color:#4A6275; }
+
+/* ══ CONTAINER ═════════════════════════════════════════════ */
+.rdv-container { max-width:620px; margin:40px auto 80px; padding:0 20px; }
+
+/* ══ ÉTAPES ════════════════════════════════════════════════ */
+.rdv-steps { display:flex; align-items:center; justify-content:center; gap:0; margin-bottom:28px; }
+.rdv-step { display:flex; align-items:center; gap:8px; opacity:.4; transition:opacity .3s; }
+.rdv-step.active, .rdv-step.done { opacity:1; }
+.rdv-step-n { width:28px; height:28px; border-radius:50%; background:rgba(0,212,170,.15); border:1.5px solid rgba(0,212,170,.3); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; color:#00D4AA; }
+.rdv-step.active .rdv-step-n { background:#00D4AA; color:#0d1117; border-color:#00D4AA; }
+.rdv-step.done .rdv-step-n { background:rgba(0,212,170,.2); }
+.rdv-step-l { font-size:13px; font-weight:700; color:#e2e8f0; }
+.rdv-step-sep { width:40px; height:1px; background:rgba(0,212,170,.2); margin:0 8px; }
+
+/* ══ CARTE ══════════════════════════════════════════════════ */
+.rdv-card { background:#161b22; border:1px solid rgba(0,212,170,.15); border-radius:16px; padding:28px; }
+.rdv-sec-title { font-size:15px; font-weight:800; color:#e2e8f0; margin-bottom:20px; display:flex; align-items:center; gap:10px; }
+.rdv-back-step { background:none; border:none; cursor:pointer; color:#00D4AA; font-size:18px; padding:0; line-height:1; transition:opacity .2s; }
+.rdv-back-step:hover { opacity:.7; }
+
+/* ══ CALENDRIER ════════════════════════════════════════════ */
+.rdv-cal { }
+.rdv-cal-nav { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+.rdv-cal-arrow { background:none; border:1px solid rgba(0,212,170,.2); border-radius:8px; color:#00D4AA; font-size:18px; width:34px; height:34px; cursor:pointer; transition:background .2s; }
+.rdv-cal-arrow:hover { background:rgba(0,212,170,.1); }
+.rdv-cal-mois { font-family:'Barlow Condensed',sans-serif; font-size:17px; font-weight:800; color:#e2e8f0; text-transform:capitalize; }
+.rdv-cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:4px; }
+.rdv-cal-dow { text-align:center; font-size:11px; font-weight:700; color:#4A6275; padding:6px 0; text-transform:uppercase; letter-spacing:.05em; }
+.rdv-we { color:rgba(74,98,117,.5); }
+.rdv-cal-vide { }
+.rdv-cal-jour { width:100%; aspect-ratio:1; border-radius:8px; border:1px solid transparent; background:none; color:#e2e8f0; font-size:13px; font-weight:600; cursor:pointer; transition:all .2s; }
+.rdv-cal-jour:hover:not(:disabled) { background:rgba(0,212,170,.12); border-color:rgba(0,212,170,.3); color:#00D4AA; }
+.rdv-cal-jour.selectionne { background:#00D4AA !important; color:#0d1117 !important; font-weight:800; }
+.rdv-cal-jour.auj { border-color:rgba(0,212,170,.4); color:#00D4AA; }
+.rdv-cal-jour.passe, .rdv-cal-jour.weekend { color:rgba(74,98,117,.4); cursor:not-allowed; }
+.rdv-cal-hint { font-size:12px; color:#4A6275; text-align:center; margin-top:12px; }
+
+/* ══ CRENEAUX ══════════════════════════════════════════════ */
+.rdv-date-choisie { font-size:13px; color:#00B4D8; font-weight:700; margin-bottom:16px; }
+.rdv-creneaux { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
+.rdv-creneau-btn { padding:10px 6px; border-radius:10px; border:1px solid rgba(0,180,216,.2); background:rgba(0,180,216,.04); color:#e2e8f0; font-size:13px; font-weight:600; cursor:pointer; transition:all .2s; font-family:'Barlow',sans-serif; }
+.rdv-creneau-btn:hover { border-color:#00B4D8; color:#00B4D8; background:rgba(0,180,216,.1); }
+.rdv-creneau-btn.active { background:#00B4D8; border-color:#00B4D8; color:#0d1117; font-weight:800; }
+
+/* ══ FORMULAIRE ════════════════════════════════════════════ */
+.rdv-form { display:flex; flex-direction:column; gap:10px; }
+.rdv-field { display:flex; align-items:center; gap:10px; background:rgba(255,255,255,.04); border:1px solid rgba(0,180,216,.15); border-radius:10px; padding:12px 16px; transition:border-color .2s; }
+.rdv-field:focus-within { border-color:rgba(0,180,216,.5); }
+.rdv-field-area { align-items:flex-start; }
+.rdv-field-icon { font-size:15px; flex-shrink:0; }
+.rdv-input, .rdv-textarea { flex:1; background:none; border:none; outline:none; color:#e2e8f0; font-size:14px; font-family:'Barlow',sans-serif; }
+.rdv-input::placeholder, .rdv-textarea::placeholder { color:#4A6275; }
+.rdv-textarea { resize:vertical; line-height:1.6; }
+
+/* ══ BOUTON PRINCIPAL ══════════════════════════════════════ */
+.rdv-btn-primary { display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:14px 28px; background:#00D4AA; color:#0d1117; font-size:14px; font-weight:800; border:none; border-radius:12px; cursor:pointer; transition:all .2s; font-family:'Barlow',sans-serif; letter-spacing:.04em; text-decoration:none; }
+.rdv-btn-primary:hover:not(:disabled) { background:#00e6b8; transform:translateY(-1px); }
+.rdv-btn-primary:disabled { opacity:.5; cursor:not-allowed; }
+.rdv-btn-confirm { width:100%; margin-top:6px; font-size:15px; padding:16px; }
+
+/* ══ SUCCÈS / ERREUR ══════════════════════════════════════ */
+.rdv-succes { text-align:center; padding:48px 24px; background:#161b22; border:1px solid rgba(0,212,170,.2); border-radius:16px; }
+.rdv-succes-icon { font-size:56px; margin-bottom:16px; }
+.rdv-succes h2 { font-family:'Barlow Condensed',sans-serif; font-size:28px; font-weight:900; color:#00D4AA; margin-bottom:12px; }
+.rdv-succes p { color:#e2e8f0; line-height:1.7; }
+.rdv-succes-sub { color:#4A6275; font-size:13px; margin-top:8px; }
+.rdv-erreur { text-align:center; padding:32px; background:rgba(200,50,50,.08); border:1px solid rgba(200,50,50,.2); border-radius:16px; color:#e2e8f0; }
+.rdv-erreur p { margin-bottom:16px; }
+
+@media(max-width:480px) {
+  .rdv-creneaux { grid-template-columns:repeat(3,1fr); }
+  .rdv-steps { gap:0; }
+  .rdv-step-sep { width:20px; }
+}

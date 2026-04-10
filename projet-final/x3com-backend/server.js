@@ -901,6 +901,75 @@ setInterval(nettoyerCommandesAnnulees, 24 * 60 * 60 * 1000);
 
 
 // ══════════════════════════════════════════════════════════
+// RENDEZ-VOUS (RDV)
+// ══════════════════════════════════════════════════════════
+
+// POST /rdv — public : créer un RDV
+app.post('/rdv', async (req, res) => {
+  const { nom, email, telephone, adresse, date, heure, service, rubrique, notes } = req.body;
+  if (!nom || !email || !telephone || !date || !heure) {
+    return res.status(400).json({ error: 'Champs obligatoires manquants.' });
+  }
+  try {
+    const { data, error } = await supabase.from('rdv').insert([{
+      nom: nom.trim(),
+      email: email.trim().toLowerCase(),
+      telephone: telephone.trim(),
+      adresse: adresse?.trim() || '',
+      date,
+      heure,
+      service: service || 'diagnostic',
+      rubrique: rubrique || '',
+      notes: notes?.trim() || '',
+      statut: 'en_attente',
+    }]).select().single();
+    if (error) throw error;
+    res.status(201).json(data);
+  } catch (err) {
+    console.error('Erreur création RDV :', err);
+    res.status(500).json({ error: 'Erreur serveur RDV.' });
+  }
+});
+
+// GET /rdv — admin : liste tous les RDV
+app.get('/rdv', requireAdmin, async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from('rdv')
+      .select('*')
+      .order('date', { ascending: true })
+      .order('heure', { ascending: true });
+    if (error) throw error;
+    res.json(data);
+  } catch (err) {
+    console.error('Erreur liste RDV :', err);
+    res.status(500).json({ error: 'Erreur serveur RDV.' });
+  }
+});
+
+// PATCH /rdv/:id/statut — admin : confirmer ou annuler
+app.patch('/rdv/:id/statut', requireAdmin, async (req, res) => {
+  const id = parseInt(req.params.id);
+  const { statut } = req.body;
+  if (!['confirme', 'en_attente', 'annule'].includes(statut)) {
+    return res.status(400).json({ error: 'Statut invalide.' });
+  }
+  try {
+    const { data, error } = await supabase
+      .from('rdv')
+      .update({ statut })
+      .eq('id', id)
+      .select()
+      .single();
+    if (error) throw error;
+    res.json(data);
+  } catch (err) {
+    console.error('Erreur mise à jour RDV :', err);
+    res.status(500).json({ error: 'Erreur serveur RDV.' });
+  }
+});
+
+// ══════════════════════════════════════════════════════════
 // DÉMARRAGE
 // ══════════════════════════════════════════════════════════
 app.listen(PORT, async () => {

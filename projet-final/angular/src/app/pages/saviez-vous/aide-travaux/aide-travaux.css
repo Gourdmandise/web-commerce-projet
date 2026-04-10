@@ -82,3 +82,50 @@
   .at-etape-arrow { transform:rotate(90deg); }
   .sv-alert { padding:14px 20px;font-size:13px; }
 }
+/* ══ FORMULAIRE RDV INLINE ══════════════════════════════════ */
+.at-rdv-wrap { max-width:560px; margin:0 auto; }
+.at-rdv-title { font-family:'Barlow Condensed',sans-serif; font-size:clamp(18px,2.5vw,26px); font-weight:900; color:#1A202C; margin:0 0 6px; }
+.at-rdv-sub { font-size:13px; color:#4A6275; margin-bottom:20px; }
+
+.at-rdv-card { background:rgba(255,255,255,.7); border:1px solid rgba(0,180,216,.2); border-radius:16px; padding:24px; backdrop-filter:blur(4px); }
+.at-rdv-step-title { font-size:14px; font-weight:800; color:#1A202C; margin-bottom:16px; display:flex; align-items:center; gap:10px; }
+.at-rdv-back { background:none; border:none; cursor:pointer; color:#00B4D8; font-size:18px; padding:0; transition:opacity .2s; }
+.at-rdv-back:hover { opacity:.6; }
+
+/* Calendrier */
+.at-rdv-cal-nav { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+.at-rdv-arrow { background:none; border:1px solid rgba(0,180,216,.3); border-radius:8px; color:#00B4D8; font-size:18px; width:32px; height:32px; cursor:pointer; transition:background .2s; }
+.at-rdv-arrow:hover { background:rgba(0,180,216,.1); }
+.at-rdv-mois { font-family:'Barlow Condensed',sans-serif; font-size:16px; font-weight:800; color:#1A202C; text-transform:capitalize; }
+.at-rdv-cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:3px; }
+.at-rdv-dow { text-align:center; font-size:10px; font-weight:700; color:#4A6275; padding:5px 0; text-transform:uppercase; }
+.at-we { color:rgba(74,98,117,.4); }
+.at-rdv-jour { width:100%; aspect-ratio:1; border-radius:7px; border:1px solid transparent; background:none; color:#1A202C; font-size:12px; font-weight:600; cursor:pointer; transition:all .2s; }
+.at-rdv-jour:hover:not(:disabled) { background:rgba(0,212,170,.12); border-color:rgba(0,212,170,.4); color:#00B4D8; }
+.at-rdv-jour.sel { background:#00D4AA !important; color:#fff !important; font-weight:800; border-color:#00D4AA !important; }
+.at-rdv-jour.auj { border-color:rgba(0,180,216,.4); color:#00B4D8; }
+.at-rdv-jour.passe, .at-rdv-jour.we { color:rgba(74,98,117,.3); cursor:not-allowed; }
+.at-rdv-hint { font-size:11px; color:#a0b0c0; text-align:center; margin-top:10px; }
+
+/* Creneaux */
+.at-rdv-date-choisie { font-size:13px; color:#00B4D8; font-weight:700; margin-bottom:14px; }
+.at-rdv-creneaux { display:grid; grid-template-columns:repeat(4,1fr); gap:7px; }
+.at-rdv-creneau { padding:9px 4px; border-radius:9px; border:1px solid rgba(0,180,216,.2); background:rgba(0,180,216,.04); color:#1A202C; font-size:12px; font-weight:600; cursor:pointer; transition:all .2s; font-family:'Barlow',sans-serif; }
+.at-rdv-creneau:hover { border-color:#00B4D8; color:#00B4D8; background:rgba(0,180,216,.1); }
+.at-rdv-creneau.actif { background:#00B4D8; border-color:#00B4D8; color:#fff; font-weight:800; }
+
+/* Formulaire */
+.at-rdv-form { display:flex; flex-direction:column; gap:9px; }
+.at-rdv-field { display:flex; align-items:center; gap:9px; background:rgba(255,255,255,.9); border:1px solid rgba(0,180,216,.2); border-radius:9px; padding:11px 14px; transition:border-color .2s; }
+.at-rdv-field:focus-within { border-color:#00B4D8; }
+.at-rdv-area { align-items:flex-start; }
+.at-rdv-input { flex:1; background:none; border:none; outline:none; font-size:13px; color:#1A202C; font-family:'Barlow',sans-serif; resize:vertical; }
+.at-rdv-input::placeholder { color:#a0b0c0; }
+.at-rdv-submit { width:100%; margin-top:4px; justify-content:center; }
+.at-rdv-submit:disabled { opacity:.5; cursor:not-allowed; }
+
+/* Succès / erreur */
+.at-rdv-succes { text-align:center; padding:36px 24px; background:rgba(0,212,170,.06); border:1px solid rgba(0,212,170,.25); border-radius:16px; }
+.at-rdv-succes h3 { font-family:'Barlow Condensed',sans-serif; font-size:22px; font-weight:900; color:#00D4AA; margin-bottom:10px; }
+.at-rdv-succes p { color:#1A202C; line-height:1.7; }
+.at-rdv-erreur { text-align:center; padding:24px; background:rgba(200,50,50,.06); border:1px solid rgba(200,50,50,.2); border-radius:12px; color:#1A202C; }

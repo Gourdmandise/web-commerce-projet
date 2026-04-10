@@ -10,6 +10,7 @@
       <div class="astat"><span class="astat-n">{{ utilisateurs().length }}</span><span class="astat-l">Utilisateurs</span></div>
       <div class="astat"><span class="astat-n">{{ commandes().length }}</span><span class="astat-l">Commandes</span></div>
       <div class="astat"><span class="astat-n">{{ offres().length }}</span><span class="astat-l">Offres</span></div>
+      <div class="astat"><span class="astat-n">{{ rdvs().length }}</span><span class="astat-l">RDV</span></div>
     </div>
   </div>
 
@@ -18,6 +19,7 @@
     <button class="atab" [class.active]="onglet() === 'utilisateurs'" (click)="onglet.set('utilisateurs')">👥 Utilisateurs</button>
     <button class="atab" [class.active]="onglet() === 'commandes'"   (click)="onglet.set('commandes')">🛒 Commandes</button>
     <button class="atab" [class.active]="onglet() === 'offres'"      (click)="onglet.set('offres')">💼 Offres</button>
+    <button class="atab" [class.active]="onglet() === 'rdv'"        (click)="onglet.set('rdv')">📅 RDV</button>
   </div>
 
   <!-- ══════════════════════════════════
@@ -243,6 +245,69 @@
         </div>
       </div>
     }
+  }
+
+
+  <!-- ══════════════════════════════════
+       ONGLET RDV
+  ══════════════════════════════════ -->
+  @if (onglet() === 'rdv') {
+    <div class="admin-section">
+
+      <!-- Filtres -->
+      <div class="ardv-filtres" style="margin-bottom:20px">
+        <button class="ardv-filtre" [class.active]="rdvFiltre() === 'tous'"       (click)="rdvFiltre.set('tous')">Tous <span class="ardv-badge">{{ rdvNbParStatut.tous }}</span></button>
+        <button class="ardv-filtre" [class.active]="rdvFiltre() === 'en_attente'" (click)="rdvFiltre.set('en_attente')">En attente <span class="ardv-badge a">{{ rdvNbParStatut.en_attente }}</span></button>
+        <button class="ardv-filtre" [class.active]="rdvFiltre() === 'confirme'"   (click)="rdvFiltre.set('confirme')">Confirmés <span class="ardv-badge c">{{ rdvNbParStatut.confirme }}</span></button>
+        <button class="ardv-filtre" [class.active]="rdvFiltre() === 'annule'"     (click)="rdvFiltre.set('annule')">Annulés <span class="ardv-badge x">{{ rdvNbParStatut.annule }}</span></button>
+      </div>
+
+      @if (rdvChargement) {
+        <div class="ardv-loading"><div class="ardv-spinner"></div><p>Chargement…</p></div>
+      }
+
+      @if (!rdvChargement && rdvFiltres.length === 0) {
+        <p style="color:#4A6275;text-align:center;padding:40px">Aucun rendez-vous{{ rdvFiltre() !== 'tous' ? ' dans cette catégorie' : '' }}.</p>
+      }
+
+      @for (rdv of rdvFiltres; track rdv.id) {
+        <div class="ardv-card" [class.confirme]="rdv.statut === 'confirme'" [class.annule]="rdv.statut === 'annule'">
+          <div class="ardv-card-main">
+            <div class="ardv-row1">
+              <span class="ardv-nom">👤 {{ rdv.nom }}</span>
+              <span class="ardv-statut" [class]="'s-' + rdv.statut">
+                @if (rdv.statut === 'confirme') { ✅ Confirmé }
+                @if (rdv.statut === 'en_attente') { 🟡 En attente }
+                @if (rdv.statut === 'annule') { 🔴 Annulé }
+              </span>
+            </div>
+            <div class="ardv-infos">
+              <span>📅 {{ formatDateRdv(rdv.date) }}</span>
+              <span>🕐 {{ rdv.heure }}</span>
+              <span>✉ {{ rdv.email }}</span>
+              <span>📞 {{ rdv.telephone }}</span>
+              @if (rdv.adresse) { <span>📍 {{ rdv.adresse }}</span> }
+            </div>
+            <div class="ardv-meta">
+              Service : {{ rdv.service }}
+              @if (rdv.rubrique) { · Rubrique : {{ rdv.rubrique }} }
+              @if (rdv.notes) { · <em>{{ rdv.notes }}</em> }
+            </div>
+          </div>
+          <div class="ardv-actions">
+            @if (rdv.statut !== 'confirme') {
+              <button class="ardv-btn-confirm" (click)="changerStatutRdv(rdv, 'confirme')">✅ Confirmer</button>
+            }
+            @if (rdv.statut !== 'annule') {
+              <button class="ardv-btn-annul" (click)="changerStatutRdv(rdv, 'annule')">✕ Annuler</button>
+            }
+            @if (rdv.statut === 'annule') {
+              <button class="ardv-btn-confirm" (click)="changerStatutRdv(rdv, 'en_attente')">↩ Remettre</button>
+            }
+          </div>
+        </div>
+      }
+    </div>
   }
 
 </div>

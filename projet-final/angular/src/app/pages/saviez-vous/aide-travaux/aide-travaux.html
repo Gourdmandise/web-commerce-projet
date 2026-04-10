@@ -142,7 +142,97 @@
         <div class="at-service">📄 <span>Devis</span></div>
         <div class="at-service">🔧 <span>Travaux</span></div>
       </div>
-      <a routerLink="/contact" class="btn-x1" style="margin-top:24px;display:inline-block">Prendre rendez-vous — X3COM vous rappelle →</a>
+    </div>
+  </section>
+
+  <!-- ══ FORMULAIRE RDV INLINE ══ -->
+  <section class="sv-sec">
+    <div class="at-rdv-wrap">
+      <h2 class="at-rdv-title">📅 Prendre rendez-vous — X3COM vous rappelle</h2>
+      <p class="at-rdv-sub">Rendez-vous de 30 minutes. Du lundi au vendredi, 9h–17h.</p>
+
+      @if (rdvEtape === 'succes') {
+        <div class="at-rdv-succes">
+          <div style="font-size:48px;margin-bottom:12px">✅</div>
+          <h3>Rendez-vous confirmé !</h3>
+          <p>Votre RDV est enregistré pour le <strong>{{ dateLabel }}</strong> à <strong>{{ heureSelectionnee }}</strong>.</p>
+          <p style="color:#4A6275;font-size:13px;margin-top:8px">Notre équipe vous rappellera à l'heure choisie.</p>
+        </div>
+      }
+      @if (rdvEtape === 'erreur') {
+        <div class="at-rdv-erreur">
+          <p>⚠️ {{ rdvErreur }}</p>
+          <button class="btn-x1" style="margin-top:12px" (click)="rdvEtape = 'form'">Réessayer</button>
+        </div>
+      }
+      @if (rdvEtape !== 'succes' && rdvEtape !== 'erreur') {
+        <div class="at-rdv-card">
+
+          @if (rdvEtape === 'date') {
+            <div class="at-rdv-step-title">1. Choisissez une date</div>
+            <div class="at-rdv-cal">
+              <div class="at-rdv-cal-nav">
+                <button class="at-rdv-arrow" (click)="moisPrecedent()">‹</button>
+                <span class="at-rdv-mois">{{ moisLabel }}</span>
+                <button class="at-rdv-arrow" (click)="moisSuivant()">›</button>
+              </div>
+              <div class="at-rdv-cal-grid">
+                <div class="at-rdv-dow">Lu</div><div class="at-rdv-dow">Ma</div>
+                <div class="at-rdv-dow">Me</div><div class="at-rdv-dow">Je</div>
+                <div class="at-rdv-dow">Ve</div>
+                <div class="at-rdv-dow at-we">Sa</div><div class="at-rdv-dow at-we">Di</div>
+                @for (jour of joursCalendrier; track $index) {
+                  @if (jour === null) { <div></div> }
+                  @else {
+                    <button class="at-rdv-jour"
+                      [class.sel]="estSelectionne(jour)"
+                      [class.passe]="estPasse(jour)"
+                      [class.we]="estWeekend(jour)"
+                      [class.auj]="jour.toDateString() === today.toDateString()"
+                      [disabled]="estPasse(jour) || estWeekend(jour)"
+                      (click)="choisirDate(jour)">{{ jour.getDate() }}</button>
+                  }
+                }
+              </div>
+              <p class="at-rdv-hint">Week-ends et jours passés non disponibles.</p>
+            </div>
+          }
+
+          @if (rdvEtape === 'creneau') {
+            <div class="at-rdv-step-title">
+              <button class="at-rdv-back" (click)="rdvEtape = 'date'">←</button>
+              2. Choisissez un créneau
+            </div>
+            <p class="at-rdv-date-choisie">📅 {{ dateLabel }}</p>
+            <div class="at-rdv-creneaux">
+              @for (h of creneaux; track h) {
+                <button class="at-rdv-creneau" [class.actif]="heureSelectionnee === h" (click)="choisirHeure(h)">🕐 {{ h }}</button>
+              }
+            </div>
+          }
+
+          @if (rdvEtape === 'form') {
+            <div class="at-rdv-step-title">
+              <button class="at-rdv-back" (click)="rdvEtape = 'creneau'">←</button>
+              3. Vos coordonnées
+            </div>
+            <p class="at-rdv-date-choisie">📅 {{ dateLabel }} — 🕐 {{ heureSelectionnee }}</p>
+            <div class="at-rdv-form">
+              <div class="at-rdv-field"><span>👤</span><input type="text"  placeholder="Nom complet *"  [(ngModel)]="rdvNom"     class="at-rdv-input" /></div>
+              <div class="at-rdv-field"><span>✉</span> <input type="email" placeholder="E-mail *"        [(ngModel)]="rdvEmail"   class="at-rdv-input" /></div>
+              <div class="at-rdv-field"><span>📞</span><input type="tel"   placeholder="Téléphone *"     [(ngModel)]="rdvTel"     class="at-rdv-input" /></div>
+              <div class="at-rdv-field"><span>📍</span><input type="text"  placeholder="Adresse postale" [(ngModel)]="rdvAdresse" class="at-rdv-input" /></div>
+              <div class="at-rdv-field at-rdv-area"><span>💬</span><textarea placeholder="Notes (optionnel)" [(ngModel)]="rdvNotes" class="at-rdv-input" rows="3"></textarea></div>
+              <button class="btn-x1 at-rdv-submit"
+                [disabled]="!rdvNom || !rdvEmail || !rdvTel || rdvEnvoi"
+                (click)="confirmerRdv()">
+                @if (rdvEnvoi) { ⏳ Envoi… } @else { 📅 Confirmer le rendez-vous }
+              </button>
+            </div>
+          }
+
+        </div>
+      }
     </div>
   </section>
 

@@ -320,3 +320,38 @@
 .ordre-btns { display: flex; flex-direction: column; gap: 3px; align-items: center; }
 
 /* ── Couleurs police compte client (édition profil) ── */
+/* ══ ONGLET RDV ══════════════════════════════════════════════ */
+.ardv-filtres { display:flex; gap:8px; flex-wrap:wrap; }
+.ardv-filtre { display:flex; align-items:center; gap:6px; padding:7px 14px; border-radius:100px; border:1.5px solid rgba(255,255,255,.1); background:none; color:#4A6275; font-size:12px; font-weight:700; cursor:pointer; transition:all .2s; font-family:'Barlow',sans-serif; }
+.ardv-filtre:hover { border-color:rgba(0,212,170,.3); color:#e2e8f0; }
+.ardv-filtre.active { background:#00D4AA; border-color:#00D4AA; color:#0d1117; }
+.ardv-badge { font-size:10px; font-weight:800; padding:1px 6px; border-radius:20px; background:rgba(255,255,255,.08); }
+.ardv-badge.a { background:rgba(255,200,0,.15); color:#ffc800; }
+.ardv-badge.c { background:rgba(0,212,170,.15); color:#00D4AA; }
+.ardv-badge.x { background:rgba(200,50,50,.15); color:#e05050; }
+
+.ardv-card { background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.07); border-radius:12px; padding:16px 18px; margin-bottom:10px; display:flex; align-items:flex-start; justify-content:space-between; gap:14px; }
+.ardv-card.confirme { border-left:3px solid #00D4AA; }
+.ardv-card.annule { border-left:3px solid #e05050; opacity:.65; }
+.ardv-card-main { flex:1; min-width:0; }
+.ardv-row1 { display:flex; align-items:center; gap:10px; margin-bottom:7px; flex-wrap:wrap; }
+.ardv-nom { font-size:14px; font-weight:800; color:#e2e8f0; font-family:'Barlow Condensed',sans-serif; }
+.ardv-statut { font-size:11px; font-weight:700; padding:2px 9px; border-radius:20px; }
+.s-confirme { background:rgba(0,212,170,.15); color:#00D4AA; }
+.s-en_attente { background:rgba(255,200,0,.12); color:#ffc800; }
+.s-annule { background:rgba(200,50,50,.12); color:#e05050; }
+.ardv-infos { display:flex; flex-wrap:wrap; gap:10px; font-size:12px; color:#a0b8c8; margin-bottom:5px; }
+.ardv-meta { font-size:11px; color:#4A6275; }
+.ardv-actions { display:flex; flex-direction:column; gap:7px; flex-shrink:0; }
+.ardv-btn-confirm { padding:6px 12px; border-radius:7px; border:1.5px solid rgba(0,212,170,.4); background:rgba(0,212,170,.08); color:#00D4AA; font-size:11px; font-weight:700; cursor:pointer; transition:all .2s; font-family:'Barlow',sans-serif; white-space:nowrap; }
+.ardv-btn-confirm:hover { background:rgba(0,212,170,.2); }
+.ardv-btn-annul { padding:6px 12px; border-radius:7px; border:1.5px solid rgba(200,50,50,.3); background:rgba(200,50,50,.06); color:#e05050; font-size:11px; font-weight:700; cursor:pointer; transition:all .2s; font-family:'Barlow',sans-serif; white-space:nowrap; }
+.ardv-btn-annul:hover { background:rgba(200,50,50,.15); }
+.ardv-loading { display:flex; align-items:center; gap:12px; padding:40px; color:#4A6275; justify-content:center; }
+.ardv-spinner { width:24px; height:24px; border:2px solid rgba(0,212,170,.15); border-top-color:#00D4AA; border-radius:50%; animation:spin .7s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
+
+@media(max-width:600px) {
+  .ardv-card { flex-direction:column; }
+  .ardv-actions { flex-direction:row; }
+}
