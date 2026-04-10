@@ -911,17 +911,23 @@ app.post('/rdv', async (req, res) => {
     return res.status(400).json({ error: 'Champs obligatoires manquants.' });
   }
   try {
+    // ✅ AJOUT : vérification de conflit de créneau
+    const { data: existing } = await supabase
+      .from('rdv')
+      .select('id')
+      .eq('date', date)
+      .eq('heure', heure)
+      .neq('statut', 'annule')   // les annulés libèrent le créneau
+      .limit(1);
+
+    if (existing && existing.length > 0) {
+      return res.status(409).json({
+        error: 'Ce créneau est déjà réservé. Veuillez choisir une autre date ou heure.'
+      });
+    }
+
     const { data, error } = await supabase.from('rdv').insert([{
-      nom: nom.trim(),
-      email: email.trim().toLowerCase(),
-      telephone: telephone.trim(),
-      adresse: adresse?.trim() || '',
-      date,
-      heure,
-      service: service || 'diagnostic',
-      rubrique: rubrique || '',
-      notes: notes?.trim() || '',
-      statut: 'en_attente',
+      // ... reste inchangé
     }]).select().single();
     if (error) throw error;
     res.status(201).json(data);
