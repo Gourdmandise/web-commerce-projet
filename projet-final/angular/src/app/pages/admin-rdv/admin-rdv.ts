@@ -95,8 +95,12 @@ export class AdminRdv implements OnInit {
   }
 
   formatDate(dateStr: string): string {
-    if (!dateStr) return '';
-    const d = new Date(dateStr + 'T00:00:00');
-    return d.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
-  }
+  if (!dateStr) return '';
+  // Forcer l'interprétation en heure locale en splitant manuellement
+  const [year, month, day] = dateStr.split('-').map(Number);
+  const d = new Date(year, month - 1, day); // constructeur local, pas UTC
+  return d.toLocaleDateString('fr-FR', {
+    weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+  });
+}
 }
