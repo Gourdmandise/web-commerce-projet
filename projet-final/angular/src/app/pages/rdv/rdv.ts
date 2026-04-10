@@ -41,9 +41,10 @@ export class Rdv implements OnInit {
 
   // ── État ──
   etape: 'date' | 'creneau' | 'form' | 'succes' | 'erreur' = 'date';
-  envoi            = false;
-  msgErreur        = '';
-  erreurCreneaux   = false;
+  envoi              = false;
+  msgErreur          = '';
+  msgErreurCreneau   = '';
+  erreurCreneaux     = false;
 
   private dateVersString(d: Date): string {
     const y = d.getFullYear();
@@ -111,10 +112,11 @@ export class Rdv implements OnInit {
 
     this.dateSelectionnee   = this.dateVersString(d);
     this.dateLabel          = d.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
-    this.creneauxPris       = [];
-    this.chargementCreneaux = true;
-    this.erreurCreneaux     = false;
-    this.etape              = 'creneau';
+    this.creneauxPris        = [];
+    this.chargementCreneaux  = true;
+    this.erreurCreneaux      = false;
+    this.msgErreurCreneau    = '';
+    this.etape               = 'creneau';
 
     this.http.get<string[]>(`${environment.backendUrl}/rdv/creneaux-pris?date=${this.dateSelectionnee}`)
       .subscribe({
@@ -159,11 +161,15 @@ export class Rdv implements OnInit {
       });
 
       if (r.status === 409) {
+        this.heureSelectionnee  = '';
+        this.chargementCreneaux = true;
+        this.msgErreurCreneau   = 'Ce créneau vient d\'être réservé par quelqu\'un d\'autre. Choisissez un autre horaire.';
+        this.etape              = 'creneau';
         this.http.get<string[]>(`${environment.backendUrl}/rdv/creneaux-pris?date=${this.dateSelectionnee}`)
-          .subscribe(pris => { this.creneauxPris = pris; });
-        this.msgErreur         = 'Ce créneau vient d\'être réservé. Veuillez en choisir un autre.';
-        this.etape             = 'creneau';
-        this.heureSelectionnee = '';
+          .subscribe({
+            next: (pris: string[]) => { this.creneauxPris = pris; this.chargementCreneaux = false; },
+            error: ()   => { this.chargementCreneaux = false; this.erreurCreneaux = true; },
+          });
         return;
       }
 

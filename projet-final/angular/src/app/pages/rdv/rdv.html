@@ -93,6 +93,10 @@
           </div>
           <p class="rdv-date-choisie">📅 {{ dateLabel }}</p>
 
+          @if (msgErreurCreneau) {
+            <p class="rdv-tous-pris" style="margin-bottom:12px">⚠️ {{ msgErreurCreneau }}</p>
+          }
+
           <!-- Spinner pendant le chargement des créneaux -->
           @if (chargementCreneaux) {
             <div class="rdv-creneaux-loading">⏳ Vérification des disponibilités…</div>
