@@ -931,13 +931,27 @@ app.post('/rdv', async (req, res) => {
   if (!nom || !email || !telephone || !date || !heure) {
     return res.status(400).json({ error: 'Champs obligatoires manquants.' });
   }
+
+  // Normaliser la date : on accepte "YYYY-MM-DD" ou une ISO string,
+  // et on stocke toujours exactement "YYYY-MM-DD" sans décalage timezone.
+  const dateNormalisee = (() => {
+    // Si déjà au format YYYY-MM-DD, on le garde tel quel
+    if (/^\d{4}-\d{2}-\d{2}$/.test(date)) return date;
+    // Sinon on extrait manuellement la partie date pour éviter toute conversion UTC
+    const d = new Date(date);
+    const y = d.getUTCFullYear();
+    const m = String(d.getUTCMonth() + 1).padStart(2, '0');
+    const j = String(d.getUTCDate()).padStart(2, '0');
+    return `${y}-${m}-${j}`;
+  })();
+
   try {
     const { data, error } = await supabase.from('rdv').insert([{
       nom: nom.trim(),
       email: email.trim().toLowerCase(),
       telephone: telephone.trim(),
       adresse: adresse?.trim() || '',
-      date,
+      date: dateNormalisee,
       heure,
       service: service || 'diagnostic',
       rubrique: rubrique || '',
