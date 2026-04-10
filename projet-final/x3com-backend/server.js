@@ -946,6 +946,19 @@ app.post('/rdv', async (req, res) => {
   })();
 
   try {
+    // Vérifier si le créneau est déjà pris (hors annulés)
+    const { data: existant, error: errCheck } = await supabase
+      .from('rdv')
+      .select('id')
+      .eq('date', dateNormalisee)
+      .eq('heure', heure)
+      .neq('statut', 'annule')
+      .limit(1);
+    if (errCheck) throw errCheck;
+    if (existant && existant.length > 0) {
+      return res.status(409).json({ error: 'Ce créneau est déjà réservé.' });
+    }
+
     const { data, error } = await supabase.from('rdv').insert([{
       nom: nom.trim(),
       email: email.trim().toLowerCase(),
