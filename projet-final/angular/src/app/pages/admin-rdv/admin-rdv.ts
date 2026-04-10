@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewEncapsulation, inject, signal, ChangeDetectorRef } from '@angular/core';
-import { RouterLink } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { AuthService } from '../../services/auth.service';
@@ -24,7 +23,7 @@ type Filtre = 'tous' | 'en_attente' | 'confirme' | 'annule';
 @Component({
   selector: 'app-admin-rdv',
   standalone: true,
-  imports: [RouterLink],
+  imports: [],          // RouterLink supprimé (inutilisé)
   templateUrl: './admin-rdv.html',
   styleUrls: ['./admin-rdv.css'],
   encapsulation: ViewEncapsulation.None,
@@ -34,10 +33,10 @@ export class AdminRdv implements OnInit {
   private auth = inject(AuthService);
   private cdr  = inject(ChangeDetectorRef);
 
-  rdvs        = signal<Rdv[]>([]);
-  filtre      = signal<Filtre>('tous');
-  chargement  = true;
-  erreur      = false;
+  rdvs       = signal<Rdv[]>([]);
+  filtre     = signal<Filtre>('tous');
+  chargement = true;
+  erreur     = false;
 
   get rdvFiltres(): Rdv[] {
     const f = this.filtre();
