@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation, signal, ChangeDetectorRef, inject } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, ChangeDetectorRef, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -28,9 +28,9 @@ export class Rdv implements OnInit {
     '11:00','11:30','14:00','14:30',
     '15:00','15:30','16:00','16:30',
   ];
-  heureSelectionnee  = '';
-  creneauxPris: string[] = [];   // ← heures déjà réservées pour la date choisie
-  chargementCreneaux = false;
+  heureSelectionnee   = '';
+  creneauxPris: string[] = [];
+  chargementCreneaux  = false;
 
   // ── Formulaire ──
   nom       = '';
@@ -43,6 +43,17 @@ export class Rdv implements OnInit {
   etape: 'date' | 'creneau' | 'form' | 'succes' | 'erreur' = 'date';
   envoi     = false;
   msgErreur = '';
+
+  // ── Helpers ──
+
+  // ✅ CORRECTION BUG DATE : toISOString() convertit en UTC et décale d'un jour
+  // en France (UTC+2). On formate manuellement en heure locale.
+  private dateVersString(d: Date): string {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const j = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${j}`;
+  }
 
   get joursCalendrier(): (Date | null)[] {
     const premier    = new Date(this.moisAffiche.getFullYear(), this.moisAffiche.getMonth(), 1);
@@ -83,31 +94,27 @@ export class Rdv implements OnInit {
     return d.getDay() === 0 || d.getDay() === 6;
   }
 
+  // ✅ CORRECTION : utilise dateVersString() au lieu de toISOString()
   estSelectionne(d: Date): boolean {
-    return d.toISOString().split('T')[0] === this.dateSelectionnee;
+    return this.dateVersString(d) === this.dateSelectionnee;
   }
 
-  // Indique si tous les créneaux du jour sont pris (pour griser le jour dans le calendrier)
-  estJourComplet(d: Date): boolean {
-    const dateStr = d.toISOString().split('T')[0];
-    if (dateStr !== this.dateSelectionnee) return false;
-    return this.creneaux.every(h => this.creneauxPris.includes(h));
-  }
-
-  // Vrai si le créneau est déjà pris
   estCreneauPris(h: string): boolean {
     return this.creneauxPris.includes(h);
   }
 
   choisirDate(d: Date): void {
     if (this.estPasse(d) || this.estWeekend(d)) return;
-    this.dateSelectionnee = d.toISOString().split('T')[0];
-    this.dateLabel        = d.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
-    this.creneauxPris     = [];
-    this.chargementCreneaux = true;
-    this.etape = 'creneau';
 
-    // Récupère les créneaux déjà pris pour cette date
+    // ✅ CORRECTION : dateVersString() → date locale, plus de décalage UTC
+    this.dateSelectionnee   = this.dateVersString(d);
+    this.dateLabel          = d.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+    this.creneauxPris       = [];
+    this.chargementCreneaux = true;
+    this.etape              = 'creneau';
+    this.cdr.detectChanges();
+
+    // Charge les créneaux déjà pris pour ce jour
     this.http.get<string[]>(`${environment.backendUrl}/rdv/creneaux-pris?date=${this.dateSelectionnee}`)
       .subscribe({
         next: pris => {
@@ -116,13 +123,11 @@ export class Rdv implements OnInit {
           this.cdr.detectChanges();
         },
         error: () => {
-          // En cas d'erreur réseau : on laisse tous les créneaux disponibles
+          // Erreur réseau : on laisse tous les créneaux disponibles
           this.chargementCreneaux = false;
           this.cdr.detectChanges();
         }
       });
-
-    this.cdr.detectChanges();
   }
 
   choisirHeure(h: string): void {
@@ -154,19 +159,17 @@ export class Rdv implements OnInit {
           notes:     this.notes,
         }),
       });
+
+      // Créneau pris au dernier moment (race condition)
       if (r.status === 409) {
-        // Créneau pris entre-temps (race condition) → on recharge et on revient
-        this.creneauxPris = await r.json().then((d: any) => {
-          // On recharge les créneaux pris pour cette date
-          this.http.get<string[]>(`${environment.backendUrl}/rdv/creneaux-pris?date=${this.dateSelectionnee}`)
-            .subscribe(pris => { this.creneauxPris = pris; this.cdr.detectChanges(); });
-          return this.creneauxPris;
-        });
-        this.msgErreur = 'Ce créneau vient d\'être réservé. Veuillez en choisir un autre.';
-        this.etape     = 'creneau';
+        this.http.get<string[]>(`${environment.backendUrl}/rdv/creneaux-pris?date=${this.dateSelectionnee}`)
+          .subscribe(pris => { this.creneauxPris = pris; this.cdr.detectChanges(); });
+        this.msgErreur         = 'Ce créneau vient d\'être réservé. Veuillez en choisir un autre.';
+        this.etape             = 'creneau';
         this.heureSelectionnee = '';
         return;
       }
+
       if (!r.ok) throw new Error(`HTTP ${r.status}`);
       this.etape = 'succes';
     } catch {
