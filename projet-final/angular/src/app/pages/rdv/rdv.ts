@@ -105,6 +105,10 @@ export class Rdv implements OnInit {
 
   choisirDate(d: Date): void {
     if (this.estPasse(d) || this.estWeekend(d)) return;
+    console.log('DEBUG date cliquée:', d, '→ string:', this.dateVersString(d)); // ← ajoute ça
+    this.dateSelectionnee = this.dateVersString(d);
+  
+    if (this.estPasse(d) || this.estWeekend(d)) return;
 
     // ✅ CORRECTION : dateVersString() → date locale, plus de décalage UTC
     this.dateSelectionnee   = this.dateVersString(d);
@@ -180,4 +184,5 @@ export class Rdv implements OnInit {
       this.cdr.detectChanges();
     }
   }
+  
 }
