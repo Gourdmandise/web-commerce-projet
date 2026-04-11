@@ -51,6 +51,7 @@ export class Rdv implements OnInit {
   msgErreur          = '';
   msgErreurCreneau   = '';
   erreurCreneaux     = false;
+  private pollingTimer: any = null;
 
   private dateVersString(d: Date): string {
     const y = d.getFullYear();
@@ -84,6 +85,29 @@ export class Rdv implements OnInit {
   }
 
   ngOnInit(): void {}
+
+  private demarrerPollingCreneaux(): void {
+    this.arreterPollingCreneaux(); // Arrête tout polling existant
+    // Polling toutes les 10 secondes
+    this.pollingTimer = setInterval(() => {
+      this.http.get<string[]>(`${environment.backendUrl}/rdv/creneaux-pris?date=${this.dateSelectionnee}`)
+        .subscribe({
+          next: (pris: string[]) => {
+            this.creneauxPris = pris;
+          },
+          error: () => {
+            // Silencieusement ignorer les erreurs de polling
+          },
+        });
+    }, 10 * 1000); // 10 secondes
+  }
+
+  private arreterPollingCreneaux(): void {
+    if (this.pollingTimer) {
+      clearInterval(this.pollingTimer);
+      this.pollingTimer = null;
+    }
+  }
 
   moisPrecedent(): void {
     const m = this.moisAffiche();
@@ -129,6 +153,7 @@ export class Rdv implements OnInit {
         next: pris => {
           this.creneauxPris       = pris;
           this.chargementCreneaux = false;
+          this.demarrerPollingCreneaux(); // Lance le polling
         },
         error: () => {
           this.chargementCreneaux = false;
@@ -147,6 +172,7 @@ export class Rdv implements OnInit {
       sessionId: this.sessionId,
     }).subscribe({
       next: () => {
+        this.arreterPollingCreneaux(); // Arrête le polling quand on va au form
         this.heureSelectionnee = h;
         this.etape = 'form';
       },
@@ -173,16 +199,30 @@ export class Rdv implements OnInit {
     });
   }
 
-  retourDate(): void    { this.etape = 'date'; this.heureSelectionnee = ''; }
+  retourDate(): void {
+    this.arreterPollingCreneaux();
+    this.etape = 'date';
+    this.heureSelectionnee = '';
+  }
+
   retourCreneau(): void {
     // Libérer la réservation temporaire
     if (this.heureSelectionnee && this.dateSelectionnee) {
       this.http.delete(`${environment.backendUrl}/rdv/reserve/${this.sessionId}`)
         .subscribe({
-          next: () => { this.etape = 'creneau'; this.heureSelectionnee = ''; },
-          error: () => { this.etape = 'creneau'; this.heureSelectionnee = ''; },
+          next: () => {
+            this.demarrerPollingCreneaux();
+            this.etape = 'creneau';
+            this.heureSelectionnee = '';
+          },
+          error: () => {
+            this.demarrerPollingCreneaux();
+            this.etape = 'creneau';
+            this.heureSelectionnee = '';
+          },
         });
     } else {
+      this.demarrerPollingCreneaux();
       this.etape = 'creneau';
     }
   }
