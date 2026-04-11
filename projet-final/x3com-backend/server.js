@@ -1115,6 +1115,39 @@ app.patch('/rdv/:id/statut', requireAdmin, async (req, res) => {
       .select()
       .single();
     if (error) throw error;
+
+    // Envoyer un email au client si le RDV est confirmé
+    if (statut === 'confirme' && data.email) {
+      const [y, mo, d] = data.date.split('-').map(Number);
+      const dateLabel = new Date(y, mo - 1, d).toLocaleDateString('fr-FR', {
+        weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+      });
+      await sendMail({
+        to: data.email,
+        subject: `✅ Votre rendez-vous X3COM est confirmé — ${dateLabel} à ${data.heure}`,
+        html: `
+          <div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden">
+            <div style="background:#1a365d;padding:24px;text-align:center">
+              <h1 style="color:#fff;margin:0;font-size:22px">✅ Rendez-vous confirmé — X3COM</h1>
+            </div>
+            <div style="padding:28px;background:#f8fafc">
+              <p style="color:#374151;font-size:15px;margin:0 0 20px">Bonjour <strong>${escHtml(data.nom)}</strong>,</p>
+              <p style="color:#374151;font-size:15px;margin:0 0 24px">Votre rendez-vous a bien été <strong style="color:#16a34a">confirmé</strong> par notre équipe. Voici le récapitulatif :</p>
+              <table style="width:100%;border-collapse:collapse">
+                <tr style="background:#fff"><td style="padding:10px 0;color:#64748b;width:140px;font-weight:bold">📅 Date</td><td style="padding:10px 0"><strong>${dateLabel}</strong></td></tr>
+                <tr><td style="padding:10px 0;color:#64748b;font-weight:bold">🕐 Heure</td><td style="padding:10px 0"><strong>${data.heure}</strong></td></tr>
+                <tr style="background:#fff"><td style="padding:10px 0;color:#64748b;font-weight:bold">👤 Nom</td><td style="padding:10px 0">${escHtml(data.nom)}</td></tr>
+                <tr><td style="padding:10px 0;color:#64748b;font-weight:bold">📞 Téléphone</td><td style="padding:10px 0">${escHtml(data.telephone)}</td></tr>
+                ${data.adresse ? `<tr style="background:#fff"><td style="padding:10px 0;color:#64748b;font-weight:bold">📍 Adresse</td><td style="padding:10px 0">${escHtml(data.adresse)}</td></tr>` : ''}
+              </table>
+              <hr style="border:none;border-top:1px solid #e2e8f0;margin:24px 0">
+              <p style="color:#374151;font-size:14px;margin:0">Notre technicien vous appellera à l'heure indiquée. En cas de question, répondez à cet e-mail ou contactez-nous directement.</p>
+              <p style="margin-top:24px;font-size:12px;color:#94a3b8;text-align:center">X3COM — ${new Date().toLocaleString('fr-FR')}</p>
+            </div>
+          </div>`,
+      });
+    }
+
     res.json(data);
   } catch (err) {
     console.error('Erreur mise à jour RDV :', err);
