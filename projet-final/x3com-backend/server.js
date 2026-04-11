@@ -130,7 +130,15 @@ app.use((_req, res, next) => {
 
 app.use(cors({
   origin: (origin, cb) => {
-    if (!origin || ALLOWED_ORIGINS.includes(origin)) return cb(null, true);
+    // Sans origin (requête locale ou same-origin) → OK
+    if (!origin) return cb(null, true);
+
+    // Origines explicitement autorisées
+    if (ALLOWED_ORIGINS.includes(origin)) return cb(null, true);
+
+    // Accepter toutes les URLs Vercel
+    if (origin.includes('.vercel.app')) return cb(null, true);
+
     cb(new Error('CORS: origine non autorisée : ' + origin));
   },
   credentials: true,
