@@ -71,13 +71,20 @@ export class AideTravaux {
 
   estWeekend(d: Date): boolean { return d.getDay() === 0 || d.getDay() === 6; }
 
+  private dateVersString(d: Date): string {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const j = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${j}`;
+  }
+
   estSelectionne(d: Date): boolean {
-    return d.toISOString().split('T')[0] === this.dateSelectionnee;
+    return this.dateVersString(d) === this.dateSelectionnee;
   }
 
   choisirDate(d: Date): void {
     if (this.estPasse(d) || this.estWeekend(d)) return;
-    this.dateSelectionnee = d.toISOString().split('T')[0];
+    this.dateSelectionnee = this.dateVersString(d);
     this.dateLabel = d.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
     this.rdvEtape = 'creneau';
     this.cdr.detectChanges();
