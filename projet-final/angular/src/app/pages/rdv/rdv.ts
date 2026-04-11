@@ -138,6 +138,7 @@ export class Rdv implements OnInit {
   }
 
   choisirDate(d: Date): void {
+    console.log('[RDV] choisirDate appelé avec:', d, '| getDate():', d.getDate(), '| getDay():', d.getDay(), '| dateVersString:', this.dateVersString(d));
     if (this.estPasse(d) || this.estWeekend(d)) return;
 
     this.dateSelectionnee   = this.dateVersString(d);
