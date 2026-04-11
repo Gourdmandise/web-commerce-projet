@@ -15,6 +15,12 @@ import { environment } from '../../../environments/environment';
 export class Rdv implements OnInit {
   private http = inject(HttpClient);
 
+  // ── Session ──
+  readonly sessionId = this.genererSessionId();
+  private genererSessionId(): string {
+    return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  }
+
   // ── Calendrier ──
   readonly today = new Date();
   // Signal pour garantir la réactivité du template lors du changement de mois
@@ -133,12 +139,53 @@ export class Rdv implements OnInit {
 
   choisirHeure(h: string): void {
     if (this.estCreneauPris(h)) return;
-    this.heureSelectionnee = h;
-    this.etape = 'form';
+
+    // Pré-réserver le créneau pour 5 minutes
+    this.http.post(`${environment.backendUrl}/rdv/reserve`, {
+      date: this.dateSelectionnee,
+      heure: h,
+      sessionId: this.sessionId,
+    }).subscribe({
+      next: () => {
+        this.heureSelectionnee = h;
+        this.etape = 'form';
+      },
+      error: (err) => {
+        if (err.status === 409) {
+          // Créneau pris, rafraîchir la liste
+          this.msgErreurCreneau = 'Ce créneau vient d\'être réservé. Choisissez un autre.';
+          this.chargementCreneaux = true;
+          this.http.get<string[]>(`${environment.backendUrl}/rdv/creneaux-pris?date=${this.dateSelectionnee}`)
+            .subscribe({
+              next: (pris: string[]) => {
+                this.creneauxPris = pris;
+                this.chargementCreneaux = false;
+              },
+              error: () => {
+                this.chargementCreneaux = false;
+                this.erreurCreneaux = true;
+              },
+            });
+        } else {
+          this.msgErreurCreneau = 'Erreur lors de la réservation. Veuillez réessayer.';
+        }
+      },
+    });
   }
 
   retourDate(): void    { this.etape = 'date'; this.heureSelectionnee = ''; }
-  retourCreneau(): void { this.etape = 'creneau'; }
+  retourCreneau(): void {
+    // Libérer la réservation temporaire
+    if (this.heureSelectionnee && this.dateSelectionnee) {
+      this.http.delete(`${environment.backendUrl}/rdv/reserve/${this.sessionId}`)
+        .subscribe({
+          next: () => { this.etape = 'creneau'; this.heureSelectionnee = ''; },
+          error: () => { this.etape = 'creneau'; this.heureSelectionnee = ''; },
+        });
+    } else {
+      this.etape = 'creneau';
+    }
+  }
 
   async confirmer(): Promise<void> {
     if (!this.nom || !this.email || !this.telephone) return;
@@ -157,6 +204,7 @@ export class Rdv implements OnInit {
           service:   'diagnostic',
           rubrique:  'site',
           notes:     this.notes,
+          sessionId: this.sessionId,
         }),
       });
 

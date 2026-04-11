@@ -904,20 +904,35 @@ setInterval(nettoyerCommandesAnnulees, 24 * 60 * 60 * 1000);
 // RENDEZ-VOUS (RDV)
 // ══════════════════════════════════════════════════════════
 
-// GET /rdv/creneaux-pris — public : créneaux déjà réservés pour une date donnée
+// GET /rdv/creneaux-pris — public : créneaux déjà réservés pour une date donnée (+ réservations temp non expirées)
 app.get('/rdv/creneaux-pris', async (req, res) => {
   const { date } = req.query;
   if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
     return res.status(400).json({ error: 'Paramètre date invalide (attendu : YYYY-MM-DD).' });
   }
   try {
-    const { data, error } = await supabase
+    // Créneaux confirmés (hors annulés)
+    const { data: rdvs, error: errRdv } = await supabase
       .from('rdv')
       .select('heure')
       .eq('date', date)
-      .neq('statut', 'annule');   // les annulés libèrent le créneau
-    if (error) throw error;
-    const heures = data.map(r => r.heure);
+      .neq('statut', 'annule');
+    if (errRdv) throw errRdv;
+
+    // Réservations temporaires non expirées
+    const { data: temps, error: errTemp } = await supabase
+      .from('rdv_reservations_temp')
+      .select('heure')
+      .eq('date', date)
+      .gt('expires_at', new Date().toISOString());
+    if (errTemp) throw errTemp;
+
+    const heures = [
+      ...new Set([
+        ...rdvs.map(r => r.heure),
+        ...temps.map(t => t.heure),
+      ])
+    ];
     res.json(heures);
   } catch (err) {
     console.error('Erreur creneaux-pris :', err);
@@ -925,9 +940,92 @@ app.get('/rdv/creneaux-pris', async (req, res) => {
   }
 });
 
+// POST /rdv/reserve — public : pré-réserver un créneau pour 5 min
+app.post('/rdv/reserve', async (req, res) => {
+  const { date, heure, sessionId } = req.body;
+  if (!date || !heure || !sessionId) {
+    return res.status(400).json({ error: 'Paramètres requis : date, heure, sessionId.' });
+  }
+
+  try {
+    // Vérifier si créneau déjà réservé (confirmé ou temp)
+    const { data: rdvExist } = await supabase
+      .from('rdv')
+      .select('id')
+      .eq('date', date)
+      .eq('heure', heure)
+      .neq('statut', 'annule')
+      .limit(1);
+
+    const { data: tempExist } = await supabase
+      .from('rdv_reservations_temp')
+      .select('id')
+      .eq('date', date)
+      .eq('heure', heure)
+      .gt('expires_at', new Date().toISOString())
+      .limit(1);
+
+    if ((rdvExist && rdvExist.length > 0) || (tempExist && tempExist.length > 0)) {
+      return res.status(409).json({ error: 'Ce créneau est déjà réservé.' });
+    }
+
+    // Créer la réservation temporaire
+    const { data, error } = await supabase
+      .from('rdv_reservations_temp')
+      .insert([{
+        date,
+        heure,
+        session_id: sessionId,
+        expires_at: new Date(Date.now() + 5 * 60 * 1000).toISOString(),
+      }])
+      .select()
+      .single();
+
+    if (error) throw error;
+    res.status(201).json({ message: 'Créneau réservé temporairement.', data });
+  } catch (err) {
+    console.error('Erreur réservation temp :', err);
+    res.status(500).json({ error: 'Erreur serveur.' });
+  }
+});
+
+// DELETE /rdv/reserve/:sessionId — public : annuler une réservation temp
+app.delete('/rdv/reserve/:sessionId', async (req, res) => {
+  const { sessionId } = req.params;
+  if (!sessionId) {
+    return res.status(400).json({ error: 'Paramètre sessionId requis.' });
+  }
+
+  try {
+    const { error } = await supabase
+      .from('rdv_reservations_temp')
+      .delete()
+      .eq('session_id', sessionId);
+
+    if (error) throw error;
+    res.json({ message: 'Réservation annulée.' });
+  } catch (err) {
+    console.error('Erreur annulation réservation temp :', err);
+    res.status(500).json({ error: 'Erreur serveur.' });
+  }
+});
+
+// Cleanup : supprimer les réservations expirées toutes les minutes
+const nettoyerReservationsExpires = async () => {
+  try {
+    await supabase
+      .from('rdv_reservations_temp')
+      .delete()
+      .lt('expires_at', new Date().toISOString());
+  } catch (err) {
+    console.error('Erreur cleanup réservations temp :', err);
+  }
+};
+setInterval(nettoyerReservationsExpires, 60 * 1000);
+
 // POST /rdv — public : créer un RDV
 app.post('/rdv', async (req, res) => {
-  const { nom, email, telephone, adresse, date, heure, service, rubrique, notes } = req.body;
+  const { nom, email, telephone, adresse, date, heure, service, rubrique, notes, sessionId } = req.body;
   if (!nom || !email || !telephone || !date || !heure) {
     return res.status(400).json({ error: 'Champs obligatoires manquants.' });
   }
@@ -946,7 +1044,7 @@ app.post('/rdv', async (req, res) => {
   })();
 
   try {
-    // Vérifier si le créneau est déjà pris (hors annulés)
+    // Vérifier si le créneau est déjà pris (hors annulés + hors temp non expirées du même sessionId)
     const { data: existant, error: errCheck } = await supabase
       .from('rdv')
       .select('id')
@@ -959,6 +1057,23 @@ app.post('/rdv', async (req, res) => {
       return res.status(409).json({ error: 'Ce créneau est déjà réservé.' });
     }
 
+    // Si sessionId fourni, vérifier et supprimer la réservation temp
+    if (sessionId) {
+      const { data: tempReserv, error: errTemp } = await supabase
+        .from('rdv_reservations_temp')
+        .select('*')
+        .eq('session_id', sessionId)
+        .eq('date', dateNormalisee)
+        .eq('heure', heure)
+        .gt('expires_at', new Date().toISOString())
+        .limit(1);
+      if (errTemp) throw errTemp;
+      if (!tempReserv || tempReserv.length === 0) {
+        return res.status(409).json({ error: 'Réservation temporaire expirée ou invalide.' });
+      }
+    }
+
+    // Créer le RDV
     const { data, error } = await supabase.from('rdv').insert([{
       nom: nom.trim(),
       email: email.trim().toLowerCase(),
@@ -972,6 +1087,15 @@ app.post('/rdv', async (req, res) => {
       statut: 'en_attente',
     }]).select().single();
     if (error) throw error;
+
+    // Supprimer la réservation temporaire si elle existait
+    if (sessionId) {
+      await supabase
+        .from('rdv_reservations_temp')
+        .delete()
+        .eq('session_id', sessionId);
+    }
+
     res.status(201).json(data);
   } catch (err) {
     console.error('Erreur création RDV :', err);
