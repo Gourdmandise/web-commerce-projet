@@ -41,7 +41,7 @@
 .rdv-cal-jour:hover:not(:disabled) { background:rgba(0,212,170,.12); border-color:rgba(0,212,170,.3); color:#00D4AA; }
 .rdv-cal-jour.selectionne { background:#00D4AA !important; color:#0d1117 !important; font-weight:800; }
 .rdv-cal-jour.auj { border-color:rgba(0,212,170,.4); color:#00D4AA; }
-.rdv-cal-jour.passe, .rdv-cal-jour.weekend { color:rgba(74,98,117,.4); cursor:not-allowed; }
+.rdv-cal-jour.passe, .rdv-cal-jour.weekend { color:rgba(74,98,117,.4); cursor:not-allowed; pointer-events:none; }
 .rdv-cal-hint { font-size:12px; color:#4A6275; text-align:center; margin-top:12px; }
 
 /* ══ CRENEAUX ══════════════════════════════════════════════ */

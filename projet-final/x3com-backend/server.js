@@ -1051,6 +1051,13 @@ app.post('/rdv', async (req, res) => {
     return `${y}-${m}-${j}`;
   })();
 
+  // Rejeter les weekends (samedi=6, dimanche=0) — protection côté serveur
+  const [y, mo, d2] = dateNormalisee.split('-').map(Number);
+  const jourSemaine = new Date(y, mo - 1, d2).getDay();
+  if (jourSemaine === 0 || jourSemaine === 6) {
+    return res.status(400).json({ error: 'Les rendez-vous ne sont pas disponibles le week-end.' });
+  }
+
   try {
     // Vérifier si le créneau est déjà pris (hors annulés + hors temp non expirées du même sessionId)
     const { data: existant, error: errCheck } = await supabase
