@@ -956,27 +956,6 @@ app.post('/rdv/reserve', async (req, res) => {
   }
 
   try {
-    // Vérifier si créneau déjà réservé (confirmé ou temp)
-    const { data: rdvExist } = await supabase
-      .from('rdv')
-      .select('id')
-      .eq('date', date)
-      .eq('heure', heure)
-      .neq('statut', 'annule')
-      .limit(1);
-
-    const { data: tempExist } = await supabase
-      .from('rdv_reservations_temp')
-      .select('id')
-      .eq('date', date)
-      .eq('heure', heure)
-      .gt('expires_at', new Date().toISOString())
-      .limit(1);
-
-    if ((rdvExist && rdvExist.length > 0) || (tempExist && tempExist.length > 0)) {
-      return res.status(409).json({ error: 'Ce créneau est déjà réservé.' });
-    }
-
     // Créer la réservation temporaire
     const { data, error } = await supabase
       .from('rdv_reservations_temp')
@@ -1059,19 +1038,6 @@ app.post('/rdv', async (req, res) => {
   }
 
   try {
-    // Vérifier si le créneau est déjà pris (hors annulés + hors temp non expirées du même sessionId)
-    const { data: existant, error: errCheck } = await supabase
-      .from('rdv')
-      .select('id')
-      .eq('date', dateNormalisee)
-      .eq('heure', heure)
-      .neq('statut', 'annule')
-      .limit(1);
-    if (errCheck) throw errCheck;
-    if (existant && existant.length > 0) {
-      return res.status(409).json({ error: 'Ce créneau est déjà réservé.' });
-    }
-
     // Si sessionId fourni, vérifier et supprimer la réservation temp
     if (sessionId) {
       const { data: tempReserv, error: errTemp } = await supabase
