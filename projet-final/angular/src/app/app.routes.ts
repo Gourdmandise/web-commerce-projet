@@ -8,7 +8,6 @@ import { Paiement }     from './pages/paiement/paiement';
 import { Commande }     from './pages/commande/commande';
 import { Admin }        from './pages/admin/admin';
 import { AdminRdv }     from './pages/admin-rdv/admin-rdv';
-import { Rdv }          from './pages/rdv/rdv';
 import { Legal }        from './pages/legal/legal';
 import { SaviezVous }   from './pages/saviez-vous/saviez-vous';
 import { AideTravaux }  from './pages/saviez-vous/aide-travaux/aide-travaux';
@@ -26,7 +25,6 @@ export const routes: Routes = [
   { path: 'tarifs',                    component: Tarifs },
   { path: 'contact',                   component: Contact },
   { path: 'compte',                    component: Compte },
-  { path: 'rdv',                       component: Rdv },
   { path: 'paiement',                  component: Paiement,    canActivate: [authGuard] },
   { path: 'commande',                  component: Commande },
   { path: 'admin',                     component: Admin,       canActivate: [adminGuard] },
