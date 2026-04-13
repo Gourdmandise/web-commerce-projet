@@ -470,6 +470,11 @@ app.patch('/utilisateurs/:id', requireOwnerOrAdmin, async (req, res) => {
       .map(([k, v]) => [k.toLowerCase(), v])
   );
 
+  // Seul un admin peut changer le rôle
+  if (role && req.user?.role === 'admin' && ['client', 'admin'].includes(role)) {
+    champs.role = role;
+  }
+
   if (Object.keys(champs).length === 0)
     return res.status(400).json({ error: 'Aucun champ modifiable fourni.' });
 
