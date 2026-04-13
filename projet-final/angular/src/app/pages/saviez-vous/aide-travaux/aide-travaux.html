@@ -209,7 +209,7 @@
             </div>
           }
           <div style="margin-top:24px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
-            <a routerLink="/saviez-vous/aide-travaux" class="btn-x1" style="display:inline-block">Prendre RDV →</a>
+            <a routerLink="/saviez-vous/aide-travaux" fragment="rdv" class="btn-x1" style="display:inline-block">Prendre RDV →</a>
             <button class="at-sim-reset" (click)="retourProfil()">Recommencer</button>
           </div>
         </div>
@@ -264,7 +264,7 @@
   </section>
 
   <!-- ══ FORMULAIRE RDV INLINE ══ -->
-  <section class="sv-sec">
+  <section class="sv-sec" id="rdv">
     <div class="at-rdv-wrap">
       <h2 class="at-rdv-title">📅 Prendre rendez-vous — X3COM vous rappelle</h2>
       <p class="at-rdv-sub">Rendez-vous de 30 minutes. Du lundi au vendredi, 9h–17h.</p>
