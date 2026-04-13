@@ -68,35 +68,153 @@
     <div class="lbl" style="justify-content:center">Simulateur</div>
     <h2 class="sv-sec-title" style="margin-bottom:8px">Êtes-vous concerné par l'aide ?</h2>
     <div class="at-simulateur">
-      @if (!simulChoix) {
+
+      <!-- ÉTAPE 1: PROFIL -->
+      @if (simulEtape === 'profil') {
         <div class="at-sim-intro">
           <div style="font-size:42px;margin-bottom:12px">👤</div>
           <p style="color:#4A6275;margin-bottom:24px">Vous êtes...</p>
           <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
-            <button class="at-sim-btn" (click)="choisir('particulier')">🏠 Un Particulier</button>
-            <button class="at-sim-btn at-sim-btn2" (click)="choisir('tpe')">🏢 Une TPE</button>
+            <button class="at-sim-btn" (click)="choisirProfil('particulier')">🏠 Un Particulier</button>
+            <button class="at-sim-btn at-sim-btn2" (click)="choisirProfil('tpe')">🏢 Une TPE</button>
           </div>
           <p style="font-size:11px;color:#4A6275;margin-top:16px">* Simulation indicative — la décision finale revient à l'ASP après enregistrement de votre dossier.</p>
         </div>
       }
-      @if (simulChoix === 'particulier') {
-        <div class="at-sim-result at-sim-ok">
-          <div style="font-size:36px;margin-bottom:12px">✅</div>
-          <h3>Vous pouvez être éligible</h3>
-          <p>En tant que particulier, si vos tentatives de raccordement ont échoué et que votre quotient familial est inférieur à 29 316 €, vous pouvez déposer une demande d'aide allant jusqu'à <strong>1 200 €</strong>.</p>
-          <a routerLink="/saviez-vous/aide-travaux" class="btn-x1" style="margin-top:16px;display:inline-block">X3COM s'occupe de tout →</a>
-          <button class="at-sim-reset" (click)="simulChoix = ''">Recommencer</button>
+
+      <!-- ÉTAPE 2: QUESTIONS PARTICULIER -->
+      @if (simulEtape === 'questions' && simulProfil === 'particulier') {
+        <div class="at-sim-questions">
+          <div style="margin-bottom:24px">
+            <button class="at-sim-back" (click)="retourProfil()">← Retour</button>
+          </div>
+          <h3 style="margin-bottom:20px">Quelques questions pour vous</h3>
+
+          <div class="at-question">
+            <label class="at-q-label">Avez-vous subi un ou plusieurs échecs de raccordement fibre ?</label>
+            <div class="at-q-options">
+              <label><input type="radio" name="q1" (change)="repondrQuestion('echecs_raccordement', true)" [checked]="simulReponses.echecs_raccordement === true"> Oui</label>
+              <label><input type="radio" name="q1" (change)="repondrQuestion('echecs_raccordement', false)" [checked]="simulReponses.echecs_raccordement === false"> Non</label>
+            </div>
+          </div>
+
+          <div class="at-question">
+            <label class="at-q-label">Êtes-vous propriétaire de votre résidence principale ?</label>
+            <div class="at-q-options">
+              <label><input type="radio" name="q2" (change)="repondrQuestion('proprietaire', true)" [checked]="simulReponses.proprietaire === true"> Oui</label>
+              <label><input type="radio" name="q2" (change)="repondrQuestion('proprietaire', false)" [checked]="simulReponses.proprietaire === false"> Non</label>
+            </div>
+          </div>
+
+          <div class="at-question">
+            <label class="at-q-label">Est-ce votre première demande d'aide au raccordement fibre ?</label>
+            <div class="at-q-options">
+              <label><input type="radio" name="q3" (change)="repondrQuestion('premiere_demande', true)" [checked]="simulReponses.premiere_demande === true"> Oui</label>
+              <label><input type="radio" name="q3" (change)="repondrQuestion('premiere_demande', false)" [checked]="simulReponses.premiere_demande === false"> Non</label>
+            </div>
+          </div>
+
+          @if (simulReponses.echecs_raccordement !== undefined && simulReponses.proprietaire !== undefined && simulReponses.premiere_demande !== undefined) {
+            <button class="btn-x1" (click)="allerRevenu()" style="margin-top:24px">Continuer →</button>
+          } @else {
+            <p style="color:#888;margin-top:24px">Veuillez répondre à toutes les questions</p>
+          }
         </div>
       }
-      @if (simulChoix === 'tpe') {
-        <div class="at-sim-result at-sim-ok">
-          <div style="font-size:36px;margin-bottom:12px">✅</div>
-          <h3>Vous pouvez être éligible</h3>
-          <p>En tant que TPE, si votre CA est inférieur à 2M€, que vous avez moins de 10 salariés et que des tentatives de raccordement ont échoué, une aide est disponible.</p>
-          <a routerLink="/saviez-vous/aide-travaux" class="btn-x1" style="margin-top:16px;display:inline-block">X3COM s'occupe de tout →</a>
-          <button class="at-sim-reset" (click)="simulChoix = ''">Recommencer</button>
+
+      <!-- ÉTAPE 2: QUESTIONS TPE -->
+      @if (simulEtape === 'questions' && simulProfil === 'tpe') {
+        <div class="at-sim-questions">
+          <div style="margin-bottom:24px">
+            <button class="at-sim-back" (click)="retourProfil()">← Retour</button>
+          </div>
+          <h3 style="margin-bottom:20px">Quelques questions pour vous</h3>
+
+          <div class="at-question">
+            <label class="at-q-label">Une ou plusieurs tentatives de raccordement de votre local professionnel ont échoué ?</label>
+            <div class="at-q-options">
+              <label><input type="radio" name="tpe1" (change)="repondrQuestion('echecs_pro', true)" [checked]="simulReponses.echecs_pro === true"> Oui</label>
+              <label><input type="radio" name="tpe1" (change)="repondrQuestion('echecs_pro', false)" [checked]="simulReponses.echecs_pro === false"> Non</label>
+            </div>
+          </div>
+
+          <div class="at-question">
+            <label class="at-q-label">Votre chiffre d'affaires est inférieur à 2M€ et vous avez moins de 10 salariés ?</label>
+            <div class="at-q-options">
+              <label><input type="radio" name="tpe2" (change)="repondrQuestion('ca_salaries', true)" [checked]="simulReponses.ca_salaries === true"> Oui</label>
+              <label><input type="radio" name="tpe2" (change)="repondrQuestion('ca_salaries', false)" [checked]="simulReponses.ca_salaries === false"> Non</label>
+            </div>
+          </div>
+
+          <div class="at-question">
+            <label class="at-q-label">Votre activité a plus d'1 an et n'est pas en liquidation ?</label>
+            <div class="at-q-options">
+              <label><input type="radio" name="tpe3" (change)="repondrQuestion('activite_ok', true)" [checked]="simulReponses.activite_ok === true"> Oui</label>
+              <label><input type="radio" name="tpe3" (change)="repondrQuestion('activite_ok', false)" [checked]="simulReponses.activite_ok === false"> Non</label>
+            </div>
+          </div>
+
+          @if (simulReponses.echecs_pro !== undefined && simulReponses.ca_salaries !== undefined && simulReponses.activite_ok !== undefined) {
+            <button class="btn-x1" (click)="allerRevenu()" style="margin-top:24px">Continuer →</button>
+          } @else {
+            <p style="color:#888;margin-top:24px">Veuillez répondre à toutes les questions</p>
+          }
         </div>
       }
+
+      <!-- ÉTAPE 3: REVENU -->
+      @if (simulEtape === 'revenu') {
+        <div class="at-sim-revenu">
+          <div style="margin-bottom:24px">
+            <button class="at-sim-back" (click)="retourQuestions()">← Retour</button>
+          </div>
+          <h3 style="margin-bottom:20px">Informations financières</h3>
+
+          @if (simulProfil === 'particulier') {
+            <div class="at-question">
+              <label class="at-q-label">Quel est votre revenu fiscal de référence ?</label>
+              <input type="number" [(ngModel)]="simulReponses.revenu_fiscal" placeholder="Ex: 25000" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:4px;margin-bottom:12px">
+            </div>
+            <div class="at-question">
+              <label class="at-q-label">Nombre de parts fiscales</label>
+              <input type="number" [(ngModel)]="simulReponses.parts_fiscales" placeholder="Ex: 2" step="0.5" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:4px;margin-bottom:12px">
+            </div>
+          } @else {
+            <div class="at-question">
+              <label class="at-q-label">Quel est votre chiffre d'affaires ?</label>
+              <input type="number" [(ngModel)]="simulReponses.ca_actual" placeholder="Ex: 500000" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:4px;margin-bottom:12px">
+            </div>
+            <div class="at-question">
+              <label class="at-q-label">Nombre de salariés</label>
+              <input type="number" [(ngModel)]="simulReponses.effectif" placeholder="Ex: 3" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:4px;margin-bottom:12px">
+            </div>
+          }
+
+          @if ((simulProfil === 'particulier' && simulReponses.revenu_fiscal !== undefined) || (simulProfil === 'tpe' && simulReponses.ca_actual !== undefined)) {
+            <button class="btn-x1" (click)="determineEligibility()" style="margin-top:24px">Voir le résultat →</button>
+          }
+        </div>
+      }
+
+      <!-- ÉTAPE 4: RÉSULTAT -->
+      @if (simulEtape === 'resultat') {
+        <div class="at-sim-result" [class.eligible]="simulEligible" [class.ineligible]="!simulEligible">
+          <div style="font-size:48px;margin-bottom:16px">{{ simulEligible ? '✅' : '❌' }}</div>
+          <h3 style="margin-bottom:12px">{{ simulEligible ? 'Vous êtes probablement éligible !' : 'Vous ne remplissez pas les critères' }}</h3>
+          <p class="at-sim-message">{{ simulMessage }}</p>
+          @if (simulEligible) {
+            <div style="background:#f0f9ff;padding:16px;border-radius:6px;margin:20px 0;border-left:4px solid #00D4AA">
+              <strong>💰 Montant estimé : {{ simulMontant }}€</strong><br>
+              <small style="color:#666">Cette aide sera déduite de votre facture finale</small>
+            </div>
+          }
+          <div style="margin-top:24px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+            <a routerLink="/saviez-vous/aide-travaux" class="btn-x1" style="display:inline-block">Prendre RDV →</a>
+            <button class="at-sim-reset" (click)="retourProfil()">Recommencer</button>
+          </div>
+        </div>
+      }
+
     </div>
   </section>
 

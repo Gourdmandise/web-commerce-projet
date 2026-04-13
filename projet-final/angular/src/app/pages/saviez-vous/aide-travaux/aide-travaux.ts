@@ -14,28 +14,110 @@ import { environment } from '../../../../environments/environment';
 export class AideTravaux {
   private cdr = inject(ChangeDetectorRef);
 
-  // ── Simulateur ──
-  simulChoix: string = '';
-  choisir(type: string) { this.simulChoix = type; }
+  // ── SIMULATEUR ──
+  simulEtape: 'profil' | 'questions' | 'revenu' | 'resultat' = 'profil';
+  simulProfil: 'particulier' | 'tpe' | null = null;
+  simulReponses: {
+    echecs_raccordement?: boolean;
+    proprietaire?: boolean;
+    premiere_demande?: boolean;
+    echecs_pro?: boolean;
+    ca_salaries?: boolean;
+    activite_ok?: boolean;
+    revenu_fiscal?: number;
+    parts_fiscales?: number;
+    ca_actual?: number;
+    effectif?: number;
+  } = {};
+  simulMontant: number = 0;
+  simulMessage: string = '';
+  simulEligible: boolean = false;
 
-  // ── Calendrier ──
+  choisirProfil(profil: 'particulier' | 'tpe') {
+    this.simulProfil = profil;
+    this.simulReponses = {};
+    this.simulEtape = 'questions';
+  }
+
+  repondrQuestion(key: string, value: boolean) {
+    (this.simulReponses as any)[key] = value;
+  }
+
+  allerRevenu() {
+    this.simulEtape = 'revenu';
+  }
+
+  retourQuestions() {
+    this.simulEtape = 'questions';
+  }
+
+  retourProfil() {
+    this.simulProfil = null;
+    this.simulEtape = 'profil';
+    this.simulReponses = {};
+  }
+
+  determineEligibility() {
+    if (this.simulProfil === 'particulier') {
+      const eligible =
+        this.simulReponses.echecs_raccordement &&
+        this.simulReponses.proprietaire &&
+        this.simulReponses.premiere_demande &&
+        (this.simulReponses.revenu_fiscal || 0) < 29316;
+
+      this.simulEligible = eligible;
+
+      if (eligible) {
+        const rf = this.simulReponses.revenu_fiscal || 0;
+        if (rf < 15000) {
+          this.simulMontant = 1200;
+        } else if (rf < 25000) {
+          this.simulMontant = 800;
+        } else {
+          this.simulMontant = 400;
+        }
+        this.simulMessage = `✅ Vous êtes éligible ! Montant estimé : ${this.simulMontant}€`;
+      } else {
+        this.simulMessage = '❌ Vous ne remplissez pas tous les critères d\'éligibilité.';
+      }
+    } else if (this.simulProfil === 'tpe') {
+      const eligible =
+        this.simulReponses.echecs_pro &&
+        this.simulReponses.ca_salaries &&
+        this.simulReponses.activite_ok;
+
+      this.simulEligible = eligible;
+
+      if (eligible) {
+        this.simulMontant = 2000;
+        this.simulMessage = '✅ Votre entreprise est éligible ! Montant estimé : 2 000€';
+      } else {
+        this.simulMessage = '❌ Votre entreprise ne remplissez pas les critères d\'éligibilité.';
+      }
+    }
+
+    this.simulEtape = 'resultat';
+    this.cdr.detectChanges();
+  }
+
+  // ── CALENDRIER RDV ──
   today        = new Date();
   moisAffiche  = new Date(this.today.getFullYear(), this.today.getMonth(), 1);
   dateSelectionnee = '';
   dateLabel        = '';
 
-  // ── Créneau ──
+  // ── CRÉNEAU RDV ──
   creneaux = ['09:00','09:30','10:00','10:30','11:00','11:30','14:00','14:30','15:00','15:30','16:00','16:30'];
   heureSelectionnee = '';
 
-  // ── Formulaire ──
+  // ── FORMULAIRE RDV ──
   rdvNom     = '';
   rdvEmail   = '';
   rdvTel     = '';
   rdvAdresse = '';
   rdvNotes   = '';
 
-  // ── État ──
+  // ── ÉTAT RDV ──
   rdvEtape: 'date' | 'creneau' | 'form' | 'succes' | 'erreur' = 'date';
   rdvEnvoi  = false;
   rdvErreur = '';

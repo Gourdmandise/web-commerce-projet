@@ -60,6 +60,27 @@
 .at-sim-reset { background:none;border:1px solid rgba(0,180,216,0.3);color:#00B4D8;border-radius:8px;padding:8px 20px;cursor:pointer;font-size:12px;margin-top:16px;display:block;margin-left:auto;margin-right:auto;transition:background .2s; }
 .at-sim-reset:hover { background:rgba(0,180,216,0.06); }
 
+/* ── QUESTIONNAIRE ── */
+.at-sim-questions, .at-sim-revenu { text-align:left; }
+.at-sim-back { background:none; border:none; cursor:pointer; color:#00B4D8; font-size:13px; font-weight:700; margin-bottom:16px; transition:opacity .2s; text-transform:uppercase; letter-spacing:.06em; }
+.at-sim-back:hover { opacity:.7; }
+.at-sim-questions h3, .at-sim-revenu h3 { font-family:'Barlow Condensed',sans-serif; font-size:22px; font-weight:900; color:#1A202C; text-transform:uppercase; }
+
+.at-question { margin-bottom:24px; }
+.at-q-label { display:block; font-weight:700; color:#1A202C; margin-bottom:10px; font-size:15px; }
+.at-q-options { display:flex; gap:20px; flex-wrap:wrap; }
+.at-q-options label { display:flex; align-items:center; gap:8px; cursor:pointer; font-size:14px; color:#4A6275; }
+.at-q-options input[type=radio] { cursor:pointer; accent-color:#00D4AA; }
+
+/* Résultat */
+.at-sim-result { padding:28px; }
+.at-sim-result.eligible { background:rgba(0,212,170,0.06); border:1px solid rgba(0,212,170,0.25); border-radius:16px; }
+.at-sim-result.ineligible { background:rgba(200,50,50,0.06); border:1px solid rgba(200,50,50,0.2); border-radius:16px; }
+.at-sim-result h3 { font-family:'Barlow Condensed',sans-serif; font-size:26px; font-weight:900; text-transform:uppercase; margin-bottom:8px; }
+.at-sim-result.eligible h3 { color:#00D4AA; }
+.at-sim-result.ineligible h3 { color:#C83232; }
+.at-sim-message { color:#4A6275; font-size:15px; line-height:1.7; margin-bottom:8px; }
+
 /* ── ÉTAPES ── */
 .at-etapes { display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:32px; }
 .at-etape { text-align:center;background:#fff;border:1px solid rgba(0,212,170,0.2);border-radius:14px;padding:20px 24px;min-width:130px; }
