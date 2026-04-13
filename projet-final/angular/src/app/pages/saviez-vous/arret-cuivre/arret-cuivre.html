@@ -31,13 +31,42 @@
           (input)="rechercherCommune()"
         />
       </div>
-      @if (communeQuery && !communeResult) {
-        <div class="ac-search-hint">Consultez directement le site de l'ARCEP pour votre commune.</div>
+
+      @if (chargement) {
+        <div class="ac-search-result" style="text-align:center">⏳ Recherche en cours…</div>
       }
-      @if (communeResult) {
+
+      @if (erreur && !chargement && !resultat()) {
+        <div class="ac-search-result" style="color:#d84040">{{ erreur }}</div>
+      }
+
+      @if (resultat(); as commune) {
         <div class="ac-search-result">
-          <span>📍 <strong>{{ communeQuery }}</strong> — Consultez l'ARCEP pour les dates précises.</span>
-          <a href="https://www.arcep.fr/la-regulation/grands-dossiers-reseaux-fixes/la-fin-du-reseau-cuivre-et-la-transition-vers-la-fibre.html" target="_blank" class="sv-link-chip" style="margin-top:12px;display:inline-flex">↗ Voir sur ARCEP</a>
+          <div style="margin-bottom:16px">
+            <strong style="font-size:18px">📍 {{ commune.commune }}</strong><br>
+            <span style="color:#888;font-size:14px">{{ commune.code_postal }} — {{ commune.region }}</span>
+          </div>
+
+          <div style="background:#f5f5f5;padding:12px;border-radius:6px;text-align:left">
+            <div style="margin-bottom:10px">
+              <strong>⚠️ Fermeture commerciale</strong><br>
+              <span style="font-size:14px">{{ formatDate(commune.date_fermeture_commerciale) }}</span>
+              @if (commune.date_fermeture_commerciale) {
+                <span style="color:#4CAF50;font-weight:bold"> · Effective</span>
+              }
+            </div>
+
+            <div>
+              <strong>🔌 Fermeture technique</strong><br>
+              <span style="font-size:14px">{{ formatDate(commune.date_fermeture_technique) }}</span>
+            </div>
+          </div>
+
+          @if (!commune.date_fermeture_commerciale) {
+            <p style="margin-top:12px;color:#666;font-size:13px">
+              ⓘ Votre commune n'a pas encore de date de fermeture programmée.
+            </p>
+          }
         </div>
       }
     </div>

@@ -1213,3 +1213,26 @@ app.get('/glossaire', async (req, res) => {
     res.status(500).json({ message: 'Erreur serveur glossaire' });
   }
 });
+
+// ── COMMUNES FERMETURE CUIVRE ──────────────────────────────
+app.get('/communes/recherche', async (req, res) => {
+  const q = req.query.q ? String(req.query.q).trim().toLowerCase() : '';
+
+  if (!q || q.length < 2) {
+    return res.status(400).json({ error: 'Minumum 2 caractères' });
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('communes_fermeture_cuivre')
+      .select('*')
+      .or(`commune.ilike.%${q}%,code_postal.ilike.%${q}%`)
+      .limit(5);
+
+    if (error) throw error;
+    res.json(data || []);
+  } catch (err) {
+    console.error('Erreur recherche communes :', err);
+    res.status(500).json({ error: err.message });
+  }
+});
