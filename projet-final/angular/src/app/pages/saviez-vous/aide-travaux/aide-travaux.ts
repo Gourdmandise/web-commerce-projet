@@ -58,11 +58,13 @@ export class AideTravaux {
   }
 
   determineEligibility() {
+    let eligible = false;
+
     if (this.simulProfil === 'particulier') {
-      const eligible =
-        this.simulReponses.echecs_raccordement &&
-        this.simulReponses.proprietaire &&
-        this.simulReponses.premiere_demande &&
+      eligible =
+        !!this.simulReponses.echecs_raccordement &&
+        !!this.simulReponses.proprietaire &&
+        !!this.simulReponses.premiere_demande &&
         (this.simulReponses.revenu_fiscal || 0) < 29316;
 
       this.simulEligible = eligible;
@@ -81,10 +83,10 @@ export class AideTravaux {
         this.simulMessage = '❌ Vous ne remplissez pas tous les critères d\'éligibilité.';
       }
     } else if (this.simulProfil === 'tpe') {
-      const eligible =
-        this.simulReponses.echecs_pro &&
-        this.simulReponses.ca_salaries &&
-        this.simulReponses.activite_ok;
+      eligible =
+        !!this.simulReponses.echecs_pro &&
+        !!this.simulReponses.ca_salaries &&
+        !!this.simulReponses.activite_ok;
 
       this.simulEligible = eligible;
 
