@@ -490,6 +490,15 @@ app.patch('/utilisateurs/:id', requireOwnerOrAdmin, async (req, res) => {
 // DELETE /utilisateurs/:id — PROPRIÉTAIRE UNIQUEMENT (ou admin)
 app.delete('/utilisateurs/:id', requireOwnerOrAdmin, async (req, res) => {
   try {
+    // D'abord supprimer les commandes de cet utilisateur
+    const { error: errorCommandes } = await supabase
+      .from('commandes')
+      .delete()
+      .eq('utilisateurid', req.params.id);
+
+    if (errorCommandes) throw new Error(errorCommandes.message);
+
+    // Ensuite supprimer l'utilisateur
     const { error } = await supabase.from('utilisateurs').delete().eq('id', req.params.id);
     if (error) throw new Error(error.message);
     res.status(204).send();
