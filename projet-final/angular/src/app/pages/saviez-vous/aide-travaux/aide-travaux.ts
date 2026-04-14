@@ -27,8 +27,6 @@ export class AideTravaux {
     activite_ok?: boolean;
     revenu_fiscal?: number;
     parts_fiscales?: number;
-    ca_actual?: number;
-    effectif?: number;
   } = {};
   simulMontant: number = 0;
   simulMessage: string = '';

@@ -155,7 +155,7 @@
           </div>
 
           @if (simulReponses.echecs_pro !== undefined && simulReponses.ca_salaries !== undefined && simulReponses.activite_ok !== undefined) {
-            <button class="btn-x1" (click)="allerRevenu()" style="margin-top:24px">Continuer →</button>
+            <button class="btn-x1" (click)="determineEligibility()" style="margin-top:24px">Voir le résultat →</button>
           } @else {
             <p style="color:#888;margin-top:24px">Veuillez répondre à toutes les questions</p>
           }
@@ -170,27 +170,16 @@
           </div>
           <h3 style="margin-bottom:20px">Informations financières</h3>
 
-          @if (simulProfil === 'particulier') {
-            <div class="at-question">
-              <label class="at-q-label">Quel est votre revenu fiscal de référence ?</label>
-              <input type="number" [(ngModel)]="simulReponses.revenu_fiscal" placeholder="Ex: 25000" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:4px;margin-bottom:12px">
-            </div>
-            <div class="at-question">
-              <label class="at-q-label">Nombre de parts fiscales</label>
-              <input type="number" [(ngModel)]="simulReponses.parts_fiscales" placeholder="Ex: 2" step="0.5" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:4px;margin-bottom:12px">
-            </div>
-          } @else {
-            <div class="at-question">
-              <label class="at-q-label">Quel est votre chiffre d'affaires ?</label>
-              <input type="number" [(ngModel)]="simulReponses.ca_actual" placeholder="Ex: 500000" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:4px;margin-bottom:12px">
-            </div>
-            <div class="at-question">
-              <label class="at-q-label">Nombre de salariés</label>
-              <input type="number" [(ngModel)]="simulReponses.effectif" placeholder="Ex: 3" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:4px;margin-bottom:12px">
-            </div>
-          }
+          <div class="at-question">
+            <label class="at-q-label">Quel est votre revenu fiscal de référence ?</label>
+            <input type="number" [(ngModel)]="simulReponses.revenu_fiscal" placeholder="Ex: 25000" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:4px;margin-bottom:12px">
+          </div>
+          <div class="at-question">
+            <label class="at-q-label">Nombre de parts fiscales</label>
+            <input type="number" [(ngModel)]="simulReponses.parts_fiscales" placeholder="Ex: 2" step="0.5" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:4px;margin-bottom:12px">
+          </div>
 
-          @if ((simulProfil === 'particulier' && simulReponses.revenu_fiscal !== undefined) || (simulProfil === 'tpe' && simulReponses.ca_actual !== undefined)) {
+          @if (simulReponses.revenu_fiscal !== undefined) {
             <button class="btn-x1" (click)="determineEligibility()" style="margin-top:24px">Voir le résultat →</button>
           }
         </div>
