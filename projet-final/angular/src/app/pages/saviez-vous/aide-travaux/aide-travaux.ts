@@ -61,16 +61,18 @@ export class AideTravaux {
     let eligible = false;
 
     if (this.simulProfil === 'particulier') {
+      const rfParPart = (this.simulReponses.revenu_fiscal || 0) / (this.simulReponses.parts_fiscales || 1);
+
       eligible =
         !!this.simulReponses.echecs_raccordement &&
         !!this.simulReponses.proprietaire &&
         !!this.simulReponses.premiere_demande &&
-        (this.simulReponses.revenu_fiscal || 0) < 29316;
+        rfParPart < 29361;
 
       this.simulEligible = eligible;
 
       if (eligible) {
-        const rf = this.simulReponses.revenu_fiscal || 0;
+        const rf = rfParPart;
         if (rf < 15000) {
           this.simulMontant = 1200;
         } else if (rf < 25000) {
