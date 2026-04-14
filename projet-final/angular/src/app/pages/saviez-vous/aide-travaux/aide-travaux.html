@@ -199,13 +199,12 @@
       <!-- ÉTAPE 4: RÉSULTAT -->
       @if (simulEtape === 'resultat') {
         <div class="at-sim-result" [class.eligible]="simulEligible" [class.ineligible]="!simulEligible">
-          <div style="font-size:48px;margin-bottom:16px">{{ simulEligible ? '✅' : '❌' }}</div>
-          <h3 style="margin-bottom:12px">{{ simulEligible ? 'Vous êtes probablement éligible !' : 'Vous ne remplissez pas les critères' }}</h3>
+          <div style="font-size:48px;margin-bottom:16px">{{ simulEligible ? '🎉' : '❌' }}</div>
+          <h3 style="margin-bottom:12px">{{ simulEligible ? 'Bonne nouvelle !' : 'Vous ne remplissez pas les critères' }}</h3>
           <p class="at-sim-message">{{ simulMessage }}</p>
           @if (simulEligible) {
             <div style="background:#f0f9ff;padding:16px;border-radius:6px;margin:20px 0;border-left:4px solid #00D4AA">
-              <strong>💰 Montant estimé : {{ simulMontant }}€</strong><br>
-              <small style="color:#666">Cette aide sera déduite de votre facture finale</small>
+              <strong>Quotient familial estimé : {{ simulQuotient | number:'1.0-0':'fr' }} €</strong>
             </div>
             <p style="color:#4A6275;font-size:15px;line-height:1.7;margin-top:20px">📅 <strong>Prendre rendez-vous</strong> — Complétez le calendrier ci-dessous pour planifier votre diagnostic.</p>
           }

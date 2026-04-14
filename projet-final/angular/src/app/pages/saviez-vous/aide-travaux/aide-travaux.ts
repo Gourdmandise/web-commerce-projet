@@ -1,12 +1,13 @@
 import { Component, ViewEncapsulation, ChangeDetectorRef, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-aide-travaux',
   standalone: true,
-  imports: [RouterLink, FormsModule],
+  imports: [RouterLink, FormsModule, CommonModule],
   templateUrl: './aide-travaux.html',
   styleUrls: ['./aide-travaux.css'],
   encapsulation: ViewEncapsulation.None,
@@ -32,6 +33,7 @@ export class AideTravaux {
   simulMontant: number = 0;
   simulMessage: string = '';
   simulEligible: boolean = false;
+  simulQuotient: number = 0;
 
   choisirProfil(profil: 'particulier' | 'tpe') {
     this.simulProfil = profil;
@@ -61,7 +63,8 @@ export class AideTravaux {
     let eligible = false;
 
     if (this.simulProfil === 'particulier') {
-      const rfParPart = (this.simulReponses.revenu_fiscal || 0) / (this.simulReponses.parts_fiscales || 1);
+      const rfParPart = Math.round((this.simulReponses.revenu_fiscal || 0) / (this.simulReponses.parts_fiscales || 1));
+      this.simulQuotient = rfParPart;
 
       eligible =
         !!this.simulReponses.echecs_raccordement &&
@@ -80,7 +83,7 @@ export class AideTravaux {
         } else {
           this.simulMontant = 400;
         }
-        this.simulMessage = `✅ Vous êtes éligible ! Montant estimé : ${this.simulMontant}€`;
+        this.simulMessage = 'Selon vos réponses, vous pouvez bénéficier de l\'aide au raccordement fibre.';
       } else {
         this.simulMessage = '❌ Vous ne remplissez pas tous les critères d\'éligibilité.';
       }
