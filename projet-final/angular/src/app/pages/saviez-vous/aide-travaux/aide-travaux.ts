@@ -33,7 +33,7 @@ export class AideTravaux {
   simulMontant: number = 0;
   simulMessage: string = '';
   simulEligible: boolean = false;
-  simulQuotient: number = 0;
+  simulQuotient: string = '';
 
   choisirProfil(profil: 'particulier' | 'tpe') {
     this.simulProfil = profil;
@@ -64,7 +64,7 @@ export class AideTravaux {
 
     if (this.simulProfil === 'particulier') {
       const rfParPart = Math.round((this.simulReponses.revenu_fiscal || 0) / (this.simulReponses.parts_fiscales || 1));
-      this.simulQuotient = rfParPart;
+      this.simulQuotient = rfParPart.toLocaleString('fr-FR');
 
       eligible =
         !!this.simulReponses.echecs_raccordement &&
