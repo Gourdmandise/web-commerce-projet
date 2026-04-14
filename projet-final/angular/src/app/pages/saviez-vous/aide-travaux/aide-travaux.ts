@@ -57,6 +57,7 @@ export class AideTravaux {
     this.simulProfil = null;
     this.simulEtape = 'profil';
     this.simulReponses = {};
+    this.simulQuotient = '';
   }
 
   determineEligibility() {

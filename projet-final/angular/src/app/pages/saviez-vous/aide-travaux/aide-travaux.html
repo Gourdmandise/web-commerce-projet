@@ -202,10 +202,12 @@
           <div style="font-size:48px;margin-bottom:16px">{{ simulEligible ? '🎉' : '❌' }}</div>
           <h3 style="margin-bottom:12px">{{ simulEligible ? 'Bonne nouvelle !' : 'Vous ne remplissez pas les critères' }}</h3>
           <p class="at-sim-message">{{ simulMessage }}</p>
-          @if (simulEligible) {
+          @if (simulQuotient) {
             <div style="background:#f0f9ff;padding:16px;border-radius:6px;margin:20px 0;border-left:4px solid #00D4AA">
               <strong>Quotient familial estimé : {{ simulQuotient }} €</strong>
             </div>
+          }
+          @if (simulEligible) {
             <p style="color:#4A6275;font-size:15px;line-height:1.7;margin-top:20px">📅 <strong>Prendre rendez-vous</strong> — Complétez le calendrier ci-dessous pour planifier votre diagnostic.</p>
           }
           <div style="margin-top:24px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
