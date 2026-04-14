@@ -51,8 +51,16 @@
             <div style="margin-bottom:10px">
               <strong>⚠️ Fermeture commerciale</strong><br>
               <span style="font-size:14px">{{ formatDate(commune.date_fermeture_commerciale) }}</span>
-              @if (commune.date_fermeture_commerciale) {
-                <span style="color:#4CAF50;font-weight:bold"> · Effective</span>
+              @switch (commune.statut) {
+                @case ('programmee') {
+                  <span style="color:#ff9800;font-weight:bold"> · Programmée</span>
+                }
+                @case ('effective') {
+                  <span style="color:#4CAF50;font-weight:bold"> · Effective</span>
+                }
+                @case ('effectuee') {
+                  <span style="color:#2196F3;font-weight:bold"> · Effectuée</span>
+                }
               }
             </div>
 
