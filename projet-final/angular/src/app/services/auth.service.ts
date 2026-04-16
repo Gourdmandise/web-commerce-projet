@@ -1,4 +1,4 @@
-import { Injectable, signal, effect } from '@angular/core';
+import { Injectable, signal, effect, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of, tap, map, catchError } from 'rxjs';
 import { Utilisateur } from '../models/utilisateur.model';
@@ -60,8 +60,8 @@ export class AuthService {
     }
 
     return this.http.post<{ token: string }>(`${this.backend}/refresh-token`, { token }).pipe(
-      map(response => response.token ?? null),
-      tap(newToken => {
+      map((response: { token: string }) => response.token ?? null),
+      tap((newToken: string | null) => {
         if (newToken) {
           localStorage.setItem(TOKEN_KEY, newToken);
         }
