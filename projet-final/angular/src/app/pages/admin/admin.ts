@@ -41,8 +41,6 @@ export class Admin implements OnInit {
   utilisateurs = signal<Utilisateur[]>([]);
   commandes    = signal<Commande[]>([]);
   offres       = signal<Offre[]>([]);
-  stats        = signal<any | null>(null);
-  statsChargement = false;
 
   // ── RDV ──
   rdvs          = signal<Rdv[]>([]);
@@ -96,16 +94,6 @@ export class Admin implements OnInit {
     this.commandeService.getAll().subscribe(d => this.commandes.set(d));
     this.offreService.getAll().subscribe(d => this.offres.set(d));
     this.chargerRdvs();
-    this.chargerStats();
-  }
-
-  chargerStats(): void {
-    this.statsChargement = true;
-    this.http.get<any>(`${environment.backendUrl}/stats`, { headers: this.rdvHeaders() })
-      .subscribe({
-        next: data => { this.stats.set(data); this.statsChargement = false; },
-        error: () => { this.stats.set(null); this.statsChargement = false; }
-      });
   }
 
   chargerRdvs(): void {
