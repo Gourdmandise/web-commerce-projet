@@ -22,7 +22,6 @@ ALTER TABLE offres
 -- Vous n'avez RIEN à changer dans le schéma Supabase.
 -- ============================================================
 
--- Vérification des colonnes réelles :
 SELECT table_name, column_name, data_type
 FROM information_schema.columns
 WHERE table_name IN ('utilisateurs', 'commandes', 'offres')
@@ -30,3 +29,17 @@ ORDER BY table_name, ordinal_position;
 
 ALTER TABLE public.commandes
   ADD COLUMN IF NOT EXISTS dateannulation timestamp with time zone;
+ALTER TABLE public.commandes
+  ADD COLUMN IF NOT EXISTS numero_commande text;
+ALTER TABLE public.commandes
+  ADD COLUMN IF NOT EXISTS datepaiement timestamp with time zone;
+
+CREATE TABLE IF NOT EXISTS password_resets (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  utilisateur_id bigint REFERENCES public.utilisateurs(id),
+  token text UNIQUE NOT NULL,
+  expires_at timestamp with time zone NOT NULL,
+  used_at timestamp with time zone,
+  created_at timestamp with time zone DEFAULT now(),
+  CONSTRAINT password_resets_pkey PRIMARY KEY (id)
+);

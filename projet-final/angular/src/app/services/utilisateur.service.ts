@@ -16,6 +16,14 @@ export class UtilisateurService {
   private backend = environment.backendUrl;
   private url     = `${environment.backendUrl}/utilisateurs`;
 
+  forgotPassword(email: string): Observable<{ message: string; token_expires_in: number }> {
+    return this.http.post<{ message: string; token_expires_in: number }>(`${this.backend}/forgot-password`, { email });
+  }
+
+  resetPassword(token: string, newPassword: string): Observable<{ ok: boolean }> {
+    return this.http.post<{ ok: boolean }>(`${this.backend}/reset-password`, { token, new_password: newPassword });
+  }
+
   /**
    * POST /login
    * Retourne { utilisateur, token } — le token doit être passé à AuthService.connecter()

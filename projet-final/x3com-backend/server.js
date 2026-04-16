@@ -6,9 +6,11 @@ const jwt        = require('jsonwebtoken');
 const rateLimit  = require('express-rate-limit');
 const helmet     = require('helmet');
 const { Resend } = require('resend');
+const PDFDocument = require('pdfkit');
 const stripe     = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const { createClient } = require('@supabase/supabase-js');
 const multer     = require('multer');
+const crypto     = require('crypto');
 const upload     = multer({ storage: multer.memoryStorage(), limits: { fileSize: 8 * 1024 * 1024 } });
 
 const app   = express();
@@ -65,6 +67,7 @@ function commandeToAngular(c) {
   if (!c) return null;
   return {
     id:              c.id,
+    numeroCommande:  c.numero_commande ?? null,
     utilisateurId:   c.utilisateurid   ?? null,
     offreId:         c.offreid         ?? null,
     statut:          c.statut,
@@ -72,7 +75,21 @@ function commandeToAngular(c) {
     notes:           c.notes,
     stripeSessionId: c.stripesessionid ?? null,
     dateCreation:    c.datecreation    ?? null,
+    datePaiement:    c.datepaiement    ?? null,
+    dateAnnulation:  c.dateannulation  ?? null,
   };
+}
+
+function creerNumeroCommande(id, date = new Date()) {
+  const annee = date.getFullYear();
+  const mois = String(date.getMonth() + 1).padStart(2, '0');
+  const identifiant = String(id).padStart(6, '0');
+  return `X3-${annee}${mois}-${identifiant}`;
+}
+
+function formaterDateFR(dateValue) {
+  if (!dateValue) return '—';
+  return new Date(dateValue).toLocaleString('fr-FR');
 }
 
 // ══════════════════════════════════════════════════════════
@@ -413,6 +430,123 @@ app.post('/register', limiterAuth, async (req, res) => {
 
 
 // ══════════════════════════════════════════════════════════
+// POST /forgot-password — PUBLIC
+// ══════════════════════════════════════════════════════════
+app.post('/forgot-password', limiterAuth, async (req, res) => {
+  const { email } = req.body;
+  if (!email) return res.status(400).json({ error: 'Email requis' });
+
+  try {
+    const { data: users, error: userError } = await supabase
+      .from('utilisateurs')
+      .select('id, email, prenom')
+      .eq('email', email)
+      .limit(1);
+
+    if (userError) return res.status(500).json({ error: userError.message });
+
+    const utilisateur = users?.[0];
+    const tokenExpiresIn = 60;
+
+    if (utilisateur?.id) {
+      const token = crypto.randomBytes(32).toString('hex');
+      const expiresAt = new Date(Date.now() + tokenExpiresIn * 60 * 1000).toISOString();
+
+      await supabase.from('password_resets').delete().eq('utilisateur_id', utilisateur.id).is('used_at', null);
+      const { error: insertError } = await supabase.from('password_resets').insert({
+        utilisateur_id: utilisateur.id,
+        token,
+        expires_at: expiresAt,
+      });
+
+      if (insertError) return res.status(500).json({ error: insertError.message });
+
+      const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:4200';
+      const resetUrl = `${frontendUrl}/mot-de-passe-oublie?token=${encodeURIComponent(token)}`;
+
+      await sendMail({
+        to: utilisateur.email,
+        subject: 'Réinitialisation de votre mot de passe X3COM',
+        html: `
+          <div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden">
+            <div style="background:#1a365d;padding:24px;text-align:center">
+              <h1 style="color:#fff;margin:0;font-size:22px">Réinitialisation du mot de passe</h1>
+            </div>
+            <div style="padding:28px;background:#f8fafc">
+              <p style="color:#374151;font-size:15px;margin:0 0 16px">Bonjour${utilisateur.prenom ? ' <strong>' + escHtml(utilisateur.prenom) + '</strong>' : ''},</p>
+              <p style="color:#374151;font-size:15px;margin:0 0 24px">Cliquez sur le lien ci-dessous pour définir un nouveau mot de passe. Ce lien expire dans 60 minutes.</p>
+              <p style="margin:0 0 24px"><a href="${resetUrl}" style="display:inline-block;background:#00B4D8;color:#fff;text-decoration:none;padding:12px 18px;border-radius:6px;font-weight:bold">Réinitialiser mon mot de passe</a></p>
+              <p style="font-size:12px;color:#64748b;word-break:break-all">${resetUrl}</p>
+            </div>
+          </div>`,
+      });
+    }
+
+    return res.json({
+      message: 'Si un compte existe avec cet e-mail, un lien de réinitialisation a été envoyé.',
+      token_expires_in: tokenExpiresIn,
+    });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+});
+
+
+// ══════════════════════════════════════════════════════════
+// POST /reset-password — PUBLIC
+// ══════════════════════════════════════════════════════════
+app.post('/reset-password', limiterAuth, async (req, res) => {
+  const { token, new_password, newPassword } = req.body;
+  const motDePasse = new_password || newPassword;
+
+  if (!token || !motDePasse) {
+    return res.status(400).json({ error: 'Token et nouveau mot de passe requis' });
+  }
+  if (motDePasse.length < 8) {
+    return res.status(400).json({ error: 'Mot de passe trop court (8 caractères minimum)' });
+  }
+
+  try {
+    const { data: resets, error: resetError } = await supabase
+      .from('password_resets')
+      .select('id, utilisateur_id, expires_at, used_at')
+      .eq('token', token)
+      .limit(1);
+
+    if (resetError) return res.status(500).json({ error: resetError.message });
+
+    const reset = resets?.[0];
+    if (!reset) return res.status(400).json({ error: 'Lien de réinitialisation invalide' });
+    if (reset.used_at) return res.status(400).json({ error: 'Ce lien a déjà été utilisé' });
+    if (new Date(reset.expires_at).getTime() < Date.now()) {
+      return res.status(400).json({ error: 'Le lien de réinitialisation a expiré' });
+    }
+
+    const hash = await bcrypt.hash(motDePasse, 12);
+    const { error: updateUserError } = await supabase
+      .from('utilisateurs')
+      .update({ motdepasse: hash })
+      .eq('id', reset.utilisateur_id);
+
+    if (updateUserError) return res.status(500).json({ error: updateUserError.message });
+
+    const { error: usedError } = await supabase
+      .from('password_resets')
+      .update({ used_at: new Date().toISOString() })
+      .eq('id', reset.id);
+
+    if (usedError) return res.status(500).json({ error: usedError.message });
+
+    await supabase.from('password_resets').delete().eq('utilisateur_id', reset.utilisateur_id).is('used_at', null);
+
+    return res.json({ ok: true });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+});
+
+
+// ══════════════════════════════════════════════════════════
 // GET /verify-admin/:id — AUTHENTIFIÉ
 // ══════════════════════════════════════════════════════════
 app.get('/verify-admin/:id', requireAuth, async (req, res) => {
@@ -600,6 +734,61 @@ app.get('/commandes/:id', requireAuth, async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
+app.get('/commandes/:id/pdf', requireAuth, async (req, res) => {
+  try {
+    const { data: commande, error } = await supabase.from('commandes').select('*').eq('id', req.params.id).single();
+    if (error || !commande) return res.status(404).json({ error: 'Commande introuvable' });
+
+    if (req.user.role !== 'admin' && commande.utilisateurid !== req.user.id) {
+      return res.status(403).json({ error: 'Accès refusé' });
+    }
+
+    const [{ data: utilisateur }, { data: offre }] = await Promise.all([
+      supabase.from('utilisateurs').select('prenom, nom, email, adresse, ville, codepostal').eq('id', commande.utilisateurid).single(),
+      supabase.from('offres').select('nom, description').eq('id', commande.offreid).single(),
+    ]);
+
+    const numeroCommande = commande.numero_commande || creerNumeroCommande(commande.id, commande.datepaiement || commande.datecreation || new Date());
+    const doc = new PDFDocument({ size: 'A4', margin: 48 });
+
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename="facture-${numeroCommande}.pdf"`);
+    doc.pipe(res);
+
+    doc.fontSize(22).fillColor('#1a365d').text('X3COM', { align: 'right' });
+    doc.moveDown(0.4);
+    doc.fontSize(18).fillColor('#111827').text('Facture', { align: 'left' });
+    doc.moveDown(0.5);
+    doc.fontSize(11).fillColor('#6b7280').text(`Numéro de commande : ${numeroCommande}`);
+    doc.text(`Date de paiement : ${formaterDateFR(commande.datepaiement || commande.datecreation)}`);
+    doc.text(`Statut : ${commande.statut}`);
+
+    doc.moveDown();
+    doc.fontSize(13).fillColor('#111827').text('Client', { underline: true });
+    doc.fontSize(11).fillColor('#374151')
+      .text(`${utilisateur?.prenom || ''} ${utilisateur?.nom || ''}`.trim() || '—')
+      .text(utilisateur?.email || '—')
+      .text(utilisateur?.adresse || '—')
+      .text([utilisateur?.codepostal, utilisateur?.ville].filter(Boolean).join(' ') || '—');
+
+    doc.moveDown();
+    doc.fontSize(13).fillColor('#111827').text('Prestation', { underline: true });
+    doc.fontSize(11).fillColor('#374151')
+      .text(offre?.nom || commande.notes || '—')
+      .text(offre?.description || '');
+
+    doc.moveDown();
+    doc.fontSize(13).fillColor('#111827').text('Montant', { underline: true });
+    doc.fontSize(14).fillColor('#00B4D8').text(`${Number(commande.prix || 0).toFixed(2)} € TTC`);
+
+    doc.moveDown();
+    doc.fontSize(10).fillColor('#6b7280').text('Facture générée automatiquement par X3COM.', { align: 'center' });
+    doc.end();
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // PATCH /commandes/:id — admin uniquement
 app.patch('/commandes/:id', requireAdmin, async (req, res) => {
   const CHAMPS_AUTORISES = ['statut', 'adresselivraison', 'commentaire', 'dateprevue'];
@@ -772,16 +961,26 @@ app.post('/webhook', async (req, res) => {
     const emailClient = session.customer_details?.email || meta.emailClient || null;
 
     try {
-      const { error } = await supabase.from('commandes').insert({
+      const datePaiement = new Date().toISOString();
+      const { data: created, error } = await supabase.from('commandes').insert({
         utilisateurid:   parseInt(meta.utilisateurId) || null,
         offreid:         parseInt(meta.offreId),
         statut:          'paiement_confirme',
         prix:            parseFloat(meta.prix),
         notes:           meta.nomOffre,
         stripesessionid: session.id,
-      });
+        datepaiement:    datePaiement,
+      }).select('id').single();
       if (error) console.error('✗ Supabase commande:', error.message);
-      else       console.log('✓ Commande enregistrée');
+      else {
+        const numeroCommande = creerNumeroCommande(created.id, datePaiement);
+        const { error: numeroError } = await supabase
+          .from('commandes')
+          .update({ numero_commande: numeroCommande })
+          .eq('id', created.id);
+        if (numeroError) console.error('✗ Numéro commande:', numeroError.message);
+        else console.log(`✓ Commande enregistrée (${numeroCommande})`);
+      }
     } catch (err) { console.error('✗ Supabase:', err.message); }
 
     const prenomClient = meta.prenom    || '';

@@ -6,68 +6,137 @@
 <section class="sec" style="padding-top:20px">
   <div class="cmdw">
 
-    <!-- DÉTAIL COMMANDE -->
     <div class="cmdd">
-      @if (chargement()) {
-        <p style="color:var(--mu);font-size:13px">Chargement du récapitulatif…</p>
-      } @else if (offre()) {
-        <h3>{{ offre()!.nom }}</h3>
-        <div class="cmdp">{{ offre()!.prix }} <small>€ TTC</small></div>
+      @if (vue() === 'detail') {
+        @if (chargement()) {
+          <p style="color:var(--mu);font-size:13px">Chargement du détail de commande…</p>
+        } @else if (commande()) {
+          <div class="detail-head">
+            <div>
+              <h3>{{ numeroCommande() }}</h3>
+              <p class="detail-sub">{{ commande()!.notes }}</p>
+            </div>
+            <span class="bdg-active">{{ statutLabel(commande()!.statut) }}</span>
+          </div>
 
-        @if (offre()!.features.length > 0) {
-          <ul class="fl">
-            @for (f of offre()!.features; track f) {
-              <li><span class="ck">✓</span>{{ f }}</li>
-            }
-            @for (opt of offre()!.options; track opt) {
-              <li><span class="ck opt">+</span>{{ opt }}</li>
-            }
-          </ul>
+          <div class="detail-grid">
+            <div class="detail-item">
+              <span>Montant</span>
+              <strong>{{ commande()!.prix }} € TTC</strong>
+            </div>
+            <div class="detail-item">
+              <span>Créée le</span>
+              <strong>{{ commande()!.dateCreation | date:'dd/MM/yyyy à HH:mm' }}</strong>
+            </div>
+            <div class="detail-item">
+              <span>Paiement</span>
+              <strong>{{ commande()!.datePaiement ? (commande()!.datePaiement | date:'dd/MM/yyyy à HH:mm') : '—' }}</strong>
+            </div>
+            <div class="detail-item">
+              <span>Numéro</span>
+              <strong>{{ commande()!.numeroCommande || ('Commande #' + commande()!.id) }}</strong>
+            </div>
+          </div>
+
+          <div class="cmd-confirm">
+            <span class="confirm-ico">✓</span>
+            <div>
+              <strong>Commande accessible</strong>
+              <span>Vous pouvez télécharger la facture PDF depuis cet écran.</span>
+            </div>
+          </div>
+        } @else if (erreur()) {
+          <p style="color:var(--mu);font-size:13px">{{ erreur() }}</p>
+        }
+      } @else {
+        @if (chargement()) {
+          <p style="color:var(--mu);font-size:13px">Chargement du récapitulatif…</p>
+        } @else if (offre()) {
+          <h3>{{ offre()!.nom }}</h3>
+          <div class="cmdp">{{ offre()!.prix }} <small>€ TTC</small></div>
+
+          @if (offre()!.features.length > 0) {
+            <ul class="fl">
+              @for (f of offre()!.features; track f) {
+                <li><span class="ck">✓</span>{{ f }}</li>
+              }
+              @for (opt of offre()!.options; track opt) {
+                <li><span class="ck opt">+</span>{{ opt }}</li>
+              }
+            </ul>
+          } @else {
+            <p style="color:var(--mu);font-size:13px;margin-top:12px">
+              Votre intervention a bien été enregistrée. Un technicien vous contactera sous 24h.
+            </p>
+          }
+
+          <div class="cmd-confirm">
+            <span class="confirm-ico">✓</span>
+            <div>
+              <strong>Paiement confirmé par Stripe</strong>
+              <span>Commande enregistrée avec succès</span>
+            </div>
+          </div>
         } @else {
-          <p style="color:var(--mu);font-size:13px;margin-top:12px">
-            Votre intervention a bien été enregistrée. Un technicien vous contactera sous 24h.
+          <p style="color:var(--mu);font-size:13px">
+            Aucune commande trouvée. <a routerLink="/tarifs" style="color:var(--em)">Choisir une offre →</a>
           </p>
         }
-
-        <div class="cmd-confirm">
-          <span class="confirm-ico">✓</span>
-          <div>
-            <strong>Paiement confirmé par Stripe</strong>
-            <span>Commande enregistrée avec succès</span>
-          </div>
-        </div>
-      } @else {
-        <p style="color:var(--mu);font-size:13px">
-          Aucune commande trouvée. <a routerLink="/tarifs" style="color:var(--em)">Choisir une offre →</a>
-        </p>
       }
     </div>
 
-    <!-- STATUT -->
     <div class="cmds">
-      <h3>Statut de la commande</h3>
-      <span class="bdg-active">En cours de traitement</span>
+      @if (vue() === 'detail' && commande()) {
+        <h3>Statut de la commande</h3>
+        <span class="bdg-active">{{ statutLabel(commande()!.statut) }}</span>
 
-      <div class="stp">
-        @for (e of etapes; track e.label) {
-          <div class="st">
-            <div class="std" [class]="e.statut">
-              @if (e.statut === 'done')    { ✓ }
-              @if (e.statut === 'active')  { ⟳ }
-              @if (e.statut === 'pending') { {{ $index + 1 }} }
+        <div class="stp">
+          @for (e of etapesCommande(commande()!.statut); track e.label) {
+            <div class="st">
+              <div class="std" [class]="e.etat">
+                @if (e.etat === 'done')    { ✓ }
+                @if (e.etat === 'active')  { ⟳ }
+                @if (e.etat === 'pending') { {{ $index + 1 }} }
+              </div>
+              <div class="stc">
+                <strong>{{ e.label }}</strong>
+                <p>{{ e.desc }}</p>
+              </div>
             </div>
-            <div class="stc">
-              <strong>{{ e.label }}</strong>
-              <p>{{ e.desc }}</p>
-            </div>
-          </div>
-        }
-      </div>
+          }
+        </div>
 
-      <div class="cmd-actions">
-        <a routerLink="/compte" class="btn-x3">← Mon espace client</a>
-        <a routerLink="/tarifs" class="btn-x1">+ Nouvelle commande</a>
-      </div>
+        <div class="cmd-actions">
+          <button class="btn-x1" (click)="telechargerPdf()" [disabled]="telechargementPdf()">
+            {{ telechargementPdf() ? 'Téléchargement…' : 'Télécharger la facture PDF' }}
+          </button>
+          <a routerLink="/compte" class="btn-x3">← Mon espace client</a>
+        </div>
+      } @else {
+        <h3>Statut de la commande</h3>
+        <span class="bdg-active">En cours de traitement</span>
+
+        <div class="stp">
+          @for (e of etapes; track e.label) {
+            <div class="st">
+              <div class="std" [class]="e.statut">
+                @if (e.statut === 'done')    { ✓ }
+                @if (e.statut === 'active')  { ⟳ }
+                @if (e.statut === 'pending') { {{ $index + 1 }} }
+              </div>
+              <div class="stc">
+                <strong>{{ e.label }}</strong>
+                <p>{{ e.desc }}</p>
+              </div>
+            </div>
+          }
+        </div>
+
+        <div class="cmd-actions">
+          <a routerLink="/compte" class="btn-x3">← Mon espace client</a>
+          <a routerLink="/tarifs" class="btn-x1">+ Nouvelle commande</a>
+        </div>
+      }
     </div>
 
   </div>

@@ -9,6 +9,9 @@ CREATE TABLE public.commandes (
   prix numeric,
   notes text,
   stripeSessionId text,
+  numero_commande text,
+  datepaiement timestamp with time zone,
+  dateannulation timestamp with time zone,
   dateCreation timestamp with time zone DEFAULT now(),
   CONSTRAINT commandes_pkey PRIMARY KEY (id),
   CONSTRAINT commandes_utilisateurId_fkey FOREIGN KEY (utilisateurId) REFERENCES public.utilisateurs(id),
@@ -46,6 +49,16 @@ ALTER TABLE utilisateurs
   ADD COLUMN IF NOT EXISTS adresse    text DEFAULT '',
   ADD COLUMN IF NOT EXISTS ville      text DEFAULT '',
   ADD COLUMN IF NOT EXISTS codepostal text DEFAULT '';
+
+CREATE TABLE IF NOT EXISTS password_resets (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  utilisateur_id bigint REFERENCES public.utilisateurs(id),
+  token text UNIQUE NOT NULL,
+  expires_at timestamp with time zone NOT NULL,
+  used_at timestamp with time zone,
+  created_at timestamp with time zone DEFAULT now(),
+  CONSTRAINT password_resets_pkey PRIMARY KEY (id)
+);
   
 -- ============================================================
 -- OFFRES X3COM — Mise à jour basée sur les tarifs du marché

@@ -93,6 +93,13 @@
   border-radius: 12px;
   padding: 16px;
   margin-bottom: 14px;
+  cursor: pointer;
+  transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease;
+}
+.cmd-card:hover {
+  transform: translateY(-1px);
+  border-color: rgba(0,212,170,0.35);
+  box-shadow: 0 8px 22px rgba(0,119,182,0.08);
 }
 .cmd-card-head {
   display: flex;

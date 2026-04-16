@@ -6,6 +6,7 @@ import { Contact }      from './pages/contact/contact';
 import { Compte }       from './pages/compte/compte';
 import { Paiement }     from './pages/paiement/paiement';
 import { Commande }     from './pages/commande/commande';
+import { MotDePasseOublie } from './pages/mot-de-passe-oublie/mot-de-passe-oublie';
 import { Admin }        from './pages/admin/admin';
 import { AdminRdv }     from './pages/admin-rdv/admin-rdv';
 import { Legal }        from './pages/legal/legal';
@@ -27,6 +28,8 @@ export const routes: Routes = [
   { path: 'compte',                    component: Compte },
   { path: 'paiement',                  component: Paiement,    canActivate: [authGuard] },
   { path: 'commande',                  component: Commande },
+  { path: 'commandes/:id',             component: Commande,    canActivate: [authGuard] },
+  { path: 'mot-de-passe-oublie',       component: MotDePasseOublie },
   { path: 'admin',                     component: Admin,       canActivate: [adminGuard] },
   { path: 'admin-rdv',                 component: AdminRdv,    canActivate: [adminGuard] },
   { path: 'mentions-legales',          component: Legal,       data: { page: 'mentions' } },

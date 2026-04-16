@@ -31,6 +31,9 @@
           Pas encore de compte ?
           <button class="link-btn" (click)="vueLogin.set('inscription')">Créer un compte</button>
         </p>
+        <p class="login-switch">
+          <a routerLink="/mot-de-passe-oublie" class="link-btn">Mot de passe oublié ?</a>
+        </p>
       </div>
     }
 
@@ -142,16 +145,16 @@
           }
 
           @for (c of commandes(); track c.id) {
-            <div class="cmd-card">
+            <div class="cmd-card" [routerLink]="['/commandes', c.id]" role="button" tabindex="0">
               <div class="cmd-card-head">
                 <div>
-                  <strong>{{ c.notes }}</strong>
-                  <span class="os">{{ c.dateCreation | date:'dd/MM/yyyy' }} · {{ c.prix }} €</span>
+                  <strong>{{ numeroCommande(c) }}</strong>
+                  <span class="os">{{ c.notes }} · {{ c.dateCreation | date:'dd/MM/yyyy' }}</span>
                 </div>
                 <div style="display:flex;align-items:center;gap:8px">
                   <span class="bdg" [class]="statutCouleur(c.statut)">{{ statutLabel(c.statut) }}</span>
                   @if (peutAnnuler(c.statut)) {
-                    <button class="btn-annuler" (click)="annulerCommande(c)" title="Annuler la commande">✕ Annuler</button>
+                    <button class="btn-annuler" (click)="$event.stopPropagation(); annulerCommande(c)" title="Annuler la commande">✕ Annuler</button>
                   }
                 </div>
               </div>

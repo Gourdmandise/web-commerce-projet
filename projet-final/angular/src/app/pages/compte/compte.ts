@@ -244,4 +244,8 @@ export class Compte implements OnInit {
       etat: i < idx ? 'done' : i === idx ? 'active' : 'pending'
     }));
   }
+
+  numeroCommande(commande: Commande): string {
+    return commande.numeroCommande || `Commande #${commande.id}`;
+  }
 }

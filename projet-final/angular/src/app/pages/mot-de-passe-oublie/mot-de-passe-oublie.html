@@ -1,0 +1,51 @@
+<section class="sec pwd-page">
+  <div class="pwd-wrap">
+    <div class="pwd-hero">
+      <div class="lbl">Sécurité du compte</div>
+      <h1 class="big">{{ token() ? 'Réinitialiser le mot de passe' : 'Mot de passe oublié ?' }}</h1>
+      <p>
+        {{ token() ? 'Définissez un nouveau mot de passe pour retrouver l’accès à votre espace client.' : 'Recevez un lien de réinitialisation par e-mail.' }}
+      </p>
+    </div>
+
+    <div class="accard pwd-card">
+      @if (!token()) {
+        <h2>Demander un lien</h2>
+        <div class="fg2">
+          <label>E-mail</label>
+          <input [(ngModel)]="demande.email" name="email" type="email" placeholder="votre@email.fr">
+        </div>
+        <button class="bfull p" (click)="demanderLien()" [disabled]="chargement()">
+          {{ chargement() ? 'Envoi…' : 'Envoyer le lien' }}
+        </button>
+        @if (tokenExpiresIn()) {
+          <p class="hint">Lien valable {{ tokenExpiresIn() }} minutes.</p>
+        }
+      } @else {
+        <h2>Nouveau mot de passe</h2>
+        <div class="fg2">
+          <label>Nouveau mot de passe</label>
+          <input [(ngModel)]="reset.nouveauMotDePasse" name="newPassword" type="password" placeholder="Minimum 8 caractères">
+        </div>
+        <div class="fg2">
+          <label>Confirmer le mot de passe</label>
+          <input [(ngModel)]="reset.confirmerMotDePasse" name="confirmPassword" type="password" placeholder="••••••••">
+        </div>
+        <button class="bfull p" (click)="reinitialiser()" [disabled]="chargement()">
+          {{ chargement() ? 'Réinitialisation…' : 'Réinitialiser' }}
+        </button>
+      }
+
+      @if (message()) {
+        <div class="flash ok">{{ message() }}</div>
+      }
+      @if (erreur()) {
+        <div class="flash err">{{ erreur() }}</div>
+      }
+
+      <p class="back-link">
+        <a routerLink="/compte">← Retour à l’espace client</a>
+      </p>
+    </div>
+  </div>
+</section>

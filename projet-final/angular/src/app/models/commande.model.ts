@@ -8,10 +8,13 @@ export type StatutCommande =
 
 export interface Commande {
   id?: number;
+  numeroCommande?: string;
   utilisateurId: number;
   offreId: number;
   statut: StatutCommande;
   dateCreation?: string;
+  datePaiement?: string;
+  dateAnnulation?: string;
   prix: number;
   notes?: string;
 }

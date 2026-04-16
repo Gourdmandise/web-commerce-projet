@@ -13,6 +13,10 @@ export class CommandeService {
     return this.http.get<Commande[]>(`${this.url}?utilisateurId=${utilisateurId}`);
   }
 
+  getById(id: number): Observable<Commande> {
+    return this.http.get<Commande>(`${this.url}/${id}`);
+  }
+
   creer(commande: Omit<Commande, 'id'>): Observable<Commande> {
     return this.http.post<Commande>(this.url, {
       ...commande,
@@ -30,6 +34,10 @@ export class CommandeService {
 
   annuler(id: number, emailClient: string): Observable<Commande> {
     return this.http.post<Commande>(`${this.url}/${id}/annuler`, { emailClient });
+  }
+
+  telechargerPdf(id: number): Observable<Blob> {
+    return this.http.get(`${this.url}/${id}/pdf`, { responseType: 'blob' });
   }
 
   supprimer(id: number): Observable<void> {
