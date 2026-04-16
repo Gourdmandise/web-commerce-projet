@@ -44,6 +44,17 @@ const supabase = createClient(
 );
 
 // ══════════════════════════════════════════════════════════
+// FONCTIONS UTILITAIRES
+// ══════════════════════════════════════════════════════════
+/**
+ * Valide le format d'une adresse email.
+ */
+function isValidEmail(email) {
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return regex.test(String(email).toLowerCase());
+}
+
+// ══════════════════════════════════════════════════════════
 // FONCTIONS DE MAPPING
 // ══════════════════════════════════════════════════════════
 function utilisateurToAngular(u) {
@@ -253,6 +264,76 @@ async function sendMail({ to, subject, html, attachments = [] }) {
 }
 
 // ══════════════════════════════════════════════════════════
+// GET /stats — ADMIN UNIQUEMENT : tableau de bord statistiques
+// ══════════════════════════════════════════════════════════
+app.get('/stats', requireAdmin, async (req, res) => {
+  try {
+    const stats = {};
+
+    // Commandes : total, par statut, revenus
+    const { data: commandes, error: errCmd } = await supabase
+      .from('commandes')
+      .select('statut, prix');
+    if (!errCmd) {
+      stats.commandes = {
+        total: commandes.length,
+        par_statut: {
+          confirmee: commandes.filter(c => c.statut === 'confirmee').length,
+          en_attente: commandes.filter(c => c.statut === 'en_attente').length,
+          annulee: commandes.filter(c => c.statut === 'annulee').length,
+          remboursee: commandes.filter(c => c.statut === 'remboursee').length,
+        },
+        revenus_total: commandes
+          .filter(c => c.statut === 'confirmee')
+          .reduce((sum, c) => sum + (c.prix || 0), 0),
+      };
+    }
+
+    // RDV : total, par statut
+    const { data: rdvs, error: errRdv } = await supabase
+      .from('rdv')
+      .select('statut');
+    if (!errRdv) {
+      stats.rdv = {
+        total: rdvs.length,
+        par_statut: {
+          en_attente: rdvs.filter(r => r.statut === 'en_attente').length,
+          confirme: rdvs.filter(r => r.statut === 'confirme').length,
+          annule: rdvs.filter(r => r.statut === 'annule').length,
+        },
+      };
+    }
+
+    // Utilisateurs : total
+    const { data: users, error: errUsers } = await supabase
+      .from('utilisateurs')
+      .select('id, role');
+    if (!errUsers) {
+      stats.utilisateurs = {
+        total: users.length,
+        admins: users.filter(u => u.role === 'admin').length,
+        clients: users.filter(u => u.role === 'client').length,
+      };
+    }
+
+    // Offres populaires
+    const { data: offres, error: errOffres } = await supabase
+      .from('offres')
+      .select('id, nom, populaire')
+      .eq('populaire', true);
+    if (!errOffres) {
+      stats.offres_populaires = offres.length;
+    }
+
+    stats.timestamp = new Date().toISOString();
+    res.json(stats);
+  } catch (err) {
+    console.error('Erreur stats :', err);
+    res.status(500).json({ error: 'Erreur serveur stats.' });
+  }
+});
+
+// ══════════════════════════════════════════════════════════
 // GET /diagnostic — ADMIN UNIQUEMENT
 // ══════════════════════════════════════════════════════════
 app.get('/diagnostic', requireAdmin, async (req, res) => {
@@ -400,6 +481,8 @@ app.post('/register', limiterAuth, async (req, res) => {
   const { email, motDePasse, prenom, nom } = req.body;
   if (!email || !motDePasse || !prenom)
     return res.status(400).json({ error: 'Email, mot de passe et prénom requis' });
+  if (!isValidEmail(email))
+    return res.status(400).json({ error: 'Adresse email invalide' });
   if (String(motDePasse).length < 8)
     return res.status(400).json({ error: 'Mot de passe trop court (8 caractères minimum)' });
 
@@ -432,6 +515,42 @@ app.post('/register', limiterAuth, async (req, res) => {
   }
 });
 
+// POST /refresh-token — PUBLIC : renouveler un token JWT expiré
+app.post('/refresh-token', limiterAuth, async (req, res) => {
+  const { token } = req.body;
+  if (!token) return res.status(400).json({ error: 'Token requis' });
+
+  try {
+    // Essayer de décoder le token même s'il est expiré
+    const decoded = jwt.verify(token, JWT_SECRET, { ignoreExpiration: true });
+    
+    if (!decoded?.id) {
+      return res.status(401).json({ error: 'Token invalide' });
+    }
+
+    // Vérifier que l'utilisateur existe toujours
+    const { data: user, error: userError } = await supabase
+      .from('utilisateurs')
+      .select('id, role')
+      .eq('id', decoded.id)
+      .single();
+
+    if (userError || !user) {
+      return res.status(401).json({ error: 'Utilisateur non trouvé' });
+    }
+
+    // Générer un nouveau token
+    const newToken = jwt.sign(
+      { id: user.id, role: user.role },
+      JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+
+    res.json({ token: newToken });
+  } catch (err) {
+    res.status(401).json({ error: 'Token invalide ou expiré, reconnectez-vous.' });
+  }
+});
 
 // ══════════════════════════════════════════════════════════
 // POST /forgot-password — PUBLIC
@@ -439,6 +558,7 @@ app.post('/register', limiterAuth, async (req, res) => {
 app.post('/forgot-password', limiterAuth, async (req, res) => {
   const { email } = req.body;
   if (!email) return res.status(400).json({ error: 'Email requis' });
+  if (!isValidEmail(email)) return res.status(400).json({ error: 'Adresse email invalide' });
 
   try {
     const { data: users, error: userError } = await supabase
@@ -589,6 +709,43 @@ app.get('/utilisateurs', requireAdmin, async (req, res) => {
   try {
     const { data, error } = await supabase
       .from('utilisateurs').select('id, email, prenom, nom, role, datecreation, telephone, adresse, ville, codepostal');
+    if (error) throw new Error(error.message);
+    res.json((data || []).map(utilisateurToAngular));
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// GET /utilisateurs/:id — propriétaire ou admin peuvent voir le profil
+app.get('/utilisateurs/:id', requireOwnerOrAdmin, async (req, res) => {
+  const userId = parseInt(req.params.id);
+  try {
+    const { data, error } = await supabase
+      .from('utilisateurs')
+      .select('*')
+      .eq('id', userId)
+      .single();
+    if (error) {
+      if (error.code === 'PGRST116') return res.status(404).json({ error: 'Utilisateur non trouvé' });
+      return res.status(500).json({ error: error.message });
+    }
+    res.json(utilisateurToAngular(data));
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// GET /utilisateurs/recherche?q=... — admin : rechercher des utilisateurs par nom/email
+app.get('/utilisateurs/recherche', requireAdmin, async (req, res) => {
+  const q = req.query.q ? String(req.query.q).trim().toLowerCase() : '';
+  
+  if (!q || q.length < 2) {
+    return res.status(400).json({ error: 'Minimum 2 caractères pour la recherche' });
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('utilisateurs')
+      .select('*')
+      .or(`email.ilike.%${q}%,prenom.ilike.%${q}%,nom.ilike.%${q}%`)
+      .limit(20);
+
     if (error) throw new Error(error.message);
     res.json((data || []).map(utilisateurToAngular));
   } catch (err) { res.status(500).json({ error: err.message }); }
@@ -1165,6 +1322,59 @@ app.get('/rdv/creneaux-pris', async (req, res) => {
   }
 });
 
+// GET /rdv/creneaux-disponibles — public : retourne uniquement les créneaux libres pour une date
+app.get('/rdv/creneaux-disponibles', async (req, res) => {
+  const { date } = req.query;
+  if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+    return res.status(400).json({ error: 'Paramètre date invalide (attendu : YYYY-MM-DD).' });
+  }
+
+  // Rejeter les weekends côté serveur
+  const [y, mo, d] = date.split('-').map(Number);
+  const jourSemaine = new Date(y, mo - 1, d).getDay();
+  if (jourSemaine === 0 || jourSemaine === 6) {
+    return res.status(400).json({ error: 'Les rendez-vous ne sont pas disponibles le week-end.' });
+  }
+
+  try {
+    // Créneaux confirmés (hors annulés)
+    const { data: rdvs, error: errRdv } = await supabase
+      .from('rdv')
+      .select('heure')
+      .eq('date', date)
+      .neq('statut', 'annule');
+    if (errRdv) throw errRdv;
+
+    // Réservations temporaires non expirées
+    const { data: temps, error: errTemp } = await supabase
+      .from('rdv_reservations_temp')
+      .select('heure')
+      .eq('date', date)
+      .gt('expires_at', new Date().toISOString());
+    if (errTemp) throw errTemp;
+
+    // Créneaux pris
+    const prises = new Set([
+      ...rdvs.map(r => r.heure),
+      ...temps.map(t => t.heure),
+    ]);
+
+    // Tous les créneaux théoriques (9h à 18h, pas de 30 min)
+    const tousCreneaux = [];
+    for (let h = 9; h < 18; h++) {
+      tousCreneaux.push(`${String(h).padStart(2, '0')}:00`);
+      tousCreneaux.push(`${String(h).padStart(2, '0')}:30`);
+    }
+
+    // Créneaux disponibles = tous - pris
+    const disponibles = tousCreneaux.filter(c => !prises.has(c));
+    res.json(disponibles);
+  } catch (err) {
+    console.error('Erreur creneaux-disponibles :', err);
+    res.status(500).json({ error: 'Erreur serveur.' });
+  }
+});
+
 // POST /rdv/reserve — public : pré-réserver un créneau pour 5 min
 app.post('/rdv/reserve', async (req, res) => {
   const { date, heure, sessionId } = req.body;
@@ -1317,6 +1527,33 @@ app.get('/rdv', requireAdmin, async (req, res) => {
   }
 });
 
+// GET /rdv/:id — utilisateur peut voir son propre RDV ou admin peut voir n'importe quel
+app.get('/rdv/:id', requireAuth, async (req, res) => {
+  const rdvId = parseInt(req.params.id);
+  try {
+    const { data: rdv, error: errRdv } = await supabase
+      .from('rdv')
+      .select('*')
+      .eq('id', rdvId)
+      .single();
+    
+    if (errRdv) {
+      if (errRdv.code === 'PGRST116') return res.status(404).json({ error: 'RDV non trouvé' });
+      return res.status(500).json({ error: errRdv.message });
+    }
+
+    // Utilisateur non-admin ne peut voir que son propre RDV (via email)
+    if (req.user?.role !== 'admin' && rdv.email !== req.user?.email) {
+      return res.status(403).json({ error: 'Accès refusé — vous ne pouvez voir que votre propre RDV.' });
+    }
+
+    res.json(rdv);
+  } catch (err) {
+    console.error('Erreur GET RDV :', err);
+    res.status(500).json({ error: 'Erreur serveur RDV.' });
+  }
+});
+
 // PATCH /rdv/:id/statut — admin : confirmer ou annuler
 app.patch('/rdv/:id/statut', requireAdmin, async (req, res) => {
   const id = parseInt(req.params.id);
@@ -1368,6 +1605,30 @@ app.patch('/rdv/:id/statut', requireAdmin, async (req, res) => {
     res.json(data);
   } catch (err) {
     console.error('Erreur mise à jour RDV :', err);
+    res.status(500).json({ error: 'Erreur serveur RDV.' });
+  }
+});
+
+// DELETE /rdv/:id — admin : supprimer un RDV
+app.delete('/rdv/:id', requireAdmin, async (req, res) => {
+  const id = parseInt(req.params.id);
+  try {
+    const { data, error } = await supabase
+      .from('rdv')
+      .delete()
+      .eq('id', id)
+      .select()
+      .single();
+    
+    if (error) {
+      if (error.code === 'PGRST116') return res.status(404).json({ error: 'RDV non trouvé' });
+      throw error;
+    }
+    
+    console.log(`✓ RDV supprimé : ${data.nom} (${data.date} ${data.heure})`);
+    res.json({ message: 'RDV supprimé avec succès', data });
+  } catch (err) {
+    console.error('Erreur suppression RDV :', err);
     res.status(500).json({ error: 'Erreur serveur RDV.' });
   }
 });
