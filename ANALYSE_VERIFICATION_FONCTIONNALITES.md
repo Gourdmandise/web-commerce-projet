@@ -161,9 +161,9 @@ A faire immédiatement en exploitation:
 | `GET /stats/commandes` | ✅ Implémenté (endpoint `/stats`) |
 
 #### Frontend — À Implémenter
-- Utiliser `GET /rdv/creneaux-disponibles` dans le formulaire RDV
-- Créer page admin dashboard pour afficher `/stats`
-- Implémenter logique refresh token dans le service auth
+- Intégrer l'endpoint `GET /rdv/creneaux-disponibles` dans la page existante `saviez-vous/aide-travaux`
+- Créer un bloc dashboard dans la page admin existante pour afficher `/stats`
+- Implémenter la logique de refresh token dans le service auth
 
 ---
 
@@ -196,7 +196,7 @@ A faire immédiatement en exploitation:
 Au 16/04/2026, les **lacunes critiques identifiées ont été traitées au niveau backend**. 
 
 Les endpoints sont implémentés et prêts pour l'intégration frontend :
-- ✅ Créneaux RDV disponibles (API prête)
+- ✅ Créneaux RDV disponibles via l'API (à brancher sur la page `saviez-vous/aide-travaux`)
 - ✅ Gestion RDV complète (CREATE, READ, UPDATE, DELETE)
 - ✅ Authentification robuste (validation email + refresh token)
 - ✅ Dashboard admin (statistiques)

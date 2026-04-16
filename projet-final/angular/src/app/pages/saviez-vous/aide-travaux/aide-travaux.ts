@@ -2,6 +2,7 @@ import { Component, ViewEncapsulation, ChangeDetectorRef, inject } from '@angula
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 
 @Component({
@@ -14,6 +15,7 @@ import { environment } from '../../../../environments/environment';
 })
 export class AideTravaux {
   private cdr = inject(ChangeDetectorRef);
+  private http = inject(HttpClient);
 
   // ── SIMULATEUR ──
   simulEtape: 'profil' | 'questions' | 'revenu' | 'resultat' = 'profil';
@@ -114,6 +116,9 @@ export class AideTravaux {
 
   // ── CRÉNEAU RDV ──
   creneaux = ['09:00','09:30','10:00','10:30','11:00','11:30','14:00','14:30','15:00','15:30','16:00','16:30'];
+  creneauxDisponibles: string[] = [];
+  creneauxChargement = false;
+  creneauxErreur = '';
   heureSelectionnee = '';
 
   // ── FORMULAIRE RDV ──
@@ -174,11 +179,37 @@ export class AideTravaux {
     if (this.estPasse(d) || this.estWeekend(d)) return;
     this.dateSelectionnee = this.dateVersString(d);
     this.dateLabel = d.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+    this.heureSelectionnee = '';
+    this.creneauxDisponibles = [];
+    this.creneauxErreur = '';
     this.rdvEtape = 'creneau';
+    this.chargerCreneauxDisponibles();
     this.cdr.detectChanges();
   }
 
+  private chargerCreneauxDisponibles(): void {
+    if (!this.dateSelectionnee) return;
+    this.creneauxChargement = true;
+    this.http.get<string[]>(`${environment.backendUrl}/rdv/creneaux-disponibles`, {
+      params: { date: this.dateSelectionnee },
+    }).subscribe({
+      next: (data) => {
+        this.creneauxDisponibles = data ?? [];
+        this.creneauxErreur = '';
+        this.creneauxChargement = false;
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.creneauxDisponibles = [];
+        this.creneauxErreur = 'Impossible de charger les créneaux disponibles.';
+        this.creneauxChargement = false;
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
   choisirHeure(h: string): void {
+    if (this.creneauxDisponibles.length > 0 && !this.creneauxDisponibles.includes(h)) return;
     this.heureSelectionnee = h;
     this.rdvEtape = 'form';
     this.cdr.detectChanges();

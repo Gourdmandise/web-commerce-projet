@@ -312,11 +312,19 @@
               2. Choisissez un créneau
             </div>
             <p class="at-rdv-date-choisie">📅 {{ dateLabel }}</p>
-            <div class="at-rdv-creneaux">
-              @for (h of creneaux; track h) {
-                <button class="at-rdv-creneau" [class.actif]="heureSelectionnee === h" (click)="choisirHeure(h)">🕐 {{ h }}</button>
-              }
-            </div>
+            @if (creneauxChargement) {
+              <p style="color:#4A6275;margin:16px 0">Chargement des créneaux disponibles…</p>
+            } @else if (creneauxErreur) {
+              <p style="color:#b91c1c;margin:16px 0">{{ creneauxErreur }}</p>
+            } @else if (creneauxDisponibles.length === 0) {
+              <p style="color:#4A6275;margin:16px 0">Aucun créneau disponible pour cette date.</p>
+            } @else {
+              <div class="at-rdv-creneaux">
+                @for (h of creneauxDisponibles; track h) {
+                  <button class="at-rdv-creneau" [class.actif]="heureSelectionnee === h" (click)="choisirHeure(h)">🕐 {{ h }}</button>
+                }
+              </div>
+            }
           }
 
           @if (rdvEtape === 'form') {

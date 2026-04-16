@@ -14,6 +14,19 @@
     </div>
   </div>
 
+  @if (stats()) {
+    <div class="admin-section" style="margin-top:24px">
+      <div class="admin-stats" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px">
+        <div class="astat"><span class="astat-n">{{ stats()?.commandes?.total ?? 0 }}</span><span class="astat-l">Commandes totales</span></div>
+        <div class="astat"><span class="astat-n">{{ stats()?.commandes?.revenus_total ?? 0 }} €</span><span class="astat-l">Revenus</span></div>
+        <div class="astat"><span class="astat-n">{{ stats()?.rdv?.total ?? 0 }}</span><span class="astat-l">RDV totaux</span></div>
+        <div class="astat"><span class="astat-n">{{ stats()?.utilisateurs?.total ?? 0 }}</span><span class="astat-l">Utilisateurs</span></div>
+      </div>
+    </div>
+  } @else if (statsChargement) {
+    <p style="margin:16px 0;color:#4A6275">Chargement des statistiques…</p>
+  }
+
   <!-- ══ ONGLETS ══ -->
   <div class="admin-tabs">
     <button class="atab" [class.active]="onglet() === 'utilisateurs'" (click)="onglet.set('utilisateurs')">👥 Utilisateurs</button>
