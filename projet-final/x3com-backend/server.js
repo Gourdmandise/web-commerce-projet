@@ -80,9 +80,11 @@ function commandeToAngular(c) {
   };
 }
 
-function creerNumeroCommande(id, date = new Date()) {
-  const annee = date.getFullYear();
-  const mois = String(date.getMonth() + 1).padStart(2, '0');
+function creerNumeroCommande(id, dateValue = new Date()) {
+  const date = dateValue instanceof Date ? dateValue : new Date(dateValue);
+  const dateValide = Number.isNaN(date.getTime()) ? new Date() : date;
+  const annee = dateValide.getFullYear();
+  const mois = String(dateValide.getMonth() + 1).padStart(2, '0');
   const identifiant = String(id).padStart(6, '0');
   return `X3-${annee}${mois}-${identifiant}`;
 }
