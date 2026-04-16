@@ -1,6 +1,7 @@
 import { Component, ViewEncapsulation, inject, signal, OnInit } from '@angular/core';
 import { RouterLink, ActivatedRoute } from '@angular/router';
 import { DatePipe } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import { PanierService }   from '../../services/panier.service';
 import { StripeService }   from '../../services/stripe.service';
 import { CommandeService } from '../../services/commande.service';
@@ -158,9 +159,21 @@ export class Commande implements OnInit {
         anchor.click();
         window.URL.revokeObjectURL(url);
       },
-      error: () => {
+      error: async (err: HttpErrorResponse) => {
         this.telechargementPdf.set(false);
-        this.panier.notify('⚠', 'Téléchargement impossible', 'La facture PDF est indisponible.');
+        let detail = 'La facture PDF est indisponible.';
+        if (err?.error instanceof Blob) {
+          try {
+            const texte = await err.error.text();
+            const json = JSON.parse(texte);
+            if (json?.error) detail = json.error;
+          } catch {
+            // Ignore les erreurs de parsing et conserve le message par défaut.
+          }
+        } else if (typeof err?.error?.error === 'string') {
+          detail = err.error.error;
+        }
+        this.panier.notify('⚠', 'Téléchargement impossible', detail);
       }
     });
   }

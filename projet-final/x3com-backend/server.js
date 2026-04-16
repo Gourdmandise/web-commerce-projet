@@ -398,6 +398,8 @@ app.post('/register', limiterAuth, async (req, res) => {
   const { email, motDePasse, prenom, nom } = req.body;
   if (!email || !motDePasse || !prenom)
     return res.status(400).json({ error: 'Email, mot de passe et prénom requis' });
+  if (String(motDePasse).length < 8)
+    return res.status(400).json({ error: 'Mot de passe trop court (8 caractères minimum)' });
 
   try {
     const { data: existants, error: errSelect } = await supabase

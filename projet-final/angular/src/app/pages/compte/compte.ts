@@ -78,6 +78,10 @@ export class Compte implements OnInit {
       this.panier.notify('⚠', 'Mots de passe différents', 'Veuillez saisir le même mot de passe');
       return;
     }
+    if (this.inscription.motDePasse.length < 8) {
+      this.panier.notify('⚠', 'Mot de passe trop court', 'Minimum 8 caractères');
+      return;
+    }
     if (!this.inscription.accepteCgu) {
       this.panier.notify('⚠', 'CGU non acceptées', 'Vous devez accepter les conditions générales');
       return;
