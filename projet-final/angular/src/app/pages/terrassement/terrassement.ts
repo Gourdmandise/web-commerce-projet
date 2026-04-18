@@ -1,9 +1,6 @@
-import { Component, ViewEncapsulation, inject, OnInit } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
-import { catchError, finalize, of, timeout } from 'rxjs';
-import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-terrassement',
@@ -13,18 +10,7 @@ import { environment } from '../../../environments/environment';
   styleUrls: ['./terrassement.css'],
   encapsulation: ViewEncapsulation.None,
 })
-export class Terrassement implements OnInit {
-  http = inject(HttpClient);
-  private backend = environment.backendUrl;
-
-  offres: any[] = [];
-  private readonly resumesOffres = [
-    'Diagnostic complet de votre ligne avec identification rapide du point bloquant.',
-    'Intervention terrain pour remise en etat du passage fibre sur domaine prive.',
-    'Solution avancee pour chantiers complexes avec accompagnement technique dedie.',
-  ];
-  loadingOffres = true;
-  erreurOffres = false;
+export class Terrassement {
 
   methodes = [
     { img: 'Generateur-de-frequences.png', titre: 'Générateur de fréquences',  desc: 'Induction électromagnétique haute puissance pour cartographier le tracé exact de votre réseau et en mesurer la profondeur.', tag: 'Méthode 1' },
@@ -48,25 +34,4 @@ export class Terrassement implements OnInit {
       texte: 'Lorsque le réseau existant n\'est pas réparable mais permet le passage d\'un câble, nous assurons le pré-câblage de la fibre optique jusqu\'aux points de terminaison optique. Le pré-câblage fibre optique constitue une étape essentielle dans tout projet de construction ou de rénovation nécessitant une infrastructure télécom moderne.' },
   ];
 
-  ngOnInit(): void {
-    this.loadingOffres = true;
-    this.erreurOffres = false;
-
-    this.http.get<any[]>(`${this.backend}/offres`).pipe(
-      timeout(10000),
-      catchError((err) => {
-        this.erreurOffres = true;
-        console.error('Erreur chargement offres :', err);
-        return of([] as any[]);
-      }),
-      finalize(() => {
-        this.loadingOffres = false;
-      })
-    ).subscribe((data) => {
-      this.offres = (data ?? []).slice(0, 3).map((offre, index) => ({
-        ...offre,
-        resume: this.resumesOffres[index] || 'Prestation personnalisee selon votre besoin.',
-      }));
-    });
-  }
 }

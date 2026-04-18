@@ -73,25 +73,25 @@
   <h2 class="big">Tarifs <span class="hl">Détection</span> <span class="hl2">Télécom</span></h2>
   <p class="sub" style="margin:0 auto 40px">Aperçu synthétique des offres, avec accès aux détails complets depuis la page Tarifs.</p>
 
-  @if (loadingOffres) {
-    <p class="sub tc" style="margin-bottom:20px">Chargement des offres en cours...</p>
-  }
-
-  @if (erreurOffres) {
-    <p class="sub tc" style="margin-bottom:20px;color:#d35454">Impossible de charger l'aperçu des offres pour le moment.</p>
-  }
-
   <div class="tarif-preview">
-    @for (offre of offres; track offre.id; let i = $index) {
-      <div class="tp-card" [class.popular]="offre.populaire">
-        @if (offre.populaire) {
-          <div class="tp-badge">★ Le plus populaire</div>
-        }
-        <h3>{{ offre.nom }}</h3>
-        <div class="tp-prix">À partir de <span>{{ offre.prix }} €</span> TTC</div>
-        <p>{{ offre.resume }}</p>
-      </div>
-    }
+    <div class="tp-card">
+      <h3>Diagnostic Fibre</h3>
+      <div class="tp-prix">À partir de <span>220 €</span> TTC</div>
+      <p>Diagnostic complet de votre ligne avec identification rapide du point bloquant.</p>
+    </div>
+
+    <div class="tp-card popular">
+      <div class="tp-badge">★ Le plus populaire</div>
+      <h3>Travaux Sol Souple</h3>
+      <div class="tp-prix">À partir de <span>530 €</span> TTC</div>
+      <p>Intervention terrain pour remise en état du passage fibre sur domaine privé.</p>
+    </div>
+
+    <div class="tp-card">
+      <h3>Travaux Sol Dur</h3>
+      <div class="tp-prix">À partir de <span>710 €</span> TTC</div>
+      <p>Solution avancée pour chantiers complexes avec accompagnement technique dédié.</p>
+    </div>
   </div>
 
   <a routerLink="/tarifs" class="btn-x1" style="margin-top:32px">Voir les tarifs complets →</a>
