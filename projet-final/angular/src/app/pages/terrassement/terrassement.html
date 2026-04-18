@@ -2,14 +2,14 @@
 <div class="ph">
   <div class="lbl" style="justify-content:center">Nos prestations</div>
   <h1 class="big">Terrassement <span class="hl">&amp;</span> <span class="hl2">VRD</span></h1>
-  <p class="sub" style="margin:0 auto 32px">Détection de réseaux, création d'infrastructures télécom et travaux VRD — X3COM vous accompagne de A à Z.</p>
+  <p class="sub" style="margin:0 auto 32px">Détection de réseaux, création d'infrastructures télécom et travaux VRD: X3COM vous accompagne du diagnostic jusqu'à la remise en conformité.</p>
   <a routerLink="/contact" class="btn-x1">Nous contacter</a>
 </div>
 
 <!-- MAQUETTE 1 : DÉTECTION -->
 <section class="sec">
   <div class="tc" style="margin-bottom:36px">
-    <div class="lbl" style="justify-content:center">Service 1</div>
+    <div class="lbl" style="justify-content:center">Diagnostic terrain</div>
     <h2 class="big">Détection de <span class="hl">Réseaux Télécom</span></h2>
     <p class="sub" style="margin:0 auto">Raccordement à la fibre impossible ? Notre équipe dispose de l'expertise et du matériel de pointe pour lever chaque blocage.</p>
   </div>
@@ -47,7 +47,7 @@
 <!-- MAQUETTE 2 : CRÉATION RÉSEAU -->
 <section class="sec-alt">
   <div class="tc" style="margin-bottom:48px">
-    <div class="lbl" style="justify-content:center">Service 2</div>
+    <div class="lbl" style="justify-content:center">Travaux VRD</div>
     <h2 class="big">Création d'un nouveau <span class="hl2">réseau télécom</span></h2>
     <p class="sub" style="margin:0 auto">Lorsque le réseau existant ne peut être remis en état, nous créons une infrastructure entièrement neuve.</p>
   </div>
@@ -69,14 +69,22 @@
 
 <!-- MAQUETTE 3 : TARIFS APERÇU -->
 <section class="sec tc">
-  <div class="lbl" style="justify-content:center">Service 3</div>
+  <div class="lbl" style="justify-content:center">Offres commerciales</div>
   <h2 class="big">Tarifs <span class="hl">Détection</span> <span class="hl2">Télécom</span></h2>
-  <p class="sub" style="margin:0 auto 40px">Trois formules flexibles adaptées à tous les besoins et budgets.</p>
+  <p class="sub" style="margin:0 auto 40px">Des formules adaptées au niveau de complexité du chantier, avec un passage simple vers le paiement sécurisé.</p>
+
+  @if (loadingOffres) {
+    <p class="sub tc" style="margin-bottom:20px">Chargement des offres en cours...</p>
+  }
+
+  @if (erreurOffres) {
+    <p class="sub tc" style="margin-bottom:20px;color:#d35454">Impossible de charger l'aperçu des offres pour le moment.</p>
+  }
 
   <div class="tarif-preview">
     @for (offre of offres; track offre.id; let i = $index) {
-      <div class="tp-card" [class.popular]="i === 1">
-        @if (i === 1) {
+      <div class="tp-card" [class.popular]="offre.populaire">
+        @if (offre.populaire) {
           <div class="tp-badge">★ Le plus populaire</div>
         }
         <h3>{{ offre.nom }}</h3>

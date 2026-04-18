@@ -50,6 +50,7 @@
 .tp-prix span { font-family:'Barlow Condensed',sans-serif; font-size:28px; font-weight:900; color:#00D4AA; }
 .tp-card.popular .tp-prix span { color:#00B4D8; }
 .tp-card p { font-size:12px; color:#4A6275; line-height:1.6; margin:0; }
+.sec .sub.tc { max-width:700px; }
 @media (max-width:768px) {
   .ph { padding:48px 20px; }
   .mg,.ng,.tarif-preview { grid-template-columns:1fr; }
