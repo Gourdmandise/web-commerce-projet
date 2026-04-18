@@ -30,6 +30,15 @@ const ALLOWED_ORIGINS = [
   ])
 ].filter(Boolean);
 
+// Derriere Render/proxy, express-rate-limit a besoin de trust proxy
+// pour lire correctement X-Forwarded-For et identifier les clients.
+const isBehindProxy = Boolean(
+  process.env.RENDER ||
+  process.env.RENDER_EXTERNAL_URL ||
+  process.env.NODE_ENV === 'production'
+);
+app.set('trust proxy', isBehindProxy ? 1 : false);
+
 // ══════════════════════════════════════════════════════════
 // SUPABASE
 // ══════════════════════════════════════════════════════════
