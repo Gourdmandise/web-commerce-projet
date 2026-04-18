@@ -18,6 +18,11 @@ export class Terrassement implements OnInit {
   private backend = environment.backendUrl;
 
   offres: any[] = [];
+  private readonly resumesOffres = [
+    'Diagnostic complet de votre ligne avec identification rapide du point bloquant.',
+    'Intervention terrain pour remise en etat du passage fibre sur domaine prive.',
+    'Solution avancee pour chantiers complexes avec accompagnement technique dedie.',
+  ];
   loadingOffres = true;
   erreurOffres = false;
 
@@ -58,17 +63,10 @@ export class Terrassement implements OnInit {
         this.loadingOffres = false;
       })
     ).subscribe((data) => {
-      this.offres = (data ?? []).slice(0, 3).map((offre) => ({
+      this.offres = (data ?? []).slice(0, 3).map((offre, index) => ({
         ...offre,
-        resume: this.creerResume(offre?.description),
+        resume: this.resumesOffres[index] || 'Prestation personnalisee selon votre besoin.',
       }));
     });
-  }
-
-  private creerResume(description?: string): string {
-    const texte = String(description ?? '').trim();
-    if (!texte) return 'Prestation personnalisable selon votre diagnostic et vos besoins terrain.';
-    if (texte.length <= 130) return texte;
-    return `${texte.slice(0, 127).trim()}...`;
   }
 }
