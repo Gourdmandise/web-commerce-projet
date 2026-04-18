@@ -2,6 +2,7 @@ import { Component, ViewEncapsulation, inject, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
+import { catchError, finalize, of, timeout } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
 @Component({
@@ -43,19 +44,24 @@ export class Terrassement implements OnInit {
   ];
 
   ngOnInit(): void {
-    this.http.get<any[]>(`${this.backend}/offres`).subscribe({
-      next: (data) => {
-        this.offres = (data ?? []).slice(0, 3).map((offre) => ({
-          ...offre,
-          resume: this.creerResume(offre?.description),
-        }));
-        this.loadingOffres = false;
-      },
-      error: (err)  => {
+    this.loadingOffres = true;
+    this.erreurOffres = false;
+
+    this.http.get<any[]>(`${this.backend}/offres`).pipe(
+      timeout(10000),
+      catchError((err) => {
         this.erreurOffres = true;
-        this.loadingOffres = false;
         console.error('Erreur chargement offres :', err);
-      },
+        return of([] as any[]);
+      }),
+      finalize(() => {
+        this.loadingOffres = false;
+      })
+    ).subscribe((data) => {
+      this.offres = (data ?? []).slice(0, 3).map((offre) => ({
+        ...offre,
+        resume: this.creerResume(offre?.description),
+      }));
     });
   }
 
