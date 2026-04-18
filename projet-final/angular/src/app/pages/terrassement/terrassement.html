@@ -71,7 +71,7 @@
 <section class="sec tc">
   <div class="lbl" style="justify-content:center">Offres commerciales</div>
   <h2 class="big">Tarifs <span class="hl">Détection</span> <span class="hl2">Télécom</span></h2>
-  <p class="sub" style="margin:0 auto 40px">Des formules adaptées au niveau de complexité du chantier, avec un passage simple vers le paiement sécurisé.</p>
+  <p class="sub" style="margin:0 auto 40px">Aperçu synthétique des offres, avec accès aux détails complets depuis la page Tarifs.</p>
 
   @if (loadingOffres) {
     <p class="sub tc" style="margin-bottom:20px">Chargement des offres en cours...</p>
@@ -89,7 +89,7 @@
         }
         <h3>{{ offre.nom }}</h3>
         <div class="tp-prix">À partir de <span>{{ offre.prix }} €</span> TTC</div>
-        <p>{{ offre.description }}</p>
+        <p>{{ offre.resume }}</p>
       </div>
     }
   </div>

@@ -45,7 +45,10 @@ export class Terrassement implements OnInit {
   ngOnInit(): void {
     this.http.get<any[]>(`${this.backend}/offres`).subscribe({
       next: (data) => {
-        this.offres = (data ?? []).slice(0, 3);
+        this.offres = (data ?? []).slice(0, 3).map((offre) => ({
+          ...offre,
+          resume: this.creerResume(offre?.description),
+        }));
         this.loadingOffres = false;
       },
       error: (err)  => {
@@ -54,5 +57,12 @@ export class Terrassement implements OnInit {
         console.error('Erreur chargement offres :', err);
       },
     });
+  }
+
+  private creerResume(description?: string): string {
+    const texte = String(description ?? '').trim();
+    if (!texte) return 'Prestation personnalisable selon votre diagnostic et vos besoins terrain.';
+    if (texte.length <= 130) return texte;
+    return `${texte.slice(0, 127).trim()}...`;
   }
 }
