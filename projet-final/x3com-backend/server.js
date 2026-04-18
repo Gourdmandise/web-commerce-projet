@@ -1221,6 +1221,20 @@ app.get('/health', (req, res) => {
   });
 });
 
+// ══════════════════════════════════════════════════════════
+// GET / — PUBLIC (landing API)
+// ══════════════════════════════════════════════════════════
+app.get('/', (_req, res) => {
+  res.json({
+    service: 'X3COM Backend API',
+    status: 'ok',
+    endpoints: {
+      health: '/health',
+      diagnostic: '/diagnostic',
+    },
+  });
+});
+
 
 // ══════════════════════════════════════════════════════════
 // NETTOYAGE AUTO — commandes annulées > 3 jours
