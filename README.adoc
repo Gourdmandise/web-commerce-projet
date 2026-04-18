@@ -22,4 +22,6 @@ Les éléments graphiques présents dans le dossier `/projet-final/angular/publi
 |            | Maquette V1                               | link:https://github.com/Gourdmandise/web-commerce-projet/tree/main/Maquette/v1[Maquette]     |  | ✓
 |            | Maquette V2                               | link:https://github.com/Gourdmandise/web-commerce-projet/tree/main/Maquette/v2[Maquette]     |  | ✓
 |            | Logo                                      | link:https://github.com/Gourdmandise/web-commerce-projet/tree/main/Logo[Logo]     |  | ✓
+|            | Document technique                        | link:https://github.com/Gourdmandise/web-commerce-projet/blob/main/document/Document%20Technique.pdf[Technique]     |  | ✓
+|            | Document utilisateur                      | link:https://github.com/Gourdmandise/web-commerce-projet/blob/main/document/Document%20Utilisateur.pdf[Utilisateur]     |  | ✓
 |============================================================================
