@@ -29,8 +29,21 @@
           placeholder="Saisissez le nom de votre commune..."
           [(ngModel)]="communeQuery"
           (input)="rechercherCommune()"
+          (blur)="masquerSuggestions()"
+          autocomplete="off"
         />
       </div>
+
+      @if (suggestions().length > 0) {
+        <div class="ac-suggestions">
+          @for (s of suggestions(); track s.id) {
+            <button class="ac-suggestion-item" (mousedown)="selectionnerCommune(s)">
+              <span class="ac-sug-nom">{{ s.commune }}</span>
+              <span class="ac-sug-cp">{{ s.code_postal }}</span>
+            </button>
+          }
+        </div>
+      }
 
       @if (chargement) {
         <div class="ac-search-result" style="text-align:center">⏳ Recherche en cours…</div>
