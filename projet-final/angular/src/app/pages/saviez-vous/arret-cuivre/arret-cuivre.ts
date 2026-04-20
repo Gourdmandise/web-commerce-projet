@@ -2,11 +2,12 @@ import { Component, ViewEncapsulation, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommunesService, Commune } from '../../../services/communes.service';
+import { GlossaireLinkDirective } from '../../../shared/glossaire-link/glossaire-link.directive';
 
 @Component({
   selector: 'app-arret-cuivre',
   standalone: true,
-  imports: [RouterLink, FormsModule],
+  imports: [RouterLink, FormsModule, GlossaireLinkDirective],
   templateUrl: './arret-cuivre.html',
   styleUrls: ['./arret-cuivre.css'],
   encapsulation: ViewEncapsulation.None,
