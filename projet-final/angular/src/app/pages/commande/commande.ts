@@ -8,6 +8,21 @@ import { CommandeService } from '../../services/commande.service';
 import { Offre }           from '../../models/offre.model';
 import { Commande as CommandeModel } from '../../models/commande.model';
 
+type EtapeCommande = {
+  label: string;
+  desc: string;
+};
+
+const ETAPES_COMMANDE: EtapeCommande[] = [
+  { label: 'Commande reçue', desc: 'Votre commande a bien été enregistrée.' },
+  { label: 'Paiement confirmé', desc: 'Paiement sécurisé validé.' },
+  { label: 'Planification', desc: 'Un technicien vous contacte sous 24h.' },
+  { label: 'Intervention', desc: 'Le technicien se déplace à votre adresse.' },
+  { label: 'Rapport transmis', desc: 'Compte-rendu complet envoyé par e-mail.' },
+];
+
+const ORDRE_STATUTS = ['en_attente', 'paiement_confirme', 'planification', 'intervention', 'termine'];
+
 @Component({
   selector: 'app-commande',
   standalone: true,
@@ -29,13 +44,10 @@ export class Commande implements OnInit {
   vue = signal<'confirmation' | 'detail'>('confirmation');
   erreur = signal('');
 
-  etapes = [
-    { label: 'Commande reçue',    desc: 'Votre commande a bien été enregistrée.',    statut: 'done'    },
-    { label: 'Paiement confirmé', desc: 'Paiement sécurisé validé.',                 statut: 'done'    },
-    { label: 'Planification',     desc: 'Un technicien vous contacte sous 24h.',     statut: 'active'  },
-    { label: 'Intervention',      desc: 'Le technicien se déplace à votre adresse.', statut: 'pending' },
-    { label: 'Rapport transmis',  desc: 'Compte-rendu complet envoyé par e-mail.',   statut: 'pending' },
-  ];
+  etapes = ETAPES_COMMANDE.map((etape, index) => ({
+    ...etape,
+    statut: index < 2 ? 'done' : index === 2 ? 'active' : 'pending'
+  }));
 
   ngOnInit(): void {
     const commandeId = this.route.snapshot.paramMap.get('id');
@@ -128,19 +140,10 @@ export class Commande implements OnInit {
   }
 
   etapesCommande(statut: string) {
-    const etapes = [
-      { label: 'Commande reçue',   desc: 'Votre commande a bien été enregistrée.',    statut: 'done'    },
-      { label: 'Paiement confirmé', desc: 'Paiement sécurisé validé.',                 statut: 'done'    },
-      { label: 'Planification',     desc: 'Un technicien vous contacte sous 24h.',     statut: 'active'  },
-      { label: 'Intervention',      desc: 'Le technicien se déplace à votre adresse.', statut: 'pending' },
-      { label: 'Rapport transmis',  desc: 'Compte-rendu complet envoyé par e-mail.',   statut: 'pending' },
-    ];
-
-    const ordre = ['en_attente', 'paiement_confirme', 'planification', 'intervention', 'termine'];
-    const idx = ordre.indexOf(statut);
-    return etapes.map((e, i) => ({
-      ...e,
-      etat: i < idx ? 'done' : i === idx ? 'active' : 'pending'
+    const idx = ORDRE_STATUTS.indexOf(statut);
+    return ETAPES_COMMANDE.map((etape, index) => ({
+      ...etape,
+      etat: index < idx ? 'done' : index === idx ? 'active' : 'pending'
     }));
   }
 
