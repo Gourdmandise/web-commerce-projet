@@ -4,11 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
+import { GlossaireLinkDirective } from '../../../shared/glossaire-link/glossaire-link.directive';
 
 @Component({
   selector: 'app-aide-travaux',
   standalone: true,
-  imports: [RouterLink, FormsModule, CommonModule],
+  imports: [RouterLink, FormsModule, CommonModule, GlossaireLinkDirective],
   templateUrl: './aide-travaux.html',
   styleUrls: ['./aide-travaux.css'],
   encapsulation: ViewEncapsulation.None,
