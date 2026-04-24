@@ -30,9 +30,17 @@ export class GlossaireLinkDirective implements OnInit {
   }
 
   private highlight(termes: string[]) {
-    const sorted = [...termes].sort((a, b) => b.length - a.length);
+    const sorted = [...termes]
+      .map(t => t.trim())
+      .filter(Boolean)
+      .sort((a, b) => b.length - a.length);
+
+    if (!sorted.length) return;
+
     const escaped = sorted.map(t => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
-    const regex = new RegExp(`(${escaped.join('|')})`, 'gi');
+
+    // Match only full terms to avoid breaking words (e.g. "choisir" containing "oi").
+    const regex = new RegExp(`(?<![\\p{L}\\p{N}])(${escaped.join('|')})(?![\\p{L}\\p{N}])`, 'giu');
     this.processNode(this.el.nativeElement, regex);
   }
 
