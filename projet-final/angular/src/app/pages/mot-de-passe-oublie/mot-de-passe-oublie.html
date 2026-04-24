@@ -1,38 +1,62 @@
 <section class="sec pwd-page">
-  <div class="pwd-wrap">
-    <div class="pwd-hero">
-      <div class="lbl">Sécurité du compte</div>
-      <h1 class="big">{{ token() ? 'Réinitialiser le mot de passe' : 'Mot de passe oublié ?' }}</h1>
-      <p>
-        {{ token() ? 'Définissez un nouveau mot de passe pour retrouver l’accès à votre espace client.' : 'Recevez un lien de réinitialisation par e-mail.' }}
+  <div class="pwd-shell">
+    <aside class="pwd-hero">
+      <div class="pwd-badge">Espace securite</div>
+      <h1 class="pwd-title">{{ token() ? 'Creer un nouveau mot de passe' : 'Mot de passe perdu ?' }}</h1>
+      <p class="pwd-subtitle">
+        {{ token() ? 'Choisissez un mot de passe solide pour restaurer l acces a votre compte client.' : 'Entrez votre e-mail et recevez un lien de reinitialisation securise en moins d une minute.' }}
       </p>
-    </div>
 
-    <div class="accard pwd-card">
-      @if (!token()) {
-        <h2>Demander un lien</h2>
-        <div class="fg2">
-          <label>E-mail</label>
-          <input [(ngModel)]="demande.email" name="email" type="email" placeholder="votre@email.fr">
+      <div class="pwd-points">
+        <div class="pwd-point">
+          <span class="pwd-point-icon">01</span>
+          <p>Verification securisee cote serveur</p>
         </div>
-        <button class="bfull p" (click)="demanderLien()" [disabled]="chargement()">
-          {{ chargement() ? 'Envoi…' : 'Envoyer le lien' }}
+        <div class="pwd-point">
+          <span class="pwd-point-icon">02</span>
+          <p>Lien temporaire a usage limite</p>
+        </div>
+        <div class="pwd-point">
+          <span class="pwd-point-icon">03</span>
+          <p>Mise a jour immediate de vos acces</p>
+        </div>
+      </div>
+    </aside>
+
+    <div class="pwd-card">
+      <div class="pwd-card-head">
+        <h2>{{ token() ? 'Reinitialisation' : 'Demander un lien' }}</h2>
+        <p>{{ token() ? 'Renseignez et confirmez votre nouveau mot de passe.' : 'Nous allons vous envoyer un e-mail de recuperation.' }}</p>
+      </div>
+
+      @if (!token()) {
+        <div class="pwd-field">
+          <label for="email">Adresse e-mail</label>
+          <input id="email" [(ngModel)]="demande.email" name="email" type="email" placeholder="nom@domaine.fr" autocomplete="email">
+        </div>
+
+        <button class="pwd-btn" (click)="demanderLien()" [disabled]="chargement()">
+          {{ chargement() ? 'Envoi en cours...' : 'Recevoir mon lien securise' }}
         </button>
+
         @if (tokenExpiresIn()) {
-          <p class="hint">Lien valable {{ tokenExpiresIn() }} minutes.</p>
+          <p class="pwd-note">Le lien sera valide {{ tokenExpiresIn() }} minutes.</p>
         }
       } @else {
-        <h2>Nouveau mot de passe</h2>
-        <div class="fg2">
-          <label>Nouveau mot de passe</label>
-          <input [(ngModel)]="reset.nouveauMotDePasse" name="newPassword" type="password" placeholder="Minimum 8 caractères">
+        <div class="pwd-field">
+          <label for="newPassword">Nouveau mot de passe</label>
+          <input id="newPassword" [(ngModel)]="reset.nouveauMotDePasse" name="newPassword" type="password" placeholder="Minimum 8 caracteres" autocomplete="new-password">
         </div>
-        <div class="fg2">
-          <label>Confirmer le mot de passe</label>
-          <input [(ngModel)]="reset.confirmerMotDePasse" name="confirmPassword" type="password" placeholder="••••••••">
+
+        <div class="pwd-field">
+          <label for="confirmPassword">Confirmer le mot de passe</label>
+          <input id="confirmPassword" [(ngModel)]="reset.confirmerMotDePasse" name="confirmPassword" type="password" placeholder="Repetez le mot de passe" autocomplete="new-password">
         </div>
-        <button class="bfull p" (click)="reinitialiser()" [disabled]="chargement()">
-          {{ chargement() ? 'Réinitialisation…' : 'Réinitialiser' }}
+
+        <p class="pwd-note">Conseil: utilisez au moins 12 caracteres avec chiffres et symboles.</p>
+
+        <button class="pwd-btn" (click)="reinitialiser()" [disabled]="chargement()">
+          {{ chargement() ? 'Validation en cours...' : 'Valider le nouveau mot de passe' }}
         </button>
       }
 
@@ -44,7 +68,7 @@
       }
 
       <p class="back-link">
-        <a routerLink="/compte">← Retour à l’espace client</a>
+        <a routerLink="/compte">Retour a l espace client</a>
       </p>
     </div>
   </div>

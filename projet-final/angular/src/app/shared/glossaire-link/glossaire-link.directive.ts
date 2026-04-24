@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { GlossaireService } from '../../services/glossaire.service';
 
 const SKIP_TAGS = new Set(['A', 'BUTTON', 'INPUT', 'TEXTAREA', 'SELECT', 'SCRIPT', 'STYLE', 'CODE', 'PRE']);
+const EXCLUDED_TERMS = new Set(['ONT']);
 
 @Directive({
   selector: '[appGlossaireLink]',
@@ -35,6 +36,7 @@ export class GlossaireLinkDirective implements OnInit {
     const sorted = [...termes]
       .map(t => t.trim())
       .filter(Boolean)
+      .filter(t => !EXCLUDED_TERMS.has(this.normalizeTerm(t)))
       .sort((a, b) => b.length - a.length);
 
     if (!sorted.length) return;
@@ -44,6 +46,10 @@ export class GlossaireLinkDirective implements OnInit {
     // Match only full terms (browser-compatible, without lookbehind).
     const regex = new RegExp(`(^|[^\\p{L}\\p{N}])(${escaped.join('|')})(?=$|[^\\p{L}\\p{N}])`, 'giu');
     this.processNode(this.el.nativeElement, regex);
+  }
+
+  private normalizeTerm(term: string): string {
+    return term.trim().toUpperCase();
   }
 
   private processNode(node: Node, regex: RegExp): void {
@@ -62,6 +68,11 @@ export class GlossaireLinkDirective implements OnInit {
 
         if (termStart > last) {
           frag.appendChild(document.createTextNode(text.slice(last, termStart)));
+        }
+        if (EXCLUDED_TERMS.has(this.normalizeTerm(term))) {
+          frag.appendChild(document.createTextNode(term));
+          last = termStart + term.length;
+          continue;
         }
         const a = document.createElement('a');
         a.href = '/saviez-vous/glossaire';
