@@ -52,7 +52,6 @@ export class Compte implements OnInit {
     this.utilisateurService.connecter(this.login.email, this.login.motDePasse).subscribe({
       next: ({ utilisateur, token }) => {
         this.chargement.set(false);
-        // ✅ On passe le token — AuthService le stocke dans localStorage
         this.auth.connecter(utilisateur, token);
         this.profil = { ...utilisateur };
         this.chargerCommandes();
@@ -95,7 +94,6 @@ export class Compte implements OnInit {
     ).subscribe({
       next: ({ utilisateur, token }) => {
         this.chargement.set(false);
-        // ✅ Token stocké dès l'inscription
         this.auth.connecter(utilisateur, token);
         this.profil = { ...utilisateur };
         this.commandes.set([]);
@@ -143,7 +141,7 @@ export class Compte implements OnInit {
     const user = this.auth.utilisateur();
     if (!user?.id) return;
 
-    // Vérifier l'ancien mot de passe via /login avant de changer
+    // /login vérifie le mot de passe actuel côté serveur avant d'autoriser le changement
     this.utilisateurService.connecter(user.email, this.mdp.actuel).subscribe({
       next: () => {
         this.utilisateurService.changerMotDePasse(user.id!, this.mdp.nouveau).subscribe({

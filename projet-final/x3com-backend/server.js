@@ -222,7 +222,7 @@ function requireAuth(req, res, next) {
 
 /**
  * requireAuth + role admin obligatoire.
- * FIX : on transmet err à next() pour éviter les doubles réponses.
+ * err est transmis à next() et non géré ici pour éviter une double réponse HTTP.
  */
 function requireAdmin(req, res, next) {
   requireAuth(req, res, (err) => {
@@ -236,7 +236,7 @@ function requireAdmin(req, res, next) {
 
 /**
  * Vérifie que req.user.id === parseInt(req.params.id), ou que c'est un admin.
- * À utiliser sur les routes /utilisateurs/:id pour éviter l'IDOR.
+ * Empêche l'IDOR : un client ne peut pas accéder/modifier le compte d'un autre.
  */
 function requireOwnerOrAdmin(req, res, next) {
   requireAuth(req, res, (err) => {
@@ -279,7 +279,6 @@ app.get('/stats', requireAdmin, async (req, res) => {
   try {
     const stats = {};
 
-    // Commandes : total, par statut, revenus
     const { data: commandes, error: errCmd } = await supabase
       .from('commandes')
       .select('statut, prix');
@@ -298,7 +297,6 @@ app.get('/stats', requireAdmin, async (req, res) => {
       };
     }
 
-    // RDV : total, par statut
     const { data: rdvs, error: errRdv } = await supabase
       .from('rdv')
       .select('statut');
@@ -313,7 +311,6 @@ app.get('/stats', requireAdmin, async (req, res) => {
       };
     }
 
-    // Utilisateurs : total
     const { data: users, error: errUsers } = await supabase
       .from('utilisateurs')
       .select('id, role');
@@ -325,7 +322,6 @@ app.get('/stats', requireAdmin, async (req, res) => {
       };
     }
 
-    // Offres populaires
     const { data: offres, error: errOffres } = await supabase
       .from('offres')
       .select('id, nom, populaire')
@@ -464,7 +460,7 @@ app.post('/login', limiterAuth, async (req, res) => {
 
     if (!valide) return res.status(401).json({ error: 'Identifiants incorrects' });
 
-    // Migration automatique vers bcrypt si ancien hash
+    // Migration transparente : les comptes importés avec SHA-256 ou PBKDF2 passent à bcrypt à la prochaine connexion
     if (!hash.startsWith('$2')) {
       const h2 = await bcrypt.hash(motDePasse, 12);
       await supabase.from('utilisateurs').update({ motdepasse: h2 }).eq('id', row.id);
@@ -530,14 +526,12 @@ app.post('/refresh-token', limiterAuth, async (req, res) => {
   if (!token) return res.status(400).json({ error: 'Token requis' });
 
   try {
-    // Essayer de décoder le token même s'il est expiré
     const decoded = jwt.verify(token, JWT_SECRET, { ignoreExpiration: true });
-    
+
     if (!decoded?.id) {
       return res.status(401).json({ error: 'Token invalide' });
     }
 
-    // Vérifier que l'utilisateur existe toujours
     const { data: user, error: userError } = await supabase
       .from('utilisateurs')
       .select('id, role')
@@ -548,7 +542,6 @@ app.post('/refresh-token', limiterAuth, async (req, res) => {
       return res.status(401).json({ error: 'Utilisateur non trouvé' });
     }
 
-    // Générer un nouveau token
     const newToken = jwt.sign(
       { id: user.id, role: user.role },
       JWT_SECRET,
@@ -766,8 +759,7 @@ app.patch('/utilisateurs/:id', requireOwnerOrAdmin, async (req, res) => {
 
   const COLONNES_AUTORISEES = ['email', 'prenom', 'nom', 'telephone', 'adresse', 'ville', 'codepostal'];
 
-  // FIX : normalisation des clés en minuscules pour correspondre aux colonnes Supabase
-  // Ex: "codePostal" (Angular) → "codepostal" (Supabase)
+  // Angular envoie les clés en camelCase ("codePostal") mais Supabase attend des colonnes en minuscules
   const champs = Object.fromEntries(
     Object.entries(raw)
       .filter(([k]) => COLONNES_AUTORISEES.includes(k.toLowerCase()))
@@ -794,7 +786,7 @@ app.patch('/utilisateurs/:id', requireOwnerOrAdmin, async (req, res) => {
 // DELETE /utilisateurs/:id — PROPRIÉTAIRE UNIQUEMENT (ou admin)
 app.delete('/utilisateurs/:id', requireOwnerOrAdmin, async (req, res) => {
   try {
-    // D'abord supprimer les commandes de cet utilisateur
+    // Pas de ON DELETE CASCADE sur la FK commandes.utilisateurid — suppression manuelle obligatoire
     const { error: errorCommandes } = await supabase
       .from('commandes')
       .delete()
@@ -802,7 +794,6 @@ app.delete('/utilisateurs/:id', requireOwnerOrAdmin, async (req, res) => {
 
     if (errorCommandes) throw new Error(errorCommandes.message);
 
-    // Ensuite supprimer l'utilisateur
     const { error } = await supabase.from('utilisateurs').delete().eq('id', req.params.id);
     if (error) throw new Error(error.message);
     res.status(204).send();
@@ -812,7 +803,7 @@ app.delete('/utilisateurs/:id', requireOwnerOrAdmin, async (req, res) => {
 
 // ══════════════════════════════════════════════════════════
 // OFFRES — lecture publique, écriture admin uniquement
-// FIX : route statique /reordonner déclarée AVANT la route paramétrée /:id
+// /reordonner est déclaré avant /:id : Express matche les routes dans l'ordre de déclaration
 // ══════════════════════════════════════════════════════════
 app.get('/offres', async (req, res) => {
   try {
@@ -830,7 +821,6 @@ app.post('/offres', requireAdmin, async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-// FIX : /reordonner déclaré avant /:id
 app.post('/offres/reordonner', requireAdmin, async (req, res) => {
   try {
     const { ordre } = req.body;
@@ -959,11 +949,10 @@ app.get('/commandes/:id/pdf', requireAuth, async (req, res) => {
   }
 });
 
-// PATCH /commandes/:id — admin uniquement
 app.patch('/commandes/:id', requireAdmin, async (req, res) => {
   const CHAMPS_AUTORISES = ['statut', 'adresselivraison', 'commentaire', 'dateprevue'];
 
-  // FIX : normalisation des clés en minuscules pour correspondre aux colonnes Supabase
+  // Angular envoie les clés en camelCase — normalisation en minuscules pour Supabase
   const champs = Object.fromEntries(
     Object.entries(req.body)
       .filter(([k]) => CHAMPS_AUTORISES.includes(k.toLowerCase()))
@@ -1301,7 +1290,6 @@ app.get('/rdv/creneaux-pris', async (req, res) => {
     return res.status(400).json({ error: 'Paramètre date invalide (attendu : YYYY-MM-DD).' });
   }
   try {
-    // Créneaux confirmés (hors annulés)
     const { data: rdvs, error: errRdv } = await supabase
       .from('rdv')
       .select('heure')
@@ -1309,11 +1297,7 @@ app.get('/rdv/creneaux-pris', async (req, res) => {
       .neq('statut', 'annule');
     if (errRdv) throw errRdv;
 
-    const heures = [
-      ...new Set([
-        ...rdvs.map(r => r.heure),
-      ])
-    ];
+    const heures = [...new Set(rdvs.map(r => r.heure))];
     res.json(heures);
   } catch (err) {
     console.error('Erreur creneaux-pris :', err);
@@ -1336,7 +1320,6 @@ app.get('/rdv/creneaux-disponibles', async (req, res) => {
   }
 
   try {
-    // Créneaux confirmés (hors annulés)
     const { data: rdvs, error: errRdv } = await supabase
       .from('rdv')
       .select('heure')
@@ -1344,19 +1327,15 @@ app.get('/rdv/creneaux-disponibles', async (req, res) => {
       .neq('statut', 'annule');
     if (errRdv) throw errRdv;
 
-    // Créneaux pris
-    const prises = new Set([
-      ...rdvs.map(r => r.heure),
-    ]);
+    const prises = new Set(rdvs.map(r => r.heure));
 
-    // Tous les créneaux théoriques (9h à 18h, pas de 30 min)
+    // Créneaux de travail : 9h–18h, pas de 30 min
     const tousCreneaux = [];
     for (let h = 9; h < 18; h++) {
       tousCreneaux.push(`${String(h).padStart(2, '0')}:00`);
       tousCreneaux.push(`${String(h).padStart(2, '0')}:30`);
     }
 
-    // Créneaux disponibles = tous - pris
     const disponibles = tousCreneaux.filter(c => !prises.has(c));
     res.json(disponibles);
   } catch (err) {
@@ -1392,12 +1371,10 @@ app.post('/rdv', async (req, res) => {
     return res.status(400).json({ error: 'Champs obligatoires manquants.' });
   }
 
-  // Normaliser la date : on accepte "YYYY-MM-DD" ou une ISO string,
-  // et on stocke toujours exactement "YYYY-MM-DD" sans décalage timezone.
+  // new Date("2025-06-15") est interprété comme UTC minuit, ce qui décale d'un jour en UTC+2.
+  // On extrait les parties YYYY-MM-DD manuellement pour rester en heure locale.
   const dateNormalisee = (() => {
-    // Si déjà au format YYYY-MM-DD, on le garde tel quel
     if (/^\d{4}-\d{2}-\d{2}$/.test(date)) return date;
-    // Sinon on extrait manuellement la partie date pour éviter toute conversion UTC
     const d = new Date(date);
     const y = d.getUTCFullYear();
     const m = String(d.getUTCMonth() + 1).padStart(2, '0');
@@ -1405,7 +1382,7 @@ app.post('/rdv', async (req, res) => {
     return `${y}-${m}-${j}`;
   })();
 
-  // Rejeter les weekends (samedi=6, dimanche=0) — protection côté serveur
+  // Validation côté serveur — le front peut être contourné
   const [y, mo, d2] = dateNormalisee.split('-').map(Number);
   const jourSemaine = new Date(y, mo - 1, d2).getDay();
   if (jourSemaine === 0 || jourSemaine === 6) {
@@ -1413,7 +1390,6 @@ app.post('/rdv', async (req, res) => {
   }
 
   try {
-    // Créer le RDV
     const { data, error } = await supabase.from('rdv').insert([{
       nom: nom.trim(),
       email: email.trim().toLowerCase(),
@@ -1466,7 +1442,7 @@ app.get('/rdv/:id', requireAuth, async (req, res) => {
       return res.status(500).json({ error: errRdv.message });
     }
 
-    // Utilisateur non-admin ne peut voir que son propre RDV (via email)
+    // Ownership basé sur l'email : les RDV sont créés sans utilisateur_id (formulaire public)
     if (req.user?.role !== 'admin' && rdv.email !== req.user?.email) {
       return res.status(403).json({ error: 'Accès refusé — vous ne pouvez voir que votre propre RDV.' });
     }
@@ -1494,7 +1470,6 @@ app.patch('/rdv/:id/statut', requireAdmin, async (req, res) => {
       .single();
     if (error) throw error;
 
-    // Envoyer un email au client si le RDV est confirmé
     if (statut === 'confirme' && data.email) {
       const [y, mo, d] = data.date.split('-').map(Number);
       const dateLabel = new Date(y, mo - 1, d).toLocaleDateString('fr-FR', {

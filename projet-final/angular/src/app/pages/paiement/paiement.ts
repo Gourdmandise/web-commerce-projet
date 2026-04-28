@@ -24,13 +24,12 @@ export class Paiement implements OnInit {
   annule     = signal(false);
 
   ngOnInit(): void {
-    // Retour après annulation depuis Stripe
     this.route.queryParams.subscribe(p => {
       if (p['annule']) this.annule.set(true);
     });
   }
 
-  // FIX : prix affichés TTC → TVA = prix × 20/120 (et non prix × 20%)
+  // TVA incluse dans le prix TTC : tva = prix × 20/120, pas prix × 20%
   get tva()   { return Math.round((this.panier.offre()?.prix ?? 0) * 20 / 120); }
   get total() { return this.panier.offre()?.prix ?? 0; }
 
@@ -50,7 +49,6 @@ export class Paiement implements OnInit {
 
     this.chargement.set(true);
 
-    // Appel au backend → création session Stripe Checkout
     this.stripe.createCheckoutSession({
       offreId:       offre.id!,
       prix:          offre.prix,
@@ -62,7 +60,6 @@ export class Paiement implements OnInit {
       telephone:     user.telephone    || '',
     }).subscribe({
       next: (session) => {
-        // Redirige vers la page de paiement Stripe
         window.location.href = session.url;
       },
       error: (err) => {

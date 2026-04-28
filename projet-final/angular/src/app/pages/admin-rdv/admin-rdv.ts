@@ -96,9 +96,9 @@ export class AdminRdv implements OnInit {
 
   formatDate(dateStr: string): string {
   if (!dateStr) return '';
-  // Forcer l'interprétation en heure locale en splitant manuellement
+  // new Date("YYYY-MM-DD") est interprété en UTC — le constructeur local évite le décalage d'un jour
   const [year, month, day] = dateStr.split('-').map(Number);
-  const d = new Date(year, month - 1, day); // constructeur local, pas UTC
+  const d = new Date(year, month - 1, day);
   return d.toLocaleDateString('fr-FR', {
     weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
   });

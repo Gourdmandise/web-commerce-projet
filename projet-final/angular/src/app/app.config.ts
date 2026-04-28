@@ -17,7 +17,6 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
     { provide: APP_INITIALIZER, useFactory: initialiserAuthentification, deps: [AuthService], multi: true },
-    // ✅ L'intercepteur injecte automatiquement le JWT sur chaque requête backend
     provideHttpClient(withInterceptors([authInterceptor])),
   ]
 };

@@ -42,7 +42,6 @@ export class Admin implements OnInit {
   commandes    = signal<Commande[]>([]);
   offres       = signal<Offre[]>([]);
 
-  // ── RDV ──
   rdvs          = signal<Rdv[]>([]);
   rdvFiltre     = signal<FiltreRdv>('tous');
   rdvChargement = false;
@@ -68,14 +67,11 @@ export class Admin implements OnInit {
     return new HttpHeaders(token ? { Authorization: `Bearer ${token}` } : {});
   }
 
-  // ── Édition utilisateur ──
   editUser: Utilisateur | null = null;
   nouveauMotDePasse = '';
 
-  // ── Édition commande ──
   editCommande: Commande | null = null;
 
-  // ── Édition offre ──
   editOffre: Partial<Offre> | null = null;
   modeOffre: 'creation' | 'edition' = 'creation';
   editFeature  = '';
@@ -119,10 +115,6 @@ export class Admin implements OnInit {
     return d.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
   }
 
-  // ════════════════════════════════
-  // UTILISATEURS
-  // ════════════════════════════════
-
   ouvrirEditUser(u: Utilisateur): void {
     this.editUser = { ...u };
     this.nouveauMotDePasse = '';
@@ -138,7 +130,6 @@ export class Admin implements OnInit {
     const { motDePasse, ...data } = this.editUser as any;
     const id = this.editUser.id;
 
-    // Si un nouveau mot de passe est saisi, on le change via le backend (bcrypt serveur)
     const changeMdp$ = this.nouveauMotDePasse.trim()
       ? this.utilisateurService.changerMotDePasse(id, this.nouveauMotDePasse.trim())
       : null;
@@ -179,10 +170,6 @@ export class Admin implements OnInit {
     return u ? `${u.prenom} ${u.nom}` : `#${id}`;
   }
 
-  // ════════════════════════════════
-  // COMMANDES
-  // ════════════════════════════════
-
   ouvrirEditCommande(c: Commande): void {
     this.editCommande = { ...c };
   }
@@ -213,10 +200,6 @@ export class Admin implements OnInit {
       error: () => this.panier.notify('⚠', 'Erreur', 'Impossible de supprimer')
     });
   }
-
-  // ════════════════════════════════
-  // OFFRES
-  // ════════════════════════════════
 
   nouvelleOffre(): void {
     this.modeOffre = 'creation';
@@ -326,10 +309,6 @@ export class Admin implements OnInit {
       error: () => this.panier.notify('⚠', 'Erreur', 'Impossible de supprimer')
     });
   }
-
-  // ════════════════════════════════
-  // HELPERS
-  // ════════════════════════════════
 
   statutLabel(statut: string): string {
     const labels: Record<string, string> = {

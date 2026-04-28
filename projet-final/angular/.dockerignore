@@ -1,0 +1,8 @@
+node_modules
+dist
+.angular
+.git
+.vscode
+cypress/videos
+cypress/screenshots
+npm-debug.log

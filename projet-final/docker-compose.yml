@@ -1,0 +1,21 @@
+services:
+  backend:
+    build:
+      context: ./x3com-backend
+    env_file:
+      - ./x3com-backend/.env
+    environment:
+      PORT: 3001
+      FRONTEND_URL: http://localhost:4200
+    ports:
+      - "3001:3001"
+
+  frontend:
+    build:
+      context: ./angular
+    depends_on:
+      - backend
+    environment:
+      CHOKIDAR_USEPOLLING: "true"
+    ports:
+      - "4200:4200"

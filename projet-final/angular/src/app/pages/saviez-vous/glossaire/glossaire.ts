@@ -29,7 +29,6 @@ export class Glossaire implements OnInit {
   termesFiltres:      TermeGlossaire[] = [];
   lettresDisponibles: string[]         = [];
 
-  // ✅ Injection du ChangeDetectorRef
   constructor(private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
@@ -62,7 +61,8 @@ export class Glossaire implements OnInit {
     } finally {
       clearTimeout(timeoutId);
       this.chargement = false;
-      this.cdr.detectChanges(); // ✅ Force la mise à jour de la vue
+      // fetch() s'exécute hors de la zone Angular — detectChanges() force la re-render
+      this.cdr.detectChanges();
     }
   }
 

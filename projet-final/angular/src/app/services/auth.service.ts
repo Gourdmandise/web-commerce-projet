@@ -15,7 +15,6 @@ export class AuthService {
   utilisateur = signal<Utilisateur | null>(this.chargerSession());
 
   constructor() {
-    // Synchronise automatiquement le signal avec localStorage
     effect(() => {
       const u = this.utilisateur();
       if (u) {
@@ -31,10 +30,6 @@ export class AuthService {
     return this.utilisateur() !== null;
   }
 
-  /**
-   * Appelé après /login ou /register.
-   * Stocke l'utilisateur ET le JWT.
-   */
   connecter(user: Utilisateur, token: string): void {
     localStorage.setItem(TOKEN_KEY, token);
     this.utilisateur.set(user);
@@ -42,13 +37,8 @@ export class AuthService {
 
   deconnecter(): void {
     this.utilisateur.set(null);
-    // L'effect() supprime TOKEN_KEY automatiquement
   }
 
-  /**
-   * Renvoie le token JWT pour l'intercepteur HTTP.
-   * Retourne null si l'utilisateur n'est pas connecté.
-   */
   getToken(): string | null {
     return localStorage.getItem(TOKEN_KEY);
   }

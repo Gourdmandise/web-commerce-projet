@@ -11,7 +11,6 @@ export const adminGuard: CanActivateFn = () => {
   const router = inject(Router);
   const http   = inject(HttpClient);
 
-  // 1. Vérification locale rapide (expérience UX)
   if (!auth.connecte) {
     router.navigateByUrl('/compte');
     return false;
@@ -23,7 +22,8 @@ export const adminGuard: CanActivateFn = () => {
     return false;
   }
 
-  // 2. Vérification CÔTÉ SERVEUR — le rôle est lu depuis la BDD, pas localStorage
+  // Le rôle est relu depuis la BDD à chaque navigation vers /admin :
+  // localStorage peut être modifié côté client, le serveur fait foi.
   return http.get<{ role: string }>(
     `${environment.backendUrl}/verify-admin/${userId}`,
     { headers: new HttpHeaders({ 'X-Requester-Id': String(userId) }) }

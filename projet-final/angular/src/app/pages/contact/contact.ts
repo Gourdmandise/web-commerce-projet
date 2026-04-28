@@ -76,7 +76,6 @@ export class Contact {
     return this.form.besoins.includes(b);
   }
 
-  // ── Icône selon extension ────────────────────────────────
   getFileIcon(nom: string): string {
     const ext = nom.split('.').pop()?.toLowerCase() ?? '';
     if (['jpg','jpeg','png','gif','webp'].includes(ext)) return '🖼️';
@@ -86,7 +85,6 @@ export class Contact {
     return '📎';
   }
 
-  // ── Sélection de fichier ─────────────────────────────────
   onFichierChange(event: Event): void {
     const input  = event.target as HTMLInputElement;
     const file   = input.files?.[0] ?? null;
@@ -108,7 +106,6 @@ export class Contact {
     this.fichierSelectionne = file;
   }
 
-  // ── Suppression du fichier ───────────────────────────────
   supprimerFichier(event: Event): void {
     event.preventDefault();
     event.stopPropagation();
@@ -118,7 +115,6 @@ export class Contact {
     if (input) input.value = '';
   }
 
-  // ── Envoi ────────────────────────────────────────────────
   onSubmit(f: NgForm): void {
     if (!f.valid || this.envoi) return;
     this.envoi = true;
