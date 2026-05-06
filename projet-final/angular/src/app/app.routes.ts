@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { Home }         from './pages/home/home';
 import { Terrassement } from './pages/terrassement/terrassement';
 import { Collectivites } from './pages/collectivites/collectivites';
+import { EntreprisesPromoteurs } from './pages/entreprises-promoteurs/entreprises-promoteurs';
 import { Tarifs }       from './pages/tarifs/tarifs';
 import { Contact }      from './pages/contact/contact';
 import { Compte }       from './pages/compte/compte';
@@ -24,6 +25,7 @@ export const routes: Routes = [
   { path: 'nos-services',              component: Tarifs },
   { path: 'nos-prestations',           component: Terrassement },
   { path: 'nos-collectivites',         component: Collectivites },
+  { path: 'nos-entreprises-promoteurs', component: EntreprisesPromoteurs },
   { path: 'terrassement',              component: Terrassement },
   { path: 'tarifs',                    component: Tarifs },
   { path: 'contact',                   component: Contact },

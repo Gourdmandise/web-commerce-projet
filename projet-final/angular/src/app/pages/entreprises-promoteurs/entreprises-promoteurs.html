@@ -1,0 +1,162 @@
+<!-- PAGE HERO -->
+<div class="ph">
+  <div class="lbl" style="justify-content:center">Entreprises & Promoteurs</div>
+  <h2 class="big">Solutions d'aménagement <span class="hl2">numérique territorial</span></h2>
+  <p class="sub" style="margin:0 auto 32px">X3COM accompagne communes, collectivités, copropriétés, établissements publics et professionnels pour accélérer le très haut débit sur votre territoire. Du diagnostic au raccordement fibre : solutions complètes et adaptées.</p>
+  <a routerLink="/contact" class="btn-x1">Demander une intervention</a>
+</div>
+
+<!-- BLOC RÉGLEMENTAIRE : PRÉ-FIBRAGE -->
+<section class="sec-alt collect-space collect-focus">
+  <div class="collect-focus-grid">
+    <div>
+      <div class="lbl">Cadre réglementaire</div>
+      <h2 class="big">Adduction & <span class="hl">pré-fibrage FO</span></h2>
+      <p class="sub collect-sub">Dans le cadre de la législation adduction et pré-fibrage FO des nouvelles constructions de logements ou locaux à usage professionnel, nous proposons une prestation complète pour le raccordement à un réseau fibre optique mutualisé FttH.</p>
+      <p class="sub collect-sub">Un interlocuteur dédié "Pré-Fibrage" vous accompagne pour chaque demande d'information, d'étude technique et de devis.</p>
+    </div>
+
+    <div class="collect-focus-card">
+      <h3>Ce que nous prenons en charge</h3>
+      <ul>
+        <li>Analyse des besoins de raccordement en phase projet</li>
+        <li>Préparation de l'infrastructure pour logements neufs et locaux professionnels</li>
+        <li>Conformité des parcours techniques avant mise en service</li>
+        <li>Coordination technique jusqu'au raccordement mutualisé FttH</li>
+      </ul>
+      <a routerLink="/contact" class="btn-x1">Parler au pôle pré-fibrage</a>
+    </div>
+  </div>
+</section>
+
+<!-- MAQUETTE 1 : SOLUTIONS -->
+<section class="sec collect-space">
+  <div class="tc" style="margin-bottom:36px">
+    <div class="lbl" style="justify-content:center">Nos services</div>
+    <h2 class="big">Solutions pour <span class="hl">territoires</span></h2>
+    <p class="sub" style="margin:0 auto">Diagnostic territorial, pré-fibrage des nouvelles constructions, copropriétés et locaux professionnels, avec accompagnement complet de vos projets d'aménagement numérique.</p>
+  </div>
+
+  <div class="mg">
+    @for (m of methodes; track m.titre) {
+      <div class="mc">
+        <div class="mt-card">
+          <img [src]="m.img" [alt]="m.titre" class="methode-img">
+        </div>
+        <div class="mb-card">
+          <h3>{{ m.titre }}</h3>
+          <p>{{ m.desc }}</p>
+          <span class="mtag">{{ m.tag }}</span>
+        </div>
+      </div>
+    }
+  </div>
+
+  <div class="nb">
+    <div class="lbl" style="justify-content:center">Engagement qualité</div>
+    <h2 class="big tc" style="font-size:26px;margin-bottom:10px">Normes & <span class="hl2">compatibilité</span></h2>
+    <p class="sub tc" style="font-size:13px;margin-bottom:28px">Nous respectons l'ensemble des normes applicables aux projets publics, copropriétés et constructions neuves.</p>
+    <div class="ng">
+      @for (n of normes; track n.txt) {
+        <div class="ni2"><div class="ic">{{ n.ic }}</div><p>{{ n.txt }}</p></div>
+      }
+    </div>
+  </div>
+  <div style="text-align:center;margin-top:40px">
+    <a routerLink="/contact" class="btn-x1">Nous consulter pour un devis →</a>
+  </div>
+</section>
+
+<!-- MAQUETTE 2 : TRAVAUX & INFRASTRUCURE -->
+<section class="sec-alt collect-space">
+  <div class="tc" style="margin-bottom:48px">
+    <div class="lbl" style="justify-content:center">Infrastructure & travaux</div>
+    <h2 class="big">Déploiement <span class="hl2">fibre optique mutualisé</span></h2>
+    <p class="sub" style="margin:0 auto">Création complète d'infrastructures VRD pour territoires, immeubles et zones d'activités. Pré-fibrage neuf ou remise en conformité selon cahier des charges.</p>
+  </div>
+
+  <div class="travaux-list">
+    @for (t of travaux; track t.titre; let even = $even) {
+      <div class="travaux-item" [class.rev]="even">
+        <div class="travaux-txt">
+          <h3 [class]="'travaux-titre ' + t.couleur">{{ t.titre }}</h3>
+          <p>{{ t.texte }}</p>
+        </div>
+        <div class="travaux-vis" [class]="'vis-' + t.couleur">
+          <img [src]="t.img" [alt]="t.titre" class="travaux-img">
+        </div>
+      </div>
+    }
+  </div>
+</section>
+
+<!-- SCHÉMAS FOURNIS -->
+<section class="sec-alt collect-space tc">
+  <div class="lbl" style="justify-content:center">Déploiement & raccordement</div>
+  <h2 class="big">Calendrier & <span class="hl2">raccordement</span></h2>
+  <p class="sub" style="margin:0 auto 28px">Le premier visuel présente le calendrier de déploiement. Le second illustre le raccordement et le câblage du réseau fibre.</p>
+
+  <div class="provided-calendar-layout">
+    <div class="provided-description-card">
+      <div class="lbl">Description</div>
+      <h3>Calendrier du déploiement</h3>
+      <p>Cette image résume le déroulement de la prestation en cinq phases, avec une alternance claire entre le client et Resonance selon l'avancement du dossier.</p>
+      <ul>
+        <li>Lancement du projet</li>
+        <li>Analyse du réseau et planification</li>
+        <li>Validation du dossier technique</li>
+        <li>Travaux de fibre</li>
+        <li>Récolement final</li>
+      </ul>
+    </div>
+    <div class="provided-schema-card">
+      <img src="/collectivites-calendrier-deploiement.png" alt="Calendrier du déploiement" class="provided-schema-img provided-calendar-img">
+    </div>
+  </div>
+
+  <div class="provided-schema-card provided-schema-card--network">
+    <img src="/collectivites-schema-raccordement.png" alt="Schéma de raccordement et câblage" class="provided-schema-img">
+  </div>
+</section>
+
+<!-- MAQUETTE 3 : AVANTAGES & DIFFÉRENCIATION -->
+<section class="sec tc collect-space">
+  <div class="lbl" style="justify-content:center">Pourquoi X3COM</div>
+  <h2 class="big">Nos <span class="hl">avantages</span></h2>
+  <p class="sub" style="margin:0 auto 40px">Expertise territoire, réactivité et accompagnement dédié pour garantir le succès de vos projets.</p>
+
+  <div class="avantages-grid">
+    @for (a of avantages; track a.titre) {
+      <div class="avantage-card">
+        <h3>{{ a.titre }}</h3>
+        <p>{{ a.desc }}</p>
+      </div>
+    }
+  </div>
+</section>
+
+<!-- MAQUETTE 4 : ZONE D'INTERVENTION -->
+<section class="sec-alt tc collect-space">
+  <div class="lbl" style="justify-content:center">Zone d'intervention</div>
+  <h2 class="big">Notre présence <span class="hl2">régionale</span></h2>
+  <p class="sub" style="margin:0 auto 36px">X3COM intervient en Haute-Garonne, Gers, Tarn et Tarn-et-Garonne pour accompagner communes, copropriétés, collectivités et professionnels.</p>
+
+  <div class="regions-box">
+    @for (r of regions; track r.dept) {
+      <div class="region-card" [class.active]="r.actif">
+        <div class="region-num">{{ r.dept }}</div>
+        <h3>{{ r.nom }}</h3>
+        <p>{{ r.desc }}</p>
+      </div>
+    }
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="sec tc collect-space">
+  <div class="ctab">
+    <h2>Déployez le très haut débit sur votre territoire</h2>
+    <p>Contactez nos experts pour étudier votre situation et définir une stratégie adaptée.</p>
+    <a routerLink="/contact" class="btn-x1">Nous contacter</a>
+  </div>
+</section>
