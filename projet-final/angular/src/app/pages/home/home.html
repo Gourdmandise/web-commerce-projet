@@ -248,28 +248,9 @@
   </div>
 </section>
 
-<!-- TÉMOIGNAGES -->
+<!-- Offres -->
 <section class="sec-alt tc">
-  <div class="lbl" style="justify-content:center">Ils nous font confiance</div>
-  <h2 class="big" style="margin-bottom:40px">Témoignages <span class="hl">clients</span></h2>
-  <div class="tg">
-    @for (t of temoignages; track t.nom) {
-      <div class="tc2">
-        <div class="stars">
-          @for (i of [1,2,3,4,5]; track i) {
-            <span [class.active]="i <= t.note">★</span>
-          }
-        </div>
-        <p>{{ t.texte }}</p>
-        <div class="ta">
-          <div class="av3">{{ t.initiales }}</div>
-          <div class="an"><strong>{{ t.nom }}</strong><span>{{ t.role }}</span></div>
-        </div>
-      </div>
-    }
-  </div>
-
-  <div class="ctab">
+    <div class="ctab">
     <h2>Raccordement fibre bloqué ?</h2>
     <p>X3COM dispose des équipements et de l'expertise pour lever chaque obstacle en Haute-Garonne et Tarn.</p>
     <a routerLink="/nos-services" class="btn-x1">Découvrir nos offres</a>
