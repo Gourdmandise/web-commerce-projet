@@ -362,10 +362,17 @@
 .profil-ftab:not(.active) .profil-ftab-n { background:rgba(0,212,170,0.1); color:#00D4AA; }
 
 /* Badges profil dans le tableau */
-.profil-badge { font-size:10px; font-weight:800; padding:2px 9px; border-radius:20px; text-transform:uppercase; letter-spacing:.04em; }
+.profil-badge { display:inline-block; font-size:10px; font-weight:800; padding:2px 9px; border-radius:20px; text-transform:uppercase; letter-spacing:.04em; margin:1px 2px 1px 0; }
 .profil-badge.particulier  { background:rgba(0,212,170,.12); color:#00D4AA; }
 .profil-badge.collectivite { background:rgba(0,119,182,.12); color:#0077B6; }
 .profil-badge.entreprise   { background:rgba(156,39,176,.1);  color:#9c27b0; }
+
+/* Checkboxes multi-profil dans le formulaire */
+.profil-checks { display:flex; flex-wrap:wrap; gap:8px; margin-top:6px; }
+.profil-check { display:flex; align-items:center; gap:6px; padding:7px 14px; border-radius:100px; font-size:12px; font-weight:700; cursor:pointer; border:1.5px solid rgba(0,212,170,0.25); color:#4A6275; transition:all .2s; user-select:none; }
+.profil-check input { display:none; }
+.profil-check:hover { border-color:rgba(0,212,170,0.6); color:#00D4AA; }
+.profil-check.active { background:linear-gradient(135deg,#00D4AA,#00B4D8); color:#fff; border-color:transparent; }
 
 @media(max-width:600px) {
   .ardv-card { flex-direction:column; }

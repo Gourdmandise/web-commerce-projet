@@ -50,6 +50,15 @@ export class Tarifs implements OnInit {
     });
   }
 
+  profilNom(p: string): string {
+    const map: Record<string, string> = {
+      particulier:  'Particulier',
+      collectivite: 'Collectivité',
+      entreprise:   'Entreprise',
+    };
+    return map[p] ?? p;
+  }
+
   choisir(offre: Offre): void {
     this.panier.choisir(offre);
     this.panier.notify('✓', 'Offre sélectionnée !', offre.nom);

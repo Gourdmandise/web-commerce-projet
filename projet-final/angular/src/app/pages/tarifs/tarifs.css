@@ -10,6 +10,13 @@
 .profil-btn.active { background:linear-gradient(135deg,#00D4AA,#00B4D8); color:#fff; border-color:transparent; box-shadow:0 4px 16px rgba(0,212,170,0.3); }
 .profil-btn.active:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(0,212,170,0.4); }
 
+/* Badges multi-profil sur les cartes */
+.ptags { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:10px; }
+.ptag { font-size:9px; font-weight:900; padding:2px 8px; border-radius:20px; text-transform:uppercase; letter-spacing:.06em; }
+.ptag-particulier  { background:rgba(0,212,170,.12); color:#00D4AA; }
+.ptag-collectivite { background:rgba(0,119,182,.12);  color:#0077B6; }
+.ptag-entreprise   { background:rgba(156,39,176,.10); color:#9c27b0; }
+
 .pg { display:grid; grid-template-columns:repeat(3,1fr); gap:22px; max-width:1100px; margin:0 auto; }
 .pc { background:#fff; border:1px solid rgba(0,212,170,0.3); border-radius:16px; padding:30px; position:relative; display:flex; flex-direction:column; transition:all .3s; box-shadow:0 2px 16px rgba(0,212,170,0.06); }
 .pc.popular { background:linear-gradient(160deg,rgba(0,180,216,0.06),#fff); border:2px solid rgba(0,180,216,0.45); box-shadow:0 4px 24px rgba(0,180,216,0.12); }

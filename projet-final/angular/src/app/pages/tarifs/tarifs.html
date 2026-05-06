@@ -49,6 +49,13 @@
         @if (o.populaire) {
           <div class="pbadge">★ Le plus populaire</div>
         }
+        @if ((o.profil?.length ?? 0) > 1) {
+          <div class="ptags">
+            @for (p of o.profil!; track p) {
+              <span class="ptag ptag-{{p}}">{{ profilNom(p) }}</span>
+            }
+          </div>
+        }
         <h3>{{ o.nom }}</h3>
         <div class="pnum">{{ o.prix }} <small>{{ o.prixsuffix || '€ TTC' }}</small></div>
         <p class="pdesc">{{ o.description }}</p>

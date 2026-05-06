@@ -54,7 +54,7 @@ export class Admin implements OnInit {
   offresFilrees = computed(() => {
     const f = this.profilFiltreOffres();
     if (f === 'tous') return this.offres();
-    return this.offres().filter(o => (o.profil ?? 'particulier') === f);
+    return this.offres().filter(o => (o.profil ?? ['particulier']).includes(f));
   });
 
   rdvs          = signal<Rdv[]>([]);
@@ -218,23 +218,47 @@ export class Admin implements OnInit {
 
   nbOffresParProfil(profil: ProfilOffre | 'tous'): number {
     if (profil === 'tous') return this.offres().length;
-    return this.offres().filter(o => (o.profil ?? 'particulier') === profil).length;
+    return this.offres().filter(o => (o.profil ?? ['particulier']).includes(profil)).length;
   }
 
-  profilLabel(profil?: ProfilOffre | null): string {
+  readonly profilsDisponibles: { val: ProfilOffre; label: string }[] = [
+    { val: 'particulier',  label: 'Particulier' },
+    { val: 'collectivite', label: 'Collectivité' },
+    { val: 'entreprise',   label: 'Entreprise / Promoteur' },
+  ];
+
+  profilLabels(profils?: ProfilOffre[] | null): string {
+    if (!profils?.length) return 'Particulier';
     const labels: Record<string, string> = {
       particulier:  'Particulier',
       collectivite: 'Collectivité',
       entreprise:   'Entreprise',
     };
-    return labels[profil ?? 'particulier'] ?? profil ?? '—';
+    return profils.map(p => labels[p] ?? p).join(', ');
+  }
+
+  hasProfil(p: ProfilOffre): boolean {
+    return (this.editOffre?.profil as ProfilOffre[] ?? []).includes(p);
+  }
+
+  toggleProfil(p: ProfilOffre): void {
+    if (!this.editOffre) return;
+    const current: ProfilOffre[] = [...(this.editOffre.profil as ProfilOffre[] ?? [])];
+    const idx = current.indexOf(p);
+    if (idx >= 0) {
+      if (current.length === 1) return; // au moins 1 profil obligatoire
+      current.splice(idx, 1);
+    } else {
+      current.push(p);
+    }
+    this.editOffre = { ...this.editOffre, profil: current };
   }
 
   nouvelleOffre(): void {
     this.modeOffre = 'creation';
     this.editOffre = {
       nom: '', prix: 0, description: '', surface: '', prixsuffix: '',
-      populaire: false, features: [], options: [], profil: 'particulier'
+      populaire: false, features: [], options: [], profil: ['particulier']
     };
     this.editFeature = '';
     this.editOption  = '';
@@ -244,6 +268,7 @@ export class Admin implements OnInit {
     this.modeOffre = 'edition';
     this.editOffre = {
       ...o,
+      profil:   [...(o.profil ?? ['particulier'])],
       features: [...o.features],
       options:  [...o.options]
     };

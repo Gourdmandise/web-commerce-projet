@@ -11,5 +11,5 @@ export interface Offre {
   features: string[];
   options: string[];
   ordre?: number;
-  profil?: ProfilOffre;
+  profil?: ProfilOffre[];
 }

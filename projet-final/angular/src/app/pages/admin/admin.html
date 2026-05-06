@@ -183,7 +183,11 @@
               </td>
               <td><strong>{{ o.nom }}</strong></td>
               <td>{{ o.prix }} €</td>
-              <td><span class="profil-badge" [class]="o.profil ?? 'particulier'">{{ profilLabel(o.profil) }}</span></td>
+              <td>
+                @for (p of (o.profil ?? ['particulier']); track p) {
+                  <span class="profil-badge" [class]="p">{{ profilLabels([p]) }}</span>
+                }
+              </td>
               <td>@if (o.populaire) { <span class="pop-badge">★ Populaire</span> } @else { — }</td>
               <td class="actions">
                 <button class="btn-edit" (click)="ouvrirEditOffre(o)">✏️ Modifier</button>
@@ -211,12 +215,14 @@
           <div class="fg2"><label>Description</label><input [(ngModel)]="editOffre.description" name="eod" type="text"></div>
           <div class="fg2d">
             <div class="fg2">
-              <label>Profil *</label>
-              <select [(ngModel)]="editOffre.profil" name="eoprofil">
-                <option value="particulier">Particulier</option>
-                <option value="collectivite">Collectivité</option>
-                <option value="entreprise">Entreprise / Promoteur</option>
-              </select>
+              <label>Profils * <span style="color:var(--mu);font-weight:400">(au moins 1)</span></label>
+              <div class="profil-checks">
+                @for (p of profilsDisponibles; track p.val) {
+                  <label class="profil-check" [class.active]="hasProfil(p.val)" (click)="toggleProfil(p.val)">
+                    <input type="checkbox" [checked]="hasProfil(p.val)" (click)="$event.stopPropagation()"> {{ p.label }}
+                  </label>
+                }
+              </div>
             </div>
             <div class="fg2"><label>Suffixe prix <span style="color:var(--mu);font-weight:400">(ex : €/lgt — vide = €&nbsp;TTC)</span></label><input [(ngModel)]="editOffre.prixsuffix" name="eops" type="text" placeholder="€/lgt"></div>
           </div>
