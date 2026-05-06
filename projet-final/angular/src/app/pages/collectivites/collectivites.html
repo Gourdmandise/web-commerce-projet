@@ -90,6 +90,48 @@
   </div>
 </section>
 
+<!-- DÉROULEMENT DE LA PRESTATION -->
+<section class="sec collect-space tc">
+  <div class="lbl" style="justify-content:center">Méthodologie</div>
+  <h2 class="big">Déroulement de la <span class="hl">prestation</span></h2>
+  <p class="sub" style="margin:0 auto 36px">Un parcours structuré pour sécuriser le projet, du premier échange jusqu'à la mise en service.</p>
+
+  <div class="flow-grid">
+    @for (etape of deroulement; track etape.numero; let last = $last) {
+      <div class="flow-step">
+        <div class="flow-num">{{ etape.numero }}</div>
+        <h3>{{ etape.titre }}</h3>
+        <p>{{ etape.desc }}</p>
+      </div>
+      @if (!last) {
+        <div class="flow-arrow" aria-hidden="true">→</div>
+      }
+    }
+  </div>
+</section>
+
+<!-- SCHÉMA RACCORDEMENT & CÂBLAGE -->
+<section class="sec-alt collect-space tc">
+  <div class="lbl" style="justify-content:center">Vue d'ensemble</div>
+  <h2 class="big">Schéma de <span class="hl2">raccordement & câblage</span></h2>
+  <p class="sub" style="margin:0 auto 36px">Représentation simplifiée du cheminement technique entre l'arrivée opérateur et les points de terminaison.</p>
+
+  <div class="schema-wrap">
+    @for (bloc of schemaRaccordement; track bloc.titre; let last = $last) {
+      <div class="schema-node">
+        <div class="schema-icon">{{ bloc.ic }}</div>
+        <h3>{{ bloc.titre }}</h3>
+        <p>{{ bloc.desc }}</p>
+      </div>
+      @if (!last) {
+        <div class="schema-link" aria-hidden="true"></div>
+      }
+    }
+  </div>
+
+  <p class="schema-note">Exemple de chaîne technique: point d'adduction → colonne montante → boîtier d'étage → PTO logement/local.</p>
+</section>
+
 <!-- MAQUETTE 3 : AVANTAGES & DIFFÉRENCIATION -->
 <section class="sec tc collect-space">
   <div class="lbl" style="justify-content:center">Pourquoi X3COM</div>

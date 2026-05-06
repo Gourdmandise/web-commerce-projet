@@ -34,6 +34,21 @@ export class Collectivites {
       texte: 'Accompagnement complet de vos projets : diagnostic initial, consultation opérateurs, dimensionnement d\'infrastructure, suivi de travaux. Expertise garantissant la continuité de service et l\'accès du très haut débit pour tous.' },
   ];
 
+  deroulement = [
+    { numero: '01', titre: 'Cadrage du besoin', desc: 'Recueil des contraintes du site, des objectifs de couverture et du contexte réglementaire.' },
+    { numero: '02', titre: 'Visite technique', desc: 'Repérage des accès, validation des cheminements et identification des points critiques.' },
+    { numero: '03', titre: 'Conception & devis', desc: 'Dimensionnement pré-fibrage, schéma de câblage et chiffrage détaillé de la prestation.' },
+    { numero: '04', titre: 'Travaux & câblage', desc: 'Réalisation des infrastructures, pose des équipements et préparation au raccordement.' },
+    { numero: '05', titre: 'Contrôle final', desc: 'Vérification de conformité, livrables techniques et accompagnement à la mise en service.' },
+  ];
+
+  schemaRaccordement = [
+    { ic: '🌐', titre: 'Arrivée opérateur', desc: 'Point de branchement et adduction en entrée de site.' },
+    { ic: '🧱', titre: 'Colonne / gaine', desc: 'Cheminement vertical ou horizontal des câbles fibre.' },
+    { ic: '📦', titre: 'Boîtier de distribution', desc: 'Répartition des fibres par zone, étage ou bâtiment.' },
+    { ic: '🏠', titre: 'PTO finale', desc: 'Point de terminaison optique dans le logement ou local.' },
+  ];
+
   avantages = [
     { titre: 'Expertise terrain', desc: 'Équipes formées aux normes collectivités et aux coordinations multi-opérateurs.' },
     { titre: 'Réactivité', desc: 'Intervention rapide adaptée aux calendriers publics et délais de projet.' },

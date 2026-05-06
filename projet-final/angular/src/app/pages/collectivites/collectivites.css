@@ -91,6 +91,133 @@
 .vis-cy { background:linear-gradient(135deg,rgba(0,212,170,0.1),rgba(0,212,170,0.03)); border:1px solid rgba(0,212,170,0.2); }
 .vis-te { background:linear-gradient(135deg,rgba(0,119,182,0.1),rgba(0,119,182,0.03)); border:1px solid rgba(0,119,182,0.2); }
 
+/* DEROULEMENT */
+.flow-grid {
+  max-width:1150px;
+  margin:0 auto;
+  display:grid;
+  grid-template-columns:repeat(9, minmax(0, 1fr));
+  gap:10px;
+  align-items:center;
+}
+
+.flow-step {
+  grid-column:span 1;
+  background:#fff;
+  border:1px solid rgba(0,180,216,0.25);
+  border-radius:14px;
+  padding:18px 14px;
+  min-height:180px;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-start;
+}
+
+.flow-num {
+  width:40px;
+  height:40px;
+  margin:0 auto 10px;
+  border-radius:999px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:18px;
+  font-weight:900;
+  color:#0077B6;
+  background:rgba(0,180,216,.12);
+  border:1px solid rgba(0,180,216,.3);
+}
+
+.flow-step h3 {
+  margin:0 0 8px;
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:15px;
+  font-weight:800;
+  text-transform:uppercase;
+  color:#00B4D8;
+}
+
+.flow-step p {
+  margin:0;
+  font-size:12px;
+  line-height:1.55;
+  color:#4A6275;
+}
+
+.flow-arrow {
+  grid-column:span 1;
+  text-align:center;
+  font-size:24px;
+  font-weight:900;
+  color:#00B4D8;
+}
+
+/* SCHEMA */
+.schema-wrap {
+  max-width:1120px;
+  margin:0 auto;
+  display:grid;
+  grid-template-columns:repeat(7, minmax(0, 1fr));
+  gap:12px;
+  align-items:center;
+}
+
+.schema-node {
+  grid-column:span 1;
+  background:#fff;
+  border:1px solid rgba(0,212,170,0.28);
+  border-radius:16px;
+  padding:20px 14px;
+  min-height:185px;
+}
+
+.schema-icon {
+  font-size:26px;
+  margin-bottom:10px;
+}
+
+.schema-node h3 {
+  margin:0 0 8px;
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:15px;
+  font-weight:800;
+  text-transform:uppercase;
+  color:#00D4AA;
+}
+
+.schema-node p {
+  margin:0;
+  font-size:12px;
+  line-height:1.55;
+  color:#4A6275;
+}
+
+.schema-link {
+  grid-column:span 1;
+  height:2px;
+  background:linear-gradient(90deg,#00B4D8,#00D4AA);
+  position:relative;
+}
+
+.schema-link::after {
+  content:'';
+  position:absolute;
+  right:-2px;
+  top:-4px;
+  border-left:8px solid #00D4AA;
+  border-top:5px solid transparent;
+  border-bottom:5px solid transparent;
+}
+
+.schema-note {
+  margin:18px auto 0;
+  max-width:920px;
+  font-size:12px;
+  color:#4A6275;
+  line-height:1.6;
+}
+
 /* AVANTAGES GRID */
 .avantages-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:20px; max-width:1100px; margin:0 auto; }
 .avantage-card { background:#fff; border:1px solid rgba(0,180,216,0.25); border-radius:16px; padding:28px; text-align:center; transition:all .3s; }
@@ -116,6 +243,12 @@
   .collect-space { padding-top:56px; padding-bottom:56px; }
   .collect-focus-grid { grid-template-columns:1fr; }
   .collect-sub { text-align:center; }
+  .flow-grid { grid-template-columns:1fr; gap:14px; }
+  .flow-step { min-height:auto; }
+  .flow-arrow { display:none; }
+  .schema-wrap { grid-template-columns:1fr; gap:14px; }
+  .schema-node { min-height:auto; }
+  .schema-link { display:none; }
   .mg,.ng,.avantages-grid,.regions-box { grid-template-columns:1fr; }
   .travaux-item { grid-template-columns:1fr; direction:ltr !important; }
   .travaux-vis { height:120px; }
