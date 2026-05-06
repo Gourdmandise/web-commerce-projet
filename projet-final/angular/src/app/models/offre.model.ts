@@ -3,7 +3,7 @@ export interface Offre {
   nom: string;
   prix: number;
   description: string;
-  surface: string;
+  surface?: string;
   populaire: boolean;
   features: string[];
   options: string[];
