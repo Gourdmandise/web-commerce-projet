@@ -92,44 +92,227 @@
 
 <!-- DÉROULEMENT DE LA PRESTATION -->
 <section class="sec collect-space tc">
-  <div class="lbl" style="justify-content:center">Méthodologie</div>
+  <div class="lbl" style="justify-content:center">Calendrier du déploiement</div>
   <h2 class="big">Déroulement de la <span class="hl">prestation</span></h2>
-  <p class="sub" style="margin:0 auto 36px">Un parcours structuré pour sécuriser le projet, du premier échange jusqu'à la mise en service.</p>
+  <p class="sub" style="margin:0 auto 28px">Un déroulé clair des étapes avec la répartition des responsabilités entre le client et Resonance.</p>
 
-  <div class="flow-grid">
-    @for (etape of deroulement; track etape.numero; let last = $last) {
-      <div class="flow-step">
-        <div class="flow-num">{{ etape.numero }}</div>
-        <h3>{{ etape.titre }}</h3>
-        <p>{{ etape.desc }}</p>
-      </div>
-      @if (!last) {
-        <div class="flow-arrow" aria-hidden="true">→</div>
-      }
-    }
+  <div class="calendar-card">
+    <svg class="calendar-svg" viewBox="0 0 1200 340" role="img" aria-label="Calendrier du déploiement">
+      <defs>
+        <linearGradient id="cal1" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#1fc98b"/>
+          <stop offset="100%" stop-color="#14b58f"/>
+        </linearGradient>
+        <linearGradient id="cal2" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#10b3c9"/>
+          <stop offset="100%" stop-color="#1188c9"/>
+        </linearGradient>
+        <linearGradient id="cal3" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#1188c9"/>
+          <stop offset="100%" stop-color="#0f76bf"/>
+        </linearGradient>
+        <linearGradient id="cal4" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#0c6eac"/>
+          <stop offset="100%" stop-color="#095d96"/>
+        </linearGradient>
+        <linearGradient id="cal5" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#095d96"/>
+          <stop offset="100%" stop-color="#074d7f"/>
+        </linearGradient>
+      </defs>
+
+      <rect x="20" y="28" width="1160" height="210" rx="14" fill="#eef4f8"/>
+
+      <g transform="translate(30 38)" font-family="Barlow Condensed, sans-serif" fill="#ffffff" text-anchor="middle">
+        <g transform="translate(0 0)">
+          <polygon points="0,0 200,0 238,86 200,172 0,172 38,86" fill="url(#cal1)"/>
+          <text x="118" y="48" font-size="38" font-weight="900">🚀</text>
+          <text x="118" y="98" font-size="24" font-weight="900">LANCEMENT</text>
+          <text x="118" y="124" font-size="20" font-weight="800">DU PROJET</text>
+        </g>
+
+        <g transform="translate(215 0)">
+          <polygon points="0,0 200,0 238,86 200,172 0,172 38,86" fill="url(#cal2)"/>
+          <text x="118" y="48" font-size="36" font-weight="900">💬</text>
+          <text x="118" y="94" font-size="22" font-weight="900">ANALYSE DU</text>
+          <text x="118" y="120" font-size="18" font-weight="800">RÉSEAU ET</text>
+          <text x="118" y="144" font-size="18" font-weight="800">PLANIFICATION</text>
+        </g>
+
+        <g transform="translate(430 0)">
+          <polygon points="0,0 200,0 238,86 200,172 0,172 38,86" fill="url(#cal3)"/>
+          <text x="118" y="48" font-size="36" font-weight="900">✓</text>
+          <text x="118" y="94" font-size="22" font-weight="900">VALIDATION</text>
+          <text x="118" y="120" font-size="18" font-weight="800">DU DOSSIER</text>
+          <text x="118" y="144" font-size="18" font-weight="800">TECHNIQUE</text>
+        </g>
+
+        <g transform="translate(645 0)">
+          <polygon points="0,0 200,0 238,86 200,172 0,172 38,86" fill="url(#cal4)"/>
+          <text x="118" y="48" font-size="36" font-weight="900">👷</text>
+          <text x="118" y="94" font-size="22" font-weight="900">TRAVAUX</text>
+          <text x="118" y="120" font-size="18" font-weight="800">DE FIBRE</text>
+        </g>
+
+        <g transform="translate(860 0)">
+          <polygon points="0,0 200,0 238,86 200,172 0,172 38,86" fill="url(#cal5)"/>
+          <text x="118" y="48" font-size="36" font-weight="900">🗺️</text>
+          <text x="118" y="94" font-size="20" font-weight="900">RÉCOLEMENT</text>
+          <text x="118" y="120" font-size="18" font-weight="800">FINAL</text>
+        </g>
+      </g>
+
+      <g font-family="Barlow Condensed, sans-serif" fill="#20252b" text-anchor="middle">
+        <line x1="92" y1="242" x2="92" y2="286" stroke="#1b6c6c" stroke-width="3"/>
+        <circle cx="92" cy="242" r="8" fill="#eef4f8" stroke="#1b6c6c" stroke-width="2"/>
+        <text x="92" y="310" font-size="24">Client</text>
+
+        <line x1="307" y1="242" x2="307" y2="286" stroke="#1b6c6c" stroke-width="3"/>
+        <circle cx="307" cy="242" r="8" fill="#eef4f8" stroke="#1b6c6c" stroke-width="2"/>
+        <text x="307" y="310" font-size="24">Resonance</text>
+
+        <line x1="522" y1="242" x2="522" y2="286" stroke="#1b6c6c" stroke-width="3"/>
+        <circle cx="522" cy="242" r="8" fill="#eef4f8" stroke="#1b6c6c" stroke-width="2"/>
+        <text x="522" y="310" font-size="24">Client</text>
+
+        <line x1="737" y1="242" x2="737" y2="286" stroke="#1b6c6c" stroke-width="3"/>
+        <circle cx="737" cy="242" r="8" fill="#eef4f8" stroke="#1b6c6c" stroke-width="2"/>
+        <text x="737" y="310" font-size="24">Resonance</text>
+
+        <line x1="952" y1="242" x2="952" y2="286" stroke="#1b6c6c" stroke-width="3"/>
+        <circle cx="952" cy="242" r="8" fill="#eef4f8" stroke="#1b6c6c" stroke-width="2"/>
+        <text x="952" y="310" font-size="24">Resonance</text>
+      </g>
+    </svg>
   </div>
 </section>
 
 <!-- SCHÉMA RACCORDEMENT & CÂBLAGE -->
 <section class="sec-alt collect-space tc">
-  <div class="lbl" style="justify-content:center">Vue d'ensemble</div>
-  <h2 class="big">Schéma de <span class="hl2">raccordement & câblage</span></h2>
-  <p class="sub" style="margin:0 auto 36px">Représentation simplifiée du cheminement technique entre l'arrivée opérateur et les points de terminaison.</p>
+  <div class="lbl" style="justify-content:center">Schéma de raccordement</div>
+  <h2 class="big">Raccordement & <span class="hl2">câblage réseau</span></h2>
+  <p class="sub" style="margin:0 auto 28px">Un schéma illustratif du réseau fibre optique, du périmètre d'opération jusqu'aux points de terminaison.</p>
 
-  <div class="schema-wrap">
-    @for (bloc of schemaRaccordement; track bloc.titre; let last = $last) {
-      <div class="schema-node">
-        <div class="schema-icon">{{ bloc.ic }}</div>
-        <h3>{{ bloc.titre }}</h3>
-        <p>{{ bloc.desc }}</p>
-      </div>
-      @if (!last) {
-        <div class="schema-link" aria-hidden="true"></div>
-      }
-    }
+  <div class="network-card">
+    <svg class="network-svg" viewBox="0 0 1200 760" role="img" aria-label="Schéma de raccordement et câblage">
+      <defs>
+        <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#0b3e52" flood-opacity="0.12"/>
+        </filter>
+      </defs>
+
+      <rect x="22" y="22" width="1156" height="716" rx="2" fill="#ffffff" stroke="#7f7b92" stroke-width="6" stroke-dasharray="22 14"/>
+      <rect x="90" y="126" width="1020" height="136" fill="#dcefea" opacity="0.92"/>
+
+      <!-- top buildings -->
+      <g filter="url(#softShadow)">
+        <rect x="84" y="60" width="140" height="210" rx="2" fill="#eef4f8" stroke="#6b8fa0" stroke-width="4"/>
+        <rect x="100" y="78" width="108" height="28" fill="#9fcc49"/>
+        <rect x="100" y="114" width="108" height="28" fill="#57b7de"/>
+        <rect x="100" y="150" width="108" height="28" fill="#57b7de"/>
+        <rect x="100" y="186" width="108" height="28" fill="#57b7de"/>
+        <rect x="100" y="222" width="108" height="28" fill="#57b7de"/>
+        <rect x="148" y="242" width="20" height="28" fill="#8bc34a"/>
+
+        <rect x="464" y="154" width="148" height="106" rx="4" fill="#f1f3e1" stroke="#6b8fa0" stroke-width="4"/>
+        <polygon points="454,154 538,100 622,154" fill="#8cbc3a"/>
+        <rect x="522" y="200" width="30" height="60" fill="#d7d8be"/>
+        <circle cx="490" cy="190" r="14" fill="#57b7de"/>
+        <rect x="494" y="202" width="26" height="18" fill="#57b7de"/>
+        <rect x="565" y="182" width="26" height="26" fill="#57b7de"/>
+        <rect x="565" y="214" width="26" height="26" fill="#57b7de"/>
+        <rect x="466" y="182" width="26" height="26" fill="#57b7de"/>
+        <rect x="466" y="214" width="26" height="26" fill="#57b7de"/>
+
+        <rect x="870" y="112" width="176" height="150" rx="2" fill="#f1f3e1" stroke="#6b8fa0" stroke-width="4"/>
+        <rect x="882" y="124" width="152" height="120" fill="#1a76a4" opacity="0.95"/>
+        <line x1="958" y1="124" x2="958" y2="244" stroke="#cce4ee" stroke-width="12" opacity="0.5"/>
+        <line x1="882" y1="184" x2="1034" y2="184" stroke="#cce4ee" stroke-width="12" opacity="0.5"/>
+      </g>
+
+      <!-- wind turbines -->
+      <g stroke="#7abf5f" stroke-width="5" fill="none" opacity="0.9">
+        <line x1="320" y1="84" x2="320" y2="170"/>
+        <line x1="320" y1="102" x2="288" y2="72"/>
+        <line x1="320" y1="102" x2="354" y2="72"/>
+        <line x1="320" y1="102" x2="320" y2="56"/>
+
+        <line x1="664" y1="78" x2="664" y2="168"/>
+        <line x1="664" y1="98" x2="632" y2="70"/>
+        <line x1="664" y1="98" x2="698" y2="70"/>
+        <line x1="664" y1="98" x2="664" y2="52"/>
+      </g>
+
+      <!-- road -->
+      <rect x="70" y="356" width="1060" height="48" fill="#a8a8a8"/>
+      <line x1="70" y1="380" x2="1130" y2="380" stroke="#f0f0f0" stroke-width="3" opacity="0.65"/>
+
+      <!-- network lines -->
+      <g fill="none" stroke-linecap="square" stroke-linejoin="round">
+        <polyline points="164,270 164,334 300,334 300,380" stroke="#00b38d" stroke-width="8"/>
+        <polyline points="530,260 530,334 300,334" stroke="#00b38d" stroke-width="8"/>
+        <polyline points="958,262 958,334 814,334 814,380" stroke="#e3d44e" stroke-width="8"/>
+
+        <polyline points="300,380 300,490 116,490" stroke="#2a9c97" stroke-width="8"/>
+        <polyline points="300,380 300,490 468,490" stroke="#2a9c97" stroke-width="8"/>
+        <polyline points="300,380 300,490 722,490" stroke="#2a9c97" stroke-width="8"/>
+        <polyline points="814,380 814,490 944,490" stroke="#e3d44e" stroke-width="8"/>
+      </g>
+
+      <!-- connection points -->
+      <g>
+        <rect x="289" y="328" width="22" height="22" fill="#9fcc49"/>
+        <rect x="289" y="482" width="22" height="22" fill="#9fcc49"/>
+        <rect x="457" y="482" width="22" height="22" fill="#9fcc49"/>
+        <rect x="711" y="482" width="22" height="22" fill="#9fcc49"/>
+        <rect x="803" y="482" width="22" height="22" fill="#9fcc49"/>
+      </g>
+
+      <!-- bottom boxes -->
+      <g stroke="#6b8fa0" stroke-width="4">
+        <rect x="94" y="506" width="58" height="58" rx="2" fill="#a7bf45"/>
+        <rect x="136" y="532" width="14" height="18" fill="#0b5a3d" stroke="none"/>
+        <polygon points="106,534 118,534 110,548 122,548 106,566 110,552 100,552" fill="#35561e" stroke="none"/>
+
+        <rect x="422" y="506" width="58" height="58" rx="2" fill="#a7bf45"/>
+        <rect x="464" y="532" width="14" height="18" fill="#0b5a3d" stroke="none"/>
+        <polygon points="434,534 446,534 438,548 450,548 434,566 438,552 428,552" fill="#35561e" stroke="none"/>
+
+        <rect x="694" y="506" width="58" height="58" rx="2" fill="#a7bf45"/>
+        <rect x="736" y="532" width="14" height="18" fill="#0b5a3d" stroke="none"/>
+        <polygon points="706,534 718,534 710,548 722,548 706,566 710,552 700,552" fill="#35561e" stroke="none"/>
+
+        <rect x="936" y="506" width="58" height="58" rx="2" fill="#a7bf45"/>
+        <rect x="978" y="532" width="14" height="18" fill="#0b5a3d" stroke="none"/>
+        <polygon points="948,534 960,534 952,548 964,548 948,566 952,552 942,552" fill="#35561e" stroke="none"/>
+      </g>
+
+      <!-- people / EV points -->
+      <g fill="#1f9a67" stroke="#2b7d59" stroke-width="3">
+        <circle cx="96" cy="484" r="8" fill="#dff3ea"/>
+        <circle cx="428" cy="484" r="8" fill="#dff3ea"/>
+        <circle cx="706" cy="484" r="8" fill="#dff3ea"/>
+        <circle cx="950" cy="484" r="8" fill="#dff3ea"/>
+      </g>
+
+      <!-- labels in the lower half -->
+      <g font-family="Barlow Condensed, sans-serif" font-size="24" fill="#20252b">
+        <text x="116" y="646" text-anchor="middle">Réseau privé</text>
+        <text x="446" y="646" text-anchor="middle">Point de recharge</text>
+        <text x="722" y="646" text-anchor="middle">Ligne fibre optique</text>
+        <text x="974" y="646" text-anchor="middle">Interconnexion</text>
+      </g>
+    </svg>
+
+    <div class="schema-legend">
+      <div class="legend-item"><span class="legend-swatch sw-line green"></span><span>Ligne Réseau Fibre Optique</span></div>
+      <div class="legend-item"><span class="legend-swatch sw-line blue"></span><span>Réseau Privé (Copropriété)</span></div>
+      <div class="legend-item"><span class="legend-swatch sw-line yellow"></span><span>Ligne d'Interconnexion</span></div>
+      <div class="legend-item"><span class="legend-swatch sw-dash"></span><span>Périmètre de la Zone d'Opération</span></div>
+      <div class="legend-item"><span class="legend-swatch sw-box"></span><span>Point de recharge VE</span></div>
+      <div class="legend-item"><span class="legend-swatch sw-plant"></span><span>Générateur Éolien</span></div>
+    </div>
   </div>
-
-  <p class="schema-note">Exemple de chaîne technique: point d'adduction → colonne montante → boîtier d'étage → PTO logement/local.</p>
 </section>
 
 <!-- MAQUETTE 3 : AVANTAGES & DIFFÉRENCIATION -->

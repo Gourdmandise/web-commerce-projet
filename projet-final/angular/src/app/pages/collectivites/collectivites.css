@@ -48,6 +48,79 @@
   font-size:13px;
 }
 
+.calendar-card,
+.network-card {
+  max-width:1180px;
+  margin:0 auto;
+  background:#fff;
+  border:1px solid rgba(0,180,216,0.18);
+  border-radius:20px;
+  padding:22px;
+  box-shadow:0 18px 42px rgba(12, 41, 61, 0.08);
+}
+
+.calendar-svg,
+.network-svg {
+  width:100%;
+  height:auto;
+  display:block;
+}
+
+.schema-legend {
+  display:grid;
+  grid-template-columns:repeat(2, minmax(0, 1fr));
+  gap:16px 28px;
+  margin-top:24px;
+  align-items:center;
+}
+
+.legend-item {
+  display:flex;
+  align-items:center;
+  gap:14px;
+  font-size:12px;
+  color:#1f2329;
+  font-weight:600;
+  text-align:left;
+}
+
+.legend-swatch {
+  flex:0 0 auto;
+  display:inline-block;
+}
+
+.sw-line {
+  width:88px;
+  height:6px;
+  border-radius:999px;
+}
+
+.sw-line.green { background:linear-gradient(90deg,#11a67f,#8bc34a); }
+.sw-line.blue { background:linear-gradient(90deg,#2aa4a4,#2f8fcf); }
+.sw-line.yellow { background:linear-gradient(90deg,#f0dc2a,#e9c400); }
+
+.sw-dash {
+  width:88px;
+  height:6px;
+  border-top:4px dashed #7f7b92;
+  background:transparent;
+}
+
+.sw-box {
+  width:18px;
+  height:18px;
+  background:#a7bf45;
+  border:2px solid #6b8fa0;
+}
+
+.sw-plant {
+  width:18px;
+  height:18px;
+  border-left:6px solid #8bc34a;
+  border-bottom:6px solid #8bc34a;
+  transform:skewY(-8deg);
+}
+
 .mg { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; max-width:1100px; margin:0 auto 56px; }
 .mc { background:#fff; border-radius:16px; overflow:hidden; transition:all .3s; border:1px solid rgba(0,180,216,0.25); }
 .mc:nth-child(2) { border-color:rgba(0,212,170,0.25); }
@@ -243,12 +316,12 @@
   .collect-space { padding-top:56px; padding-bottom:56px; }
   .collect-focus-grid { grid-template-columns:1fr; }
   .collect-sub { text-align:center; }
-  .flow-grid { grid-template-columns:1fr; gap:14px; }
-  .flow-step { min-height:auto; }
-  .flow-arrow { display:none; }
-  .schema-wrap { grid-template-columns:1fr; gap:14px; }
-  .schema-node { min-height:auto; }
-  .schema-link { display:none; }
+  .calendar-card,
+  .network-card { padding:14px; }
+  .schema-legend { grid-template-columns:1fr; gap:12px; }
+  .legend-item { font-size:11px; }
+  .sw-line { width:66px; }
+  .sw-dash { width:66px; }
   .mg,.ng,.avantages-grid,.regions-box { grid-template-columns:1fr; }
   .travaux-item { grid-template-columns:1fr; direction:ltr !important; }
   .travaux-vis { height:120px; }
