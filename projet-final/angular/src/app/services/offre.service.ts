@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { Offre } from '../models/offre.model';
+import { Offre, ProfilOffre } from '../models/offre.model';
 
 @Injectable({ providedIn: 'root' })
 export class OffreService {
@@ -11,6 +11,10 @@ export class OffreService {
 
   getAll(): Observable<Offre[]> {
     return this.http.get<Offre[]>(this.url);
+  }
+
+  getByProfil(profil: ProfilOffre): Observable<Offre[]> {
+    return this.http.get<Offre[]>(`${this.url}?profil=${profil}`);
   }
 
   getById(id: number): Observable<Offre> {

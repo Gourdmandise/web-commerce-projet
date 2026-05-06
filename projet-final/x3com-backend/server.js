@@ -807,7 +807,9 @@ app.delete('/utilisateurs/:id', requireOwnerOrAdmin, async (req, res) => {
 // ══════════════════════════════════════════════════════════
 app.get('/offres', async (req, res) => {
   try {
-    const { data, error } = await supabase.from('offres').select('*').order('ordre', { ascending: true, nullsFirst: false });
+    let query = supabase.from('offres').select('*').order('ordre', { ascending: true, nullsFirst: false });
+    if (req.query.profil) query = query.eq('profil', req.query.profil);
+    const { data, error } = await query;
     if (error) return res.status(500).json({ error: error.message });
     res.json(data || []);
   } catch (err) { res.status(500).json({ error: err.message }); }

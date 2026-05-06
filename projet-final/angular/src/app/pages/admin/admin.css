@@ -353,6 +353,20 @@
 .ardv-spinner { width:24px; height:24px; border:2px solid rgba(0,212,170,.15); border-top-color:#00D4AA; border-radius:50%; animation:spin .7s linear infinite; }
 @keyframes spin { to { transform:rotate(360deg); } }
 
+/* Filtre profil offres */
+.profil-filtre { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px; }
+.profil-ftab { padding:6px 16px; border-radius:100px; font-size:12px; font-weight:700; cursor:pointer; border:1.5px solid rgba(0,212,170,0.25); background:transparent; color:#4A6275; transition:all .2s; display:flex; align-items:center; gap:6px; }
+.profil-ftab:hover { border-color:rgba(0,212,170,0.6); color:#00D4AA; }
+.profil-ftab.active { background:linear-gradient(135deg,#00D4AA,#00B4D8); color:#fff; border-color:transparent; }
+.profil-ftab-n { background:rgba(255,255,255,0.25); border-radius:20px; padding:1px 6px; font-size:10px; }
+.profil-ftab:not(.active) .profil-ftab-n { background:rgba(0,212,170,0.1); color:#00D4AA; }
+
+/* Badges profil dans le tableau */
+.profil-badge { font-size:10px; font-weight:800; padding:2px 9px; border-radius:20px; text-transform:uppercase; letter-spacing:.04em; }
+.profil-badge.particulier  { background:rgba(0,212,170,.12); color:#00D4AA; }
+.profil-badge.collectivite { background:rgba(0,119,182,.12); color:#0077B6; }
+.profil-badge.entreprise   { background:rgba(156,39,176,.1);  color:#9c27b0; }
+
 @media(max-width:600px) {
   .ardv-card { flex-direction:column; }
   .ardv-actions { flex-direction:row; }

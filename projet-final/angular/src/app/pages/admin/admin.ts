@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation, inject, signal, OnInit } from '@angular/core';
+import { Component, ViewEncapsulation, inject, signal, OnInit, computed } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -10,7 +10,7 @@ import { AuthService }        from '../../services/auth.service';
 
 import { Utilisateur }        from '../../models/utilisateur.model';
 import { Commande, StatutCommande } from '../../models/commande.model';
-import { Offre } from '../../models/offre.model';
+import { Offre, ProfilOffre } from '../../models/offre.model';
 import { environment } from '../../../environments/environment';
 
 export interface Rdv {
@@ -41,6 +41,21 @@ export class Admin implements OnInit {
   utilisateurs = signal<Utilisateur[]>([]);
   commandes    = signal<Commande[]>([]);
   offres       = signal<Offre[]>([]);
+
+  profilFiltreOffres = signal<ProfilOffre | 'tous'>('tous');
+
+  readonly profilsFiltres: { val: ProfilOffre | 'tous'; label: string }[] = [
+    { val: 'tous',         label: 'Toutes' },
+    { val: 'particulier',  label: 'Particulier' },
+    { val: 'collectivite', label: 'Collectivité' },
+    { val: 'entreprise',   label: 'Entreprise' },
+  ];
+
+  offresFilrees = computed(() => {
+    const f = this.profilFiltreOffres();
+    if (f === 'tous') return this.offres();
+    return this.offres().filter(o => (o.profil ?? 'particulier') === f);
+  });
 
   rdvs          = signal<Rdv[]>([]);
   rdvFiltre     = signal<FiltreRdv>('tous');
@@ -201,11 +216,25 @@ export class Admin implements OnInit {
     });
   }
 
+  nbOffresParProfil(profil: ProfilOffre | 'tous'): number {
+    if (profil === 'tous') return this.offres().length;
+    return this.offres().filter(o => (o.profil ?? 'particulier') === profil).length;
+  }
+
+  profilLabel(profil?: ProfilOffre | null): string {
+    const labels: Record<string, string> = {
+      particulier:  'Particulier',
+      collectivite: 'Collectivité',
+      entreprise:   'Entreprise',
+    };
+    return labels[profil ?? 'particulier'] ?? profil ?? '—';
+  }
+
   nouvelleOffre(): void {
     this.modeOffre = 'creation';
     this.editOffre = {
       nom: '', prix: 0, description: '', surface: '',
-      populaire: false, features: [], options: []
+      populaire: false, features: [], options: [], profil: 'particulier'
     };
     this.editFeature = '';
     this.editOption  = '';

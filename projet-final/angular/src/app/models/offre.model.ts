@@ -1,3 +1,5 @@
+export type ProfilOffre = 'particulier' | 'collectivite' | 'entreprise';
+
 export interface Offre {
   id?: number;
   nom: string;
@@ -8,4 +10,5 @@ export interface Offre {
   features: string[];
   options: string[];
   ordre?: number;
+  profil?: ProfilOffre;
 }

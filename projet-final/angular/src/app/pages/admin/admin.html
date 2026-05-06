@@ -157,14 +157,23 @@
       <div style="display:flex;justify-content:flex-end;margin-bottom:16px">
         <button class="btn-x1" (click)="nouvelleOffre()">+ Nouvelle offre</button>
       </div>
+      <!-- Filtre par profil -->
+      <div class="profil-filtre">
+        @for (p of profilsFiltres; track p.val) {
+          <button class="profil-ftab" [class.active]="profilFiltreOffres() === p.val" (click)="profilFiltreOffres.set(p.val)">
+            {{ p.label }} <span class="profil-ftab-n">{{ nbOffresParProfil(p.val) }}</span>
+          </button>
+        }
+      </div>
+
       <table class="admin-table">
         <thead>
           <tr>
-            <th>Ordre</th><th>Nom</th><th>Prix</th><th>Surface</th><th>Populaire</th><th>Actions</th>
+            <th>Ordre</th><th>Nom</th><th>Prix</th><th>Profil</th><th>Populaire</th><th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          @for (o of offres(); track o.id) {
+          @for (o of offresFilrees(); track o.id) {
             <tr>
               <td>
                 <div class="ordre-btns">
@@ -174,7 +183,7 @@
               </td>
               <td><strong>{{ o.nom }}</strong></td>
               <td>{{ o.prix }} €</td>
-              <td style="font-size:12px;color:var(--mu)">{{ o.surface }}</td>
+              <td><span class="profil-badge" [class]="o.profil ?? 'particulier'">{{ profilLabel(o.profil) }}</span></td>
               <td>@if (o.populaire) { <span class="pop-badge">★ Populaire</span> } @else { — }</td>
               <td class="actions">
                 <button class="btn-edit" (click)="ouvrirEditOffre(o)">✏️ Modifier</button>
@@ -200,7 +209,17 @@
             <div class="fg2"><label>Prix € *</label><input [(ngModel)]="editOffre.prix" name="eop" type="number" placeholder="220"></div>
           </div>
           <div class="fg2"><label>Description</label><input [(ngModel)]="editOffre.description" name="eod" type="text"></div>
-          <div class="fg2"><label>Surface</label>    <input [(ngModel)]="editOffre.surface"      name="eos" type="text" placeholder="Surface végétale (terre)"></div>
+          <div class="fg2d">
+            <div class="fg2">
+              <label>Profil *</label>
+              <select [(ngModel)]="editOffre.profil" name="eoprofil">
+                <option value="particulier">Particulier</option>
+                <option value="collectivite">Collectivité</option>
+                <option value="entreprise">Entreprise / Promoteur</option>
+              </select>
+            </div>
+            <div class="fg2"><label>Surface</label><input [(ngModel)]="editOffre.surface" name="eos" type="text" placeholder="Surface végétale (terre)"></div>
+          </div>
           <div class="fg2">
             <label class="toggle-label">
               ★ Marquer comme populaire
