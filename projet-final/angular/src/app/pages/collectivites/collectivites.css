@@ -1,6 +1,53 @@
 /* COLLECTIVITÉS PAGE STYLES */
 
-.ph { padding:80px 48px 56px; text-align:center; max-width:900px; margin:0 auto; }
+.ph { padding:96px 48px 72px; text-align:center; max-width:960px; margin:0 auto; }
+.collect-space { padding-top:88px; padding-bottom:88px; }
+
+.collect-focus-grid {
+  max-width:1100px;
+  margin:0 auto;
+  display:grid;
+  grid-template-columns:1.2fr .8fr;
+  gap:32px;
+  align-items:start;
+}
+
+.collect-sub {
+  margin-top:12px;
+  margin-bottom:0;
+  text-align:left;
+  line-height:1.8;
+}
+
+.collect-focus-card {
+  background:#fff;
+  border:1px solid rgba(0, 180, 216, 0.3);
+  border-radius:16px;
+  padding:28px;
+  box-shadow:0 8px 24px rgba(0,119,182,0.08);
+}
+
+.collect-focus-card h3 {
+  margin:0 0 14px;
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:20px;
+  font-weight:800;
+  text-transform:uppercase;
+  color:#0077B6;
+}
+
+.collect-focus-card ul {
+  margin:0 0 22px;
+  padding-left:18px;
+}
+
+.collect-focus-card li {
+  margin-bottom:10px;
+  color:#4A6275;
+  line-height:1.6;
+  font-size:13px;
+}
+
 .mg { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; max-width:1100px; margin:0 auto 56px; }
 .mc { background:#fff; border-radius:16px; overflow:hidden; transition:all .3s; border:1px solid rgba(0,180,216,0.25); }
 .mc:nth-child(2) { border-color:rgba(0,212,170,0.25); }
@@ -66,6 +113,9 @@
 
 @media (max-width:768px) {
   .ph { padding:48px 20px; }
+  .collect-space { padding-top:56px; padding-bottom:56px; }
+  .collect-focus-grid { grid-template-columns:1fr; }
+  .collect-sub { text-align:center; }
   .mg,.ng,.avantages-grid,.regions-box { grid-template-columns:1fr; }
   .travaux-item { grid-template-columns:1fr; direction:ltr !important; }
   .travaux-vis { height:120px; }
