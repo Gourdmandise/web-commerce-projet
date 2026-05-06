@@ -1,0 +1,72 @@
+/* COLLECTIVITÉS PAGE STYLES */
+
+.ph { padding:80px 48px 56px; text-align:center; max-width:900px; margin:0 auto; }
+.mg { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; max-width:1100px; margin:0 auto 56px; }
+.mc { background:#fff; border-radius:16px; overflow:hidden; transition:all .3s; border:1px solid rgba(0,180,216,0.25); }
+.mc:nth-child(2) { border-color:rgba(0,212,170,0.25); }
+.mc:nth-child(3) { border-color:rgba(0,119,182,0.25); }
+.mc:hover { transform:translateY(-3px); box-shadow:0 8px 24px rgba(0,119,182,0.1); }
+.mt-card { height:140px; display:flex; align-items:center; justify-content:center; border-bottom:1px solid rgba(0,180,216,0.2); background:linear-gradient(135deg,rgba(0,180,216,0.08),#f0f8fc); padding:16px; }
+.mc:nth-child(2) .mt-card { border-color:rgba(0,212,170,0.2); background:linear-gradient(135deg,rgba(0,212,170,0.08),#f0fbf8); }
+.mc:nth-child(3) .mt-card { border-color:rgba(0,119,182,0.2); background:linear-gradient(135deg,rgba(0,119,182,0.08),#f0f5fa); }
+.methode-img { width:100px; height:100px; object-fit:contain; }
+.mb-card { padding:22px; }
+.mb-card h3 { font-family:'Barlow Condensed',sans-serif; font-size:15px; font-weight:800; text-transform:uppercase; letter-spacing:.04em; margin-bottom:8px; color:#00B4D8; }
+.mc:nth-child(2) .mb-card h3 { color:#00D4AA; }
+.mc:nth-child(3) .mb-card h3 { color:#0077B6; }
+.mb-card p { font-size:12px; color:#4A6275; line-height:1.65; margin-bottom:12px; }
+.mtag { display:inline-block; font-size:10px; font-weight:800; padding:3px 10px; border-radius:4px; letter-spacing:.06em; text-transform:uppercase; background:rgba(0,180,216,.1); color:#00B4D8; border:1px solid rgba(0,180,216,.25); }
+.mc:nth-child(2) .mtag { background:rgba(0,212,170,.1); color:#00D4AA; border-color:rgba(0,212,170,.25); }
+.mc:nth-child(3) .mtag { background:rgba(0,119,182,.1); color:#0077B6; border-color:rgba(0,119,182,.3); }
+
+.nb { max-width:1100px; margin:0 auto; border-radius:16px; padding:48px; background:linear-gradient(135deg,rgba(0,180,216,0.04),rgba(0,119,182,0.05)); border:1px solid rgba(0,180,216,0.2); }
+.ng { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; max-width:720px; margin:0 auto; }
+.ni2 { border-radius:12px; padding:20px; text-align:center; background:rgba(0,180,216,0.07); border:1px solid rgba(0,180,216,.2); }
+.ni2:nth-child(2) { background:rgba(0,212,170,0.07); border-color:rgba(0,212,170,.2); }
+.ni2:nth-child(3) { background:rgba(0,119,182,0.07); border-color:rgba(0,119,182,.2); }
+.ni2:nth-child(4) { background:rgba(0,180,216,0.05); border-color:rgba(0,180,216,.15); }
+.ic { font-size:26px; margin-bottom:8px; }
+.ni2 p { font-size:11px; color:#4A6275; line-height:1.6; margin:0; }
+
+.travaux-list { max-width:1100px; margin:0 auto; }
+.travaux-item { display:grid; grid-template-columns:1fr 1fr; gap:48px; align-items:center; padding:56px 0; border-top:1px solid #e2edf5; }
+.travaux-item:first-child { border-top:none; padding-top:0; }
+.travaux-item.rev { direction:rtl; }
+.travaux-item.rev > * { direction:ltr; }
+.travaux-titre { font-family:'Barlow Condensed',sans-serif; font-size:26px; font-weight:900; text-transform:uppercase; margin-bottom:14px; }
+.travaux-titre.em { color:#00B4D8; }
+.travaux-titre.cy { color:#00D4AA; }
+.travaux-titre.te { color:#0077B6; }
+.travaux-txt p { font-size:14px; color:#4A6275; line-height:1.8; }
+.travaux-vis { border-radius:16px; height:220px; display:flex; align-items:center; justify-content:center; }
+.travaux-img { width:160px; height:160px; object-fit:contain; }
+.vis-em { background:linear-gradient(135deg,rgba(0,180,216,0.1),rgba(0,180,216,0.03)); border:1px solid rgba(0,180,216,0.2); }
+.vis-cy { background:linear-gradient(135deg,rgba(0,212,170,0.1),rgba(0,212,170,0.03)); border:1px solid rgba(0,212,170,0.2); }
+.vis-te { background:linear-gradient(135deg,rgba(0,119,182,0.1),rgba(0,119,182,0.03)); border:1px solid rgba(0,119,182,0.2); }
+
+/* AVANTAGES GRID */
+.avantages-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:20px; max-width:1100px; margin:0 auto; }
+.avantage-card { background:#fff; border:1px solid rgba(0,180,216,0.25); border-radius:16px; padding:28px; text-align:center; transition:all .3s; }
+.avantage-card:hover { transform:translateY(-4px); box-shadow:0 12px 32px rgba(0,119,182,0.1); border-color:rgba(0,180,216,0.5); }
+.avantage-card h3 { font-family:'Barlow Condensed',sans-serif; font-size:16px; font-weight:800; text-transform:uppercase; color:#00B4D8; margin-bottom:12px; }
+.avantage-card p { font-size:12px; color:#4A6275; line-height:1.6; margin:0; }
+
+/* REGIONS BOX */
+.regions-box { display:grid; grid-template-columns:repeat(2,1fr); gap:24px; max-width:800px; margin:0 auto; }
+.region-card { background:#fff; border:2px solid rgba(0,180,216,0.25); border-radius:16px; padding:36px; text-align:center; transition:all .3s; }
+.region-card:hover { border-color:rgba(0,180,216,0.5); box-shadow:0 8px 24px rgba(0,119,182,0.1); }
+.region-card.active { border-color:rgba(0,180,216,0.5); box-shadow:0 4px 16px rgba(0,119,182,0.08); }
+.region-num { font-family:'Barlow Condensed',sans-serif; font-size:48px; font-weight:900; color:#00B4D8; margin-bottom:12px; }
+.region-card h3 { font-family:'Barlow Condensed',sans-serif; font-size:20px; font-weight:800; color:#1A202C; margin-bottom:6px; text-transform:uppercase; }
+.region-card p { font-size:12px; color:#4A6275; line-height:1.6; margin:0; }
+
+.ctab { max-width:600px; margin:0 auto; }
+.ctab h2 { font-size:32px; margin-bottom:16px; }
+.ctab p { font-size:14px; color:#4A6275; margin-bottom:28px; }
+
+@media (max-width:768px) {
+  .ph { padding:48px 20px; }
+  .mg,.ng,.avantages-grid,.regions-box { grid-template-columns:1fr; }
+  .travaux-item { grid-template-columns:1fr; direction:ltr !important; }
+  .travaux-vis { height:120px; }
+}

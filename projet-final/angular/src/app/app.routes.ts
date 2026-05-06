@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { Home }         from './pages/home/home';
 import { Terrassement } from './pages/terrassement/terrassement';
+import { Collectivites } from './pages/collectivites/collectivites';
 import { Tarifs }       from './pages/tarifs/tarifs';
 import { Contact }      from './pages/contact/contact';
 import { Compte }       from './pages/compte/compte';
@@ -22,6 +23,7 @@ export const routes: Routes = [
   { path: '',                          component: Home,         pathMatch: 'full' },
   { path: 'nos-services',              component: Tarifs },
   { path: 'nos-prestations',           component: Terrassement },
+  { path: 'nos-collectivites',         component: Collectivites },
   { path: 'terrassement',              component: Terrassement },
   { path: 'tarifs',                    component: Tarifs },
   { path: 'contact',                   component: Contact },
