@@ -1,23 +1,15 @@
-import { Component, OnInit, signal, inject, HostListener, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { CommonModule } from '@angular/common';
-import { OffreService } from '../../services/offre.service';
-import { Offre } from '../../models/offre.model';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RouterLink, CommonModule],
+  imports: [RouterLink],
   templateUrl: './home.html',
   styleUrls: ['./home.css'],
   encapsulation: ViewEncapsulation.None,
 })
 export class Home implements OnInit {
-  private offreService = inject(OffreService);
-
-  offres   = signal<Offre[]>([]);
-  previewOuvert = false;
-
   services = [
     { img: 'fibre-optique.png',        titre: 'Fibre Optique FTTH/FTTO',      desc: 'Déploiement et raccordement fibre optique pour particuliers, entreprises et collectivités. Accès au très haut débit garanti.' },
     { img: 'detection-securite.png',   titre: 'Diagnostic Réseau',            desc: 'Détection et localisation des blocages fibre, diagnostic complet avec rapport technique détaillé fourni après intervention.' },
@@ -32,19 +24,5 @@ export class Home implements OnInit {
   ];
 
   ngOnInit(): void {
-    this.offreService.getAll().subscribe({
-      next: (data) => this.offres.set(data),
-      error: () => {}
-    });
-  }
-
-  togglePreview(event: Event): void {
-    event.stopPropagation();
-    this.previewOuvert = !this.previewOuvert;
-  }
-
-  @HostListener('document:click')
-  fermerPreview(): void {
-    this.previewOuvert = false;
   }
 }
