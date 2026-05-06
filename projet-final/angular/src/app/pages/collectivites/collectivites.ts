@@ -15,7 +15,7 @@ export class Collectivites {
   methodes = [
     { img: 'Generateur-de-frequences.png', titre: 'Pré-fibrage FttH',  desc: 'Adduction et pré-fibrage pour nouvelles constructions selon la législation. Infrastructure complète prête pour le raccordement mutualisé.', tag: 'Nouv. construction' },
     { img: 'fibre-optique.png',       titre: 'Diagnostic territorial',  desc: 'Audit complet de votre infrastructure télécom. Cartographie, identification des blocages, plan d\'action pour la connectivité globale.', tag: 'Diagnostic' },
-    { img: 'detection-securite.png',  titre: 'Accompagnement projets',  desc: 'Du diagnostic à la mise en conformité. Support technique dédié, liaison avec opérateurs et respect des normes territoriales.', tag: 'Conseils' },
+    { img: 'detection-securite.png',  titre: 'Accompagnement projets',  desc: 'Du diagnostic à la mise en conformité. Support technique dédié, liaison avec opérateurs et respect des normes de déploiement.', tag: 'Conseils' },
   ];
 
   normes = [
@@ -50,7 +50,7 @@ export class Collectivites {
   ];
 
   avantages = [
-    { titre: 'Expertise terrain', desc: 'Équipes formées aux normes collectivités et aux coordinations multi-opérateurs.' },
+    { titre: 'Expertise terrain', desc: 'Équipes formées aux normes publiques, copropriétés et aux coordinations multi-opérateurs.' },
     { titre: 'Réactivité', desc: 'Intervention rapide adaptée aux calendriers publics et délais de projet.' },
     { titre: 'Conformité garantie', desc: 'Respect intégral des cahiers des charges et normes de déploiement.' },
     { titre: 'Support dédié', desc: 'Interlocuteur unique pour l\'accompagnement de bout en bout.' },
@@ -58,7 +58,9 @@ export class Collectivites {
 
   regions = [
     { dept: '31', nom: 'Haute-Garonne', desc: 'Toulouse & agglomération', actif: true },
+    { dept: '32', nom: 'Gers', desc: 'Auch & communes environnantes', actif: true },
     { dept: '81', nom: 'Tarn', desc: 'Albi & alentours', actif: true },
+    { dept: '82', nom: 'Tarn-et-Garonne', desc: 'Montauban & communes voisines', actif: true },
   ];
 
 }
