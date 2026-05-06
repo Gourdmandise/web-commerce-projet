@@ -4,6 +4,33 @@
   <p class="sub" style="margin:0 auto 28px">Trois formules flexibles adaptées à tous les besoins et tous les budgets.</p>
 </div>
 
+<!-- Sélecteur de profil -->
+<section class="sec" style="padding-top:0; padding-bottom:30px">
+  <div class="profil-selector">
+    <div class="profil-label">Votre profil :</div>
+    <div class="profil-buttons">
+      <button 
+        class="profil-btn" 
+        [class.active]="profilSelectionne() === 'particulier'"
+        (click)="changerProfil('particulier')">
+        Particulier
+      </button>
+      <button 
+        class="profil-btn" 
+        [class.active]="profilSelectionne() === 'collectivite'"
+        (click)="changerProfil('collectivite')">
+        Collectivité
+      </button>
+      <button 
+        class="profil-btn" 
+        [class.active]="profilSelectionne() === 'entreprise'"
+        (click)="changerProfil('entreprise')">
+        Entreprise / Promoteur
+      </button>
+    </div>
+  </div>
+</section>
+
 <section class="sec" style="padding-top:30px">
 
   @if (loading()) {
@@ -17,7 +44,7 @@
   }
 
   <div class="pg">
-    @for (o of offres(); track o.id) {
+    @for (o of offresAffichees(); track o.id) {
       <div class="pc" [class.popular]="o.populaire">
         @if (o.populaire) {
           <div class="pbadge">★ Le plus populaire</div>
