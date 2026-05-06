@@ -116,20 +116,20 @@
 }
 
 .mg { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; max-width:1100px; margin:0 auto 56px; }
-.mc { background:#fff; border-radius:16px; overflow:hidden; transition:all .3s; border:1px solid rgba(0,180,216,0.25); }
+.mc { background:#fff; border-radius:16px; overflow:hidden; transition:all .3s; border:1px solid rgba(0,180,216,0.25); display:flex; flex-direction:column; }
 .mc:nth-child(2) { border-color:rgba(0,212,170,0.25); }
 .mc:nth-child(3) { border-color:rgba(0,119,182,0.25); }
 .mc:hover { transform:translateY(-3px); box-shadow:0 8px 24px rgba(0,119,182,0.1); }
-.mt-card { height:140px; display:flex; align-items:center; justify-content:center; border-bottom:1px solid rgba(0,180,216,0.2); background:linear-gradient(135deg,rgba(0,180,216,0.08),#f0f8fc); padding:16px; }
+.mt-card { height:200px; display:flex; align-items:center; justify-content:center; border-bottom:1px solid rgba(0,180,216,0.2); background:linear-gradient(135deg,rgba(0,180,216,0.08),#f0f8fc); padding:20px; }
 .mc:nth-child(2) .mt-card { border-color:rgba(0,212,170,0.2); background:linear-gradient(135deg,rgba(0,212,170,0.08),#f0fbf8); }
 .mc:nth-child(3) .mt-card { border-color:rgba(0,119,182,0.2); background:linear-gradient(135deg,rgba(0,119,182,0.08),#f0f5fa); }
-.methode-img { width:100px; height:100px; object-fit:contain; }
-.mb-card { padding:22px; }
-.mb-card h3 { font-family:'Barlow Condensed',sans-serif; font-size:15px; font-weight:800; text-transform:uppercase; letter-spacing:.04em; margin-bottom:8px; color:#00B4D8; }
+.methode-img { width:140px; height:140px; object-fit:contain; }
+.mb-card { padding:28px; flex:1; display:flex; flex-direction:column; }
+.mb-card h3 { font-family:'Barlow Condensed',sans-serif; font-size:18px; font-weight:800; text-transform:uppercase; letter-spacing:.04em; margin-bottom:10px; color:#00B4D8; }
 .mc:nth-child(2) .mb-card h3 { color:#00D4AA; }
 .mc:nth-child(3) .mb-card h3 { color:#0077B6; }
-.mb-card p { font-size:12px; color:#4A6275; line-height:1.65; margin-bottom:12px; }
-.mtag { display:inline-block; font-size:10px; font-weight:800; padding:3px 10px; border-radius:4px; letter-spacing:.06em; text-transform:uppercase; background:rgba(0,180,216,.1); color:#00B4D8; border:1px solid rgba(0,180,216,.25); }
+.mb-card p { font-size:14px; color:#4A6275; line-height:1.7; margin-bottom:16px; flex:1; }
+.mtag { display:inline-block; font-size:11px; font-weight:800; padding:4px 12px; border-radius:4px; letter-spacing:.06em; text-transform:uppercase; background:rgba(0,180,216,.1); color:#00B4D8; border:1px solid rgba(0,180,216,.25); align-self:flex-start; }
 .mc:nth-child(2) .mtag { background:rgba(0,212,170,.1); color:#00D4AA; border-color:rgba(0,212,170,.25); }
 .mc:nth-child(3) .mtag { background:rgba(0,119,182,.1); color:#0077B6; border-color:rgba(0,119,182,.3); }
 
@@ -286,11 +286,11 @@
 }
 
 /* AVANTAGES GRID */
-.avantages-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:20px; max-width:1100px; margin:0 auto; }
-.avantage-card { background:#fff; border:1px solid rgba(0,180,216,0.25); border-radius:16px; padding:28px; text-align:center; transition:all .3s; }
+.avantages-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:28px; max-width:900px; margin:0 auto; }
+.avantage-card { background:#fff; border:1px solid rgba(0,180,216,0.25); border-radius:16px; padding:40px; text-align:center; transition:all .3s; }
 .avantage-card:hover { transform:translateY(-4px); box-shadow:0 12px 32px rgba(0,119,182,0.1); border-color:rgba(0,180,216,0.5); }
-.avantage-card h3 { font-family:'Barlow Condensed',sans-serif; font-size:16px; font-weight:800; text-transform:uppercase; color:#00B4D8; margin-bottom:12px; }
-.avantage-card p { font-size:12px; color:#4A6275; line-height:1.6; margin:0; }
+.avantage-card h3 { font-family:'Barlow Condensed',sans-serif; font-size:20px; font-weight:800; text-transform:uppercase; color:#00B4D8; margin-bottom:16px; }
+.avantage-card p { font-size:14px; color:#4A6275; line-height:1.7; margin:0; }
 
 /* REGIONS BOX */
 .regions-box { display:grid; grid-template-columns:repeat(2,1fr); gap:24px; max-width:800px; margin:0 auto; }
