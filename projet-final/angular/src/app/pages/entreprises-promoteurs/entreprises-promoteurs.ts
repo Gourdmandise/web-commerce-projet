@@ -26,11 +26,11 @@ export class EntreprisesPromoteurs {
   ];
 
   travaux = [
-    { titre: 'Création de regards télécom', couleur: 'em', img: 'Pré-câblage_fibre_optique_FttH.png',
+    { titre: 'Création de regards télécom', couleur: 'em', img: 'precablage-ftth.png',
       texte: 'Selon la nature du terrain et l\'étendue des travaux nécessaires, nous réalisons différents types d\'interventions pour débloquer votre situation. Nos équipes peuvent intervenir sur la réalisation de tranchées, la pose de regards France Télécom ainsi que le passage de gaines télécom, que ce soit au sein de votre propriété ou en domaine public.' },
-    { titre: 'Réalisation de tranchées', couleur: 'cy', img: 'Création_de_réseaux_collectifs.png',
+    { titre: 'Réalisation de tranchées', couleur: 'cy', img: 'creation-reseaux.png',
       texte: 'Lorsque votre réseau ne peut être remis en état par débouchage, nous sommes en mesure de créer un réseau entièrement neuf. Issus du domaine des travaux publics, nous disposons d\'outillages spécifiquement adaptés : trancheuses de sol, pelles mécaniques, et intervention manuelle lorsque les fouilles sont sensibles.' },
-    { titre: 'Pré-câblage fibre optique', couleur: 'te', img: 'Etudes_&_maîtrise_d-ouvrage.png',
+    { titre: 'Pré-câblage fibre optique', couleur: 'te', img: 'etudes-maitrise.png',
       texte: 'Lorsque le réseau existant n\'est pas réparable mais permet le passage d\'un câble, nous assurons le pré-câblage de la fibre optique jusqu\'aux points de terminaison optique. Le pré-câblage fibre optique constitue une étape essentielle dans tout projet de construction ou de rénovation nécessitant une infrastructure télécom moderne.' },
   ];
 
