@@ -48,9 +48,16 @@
   font-size:13px;
 }
 
-.provided-schemas {
-  max-width:1180px;
+.provided-schemas-grid {
+  max-width:1240px;
   margin:0 auto;
+  display:grid;
+  grid-template-columns:repeat(2, minmax(0, 1fr));
+  gap:28px;
+}
+
+.provided-schema-card {
+  max-width:1180px;
   background:#fff;
   border:1px solid rgba(0,180,216,0.18);
   border-radius:20px;
@@ -58,7 +65,7 @@
   box-shadow:0 18px 42px rgba(12, 41, 61, 0.08);
 }
 
-.provided-schemas-img {
+.provided-schema-img {
   width:100%;
   height:auto;
   display:block;
@@ -260,7 +267,8 @@
   .collect-space { padding-top:56px; padding-bottom:56px; }
   .collect-focus-grid { grid-template-columns:1fr; }
   .collect-sub { text-align:center; }
-  .provided-schemas { padding:14px; }
+  .provided-schemas-grid { grid-template-columns:1fr; gap:16px; }
+  .provided-schema-card { padding:14px; }
   .mg,.ng,.avantages-grid,.regions-box { grid-template-columns:1fr; }
   .travaux-item { grid-template-columns:1fr; direction:ltr !important; }
   .travaux-vis { height:120px; }
