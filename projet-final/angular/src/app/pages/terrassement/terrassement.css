@@ -35,7 +35,7 @@
 .travaux-titre.te { color:#0077B6; }
 .travaux-txt p { font-size:14px; color:#4A6275; line-height:1.8; }
 .travaux-vis { border-radius:16px; height:220px; display:flex; align-items:center; justify-content:center; }
-.travaux-img { width:160px; height:160px; object-fit:contain; }
+.travaux-img { width:100%; height:100%; object-fit:cover; border-radius:16px; }
 .vis-em { background:linear-gradient(135deg,rgba(0,212,170,0.1),rgba(0,212,170,0.03)); border:1px solid rgba(0,212,170,0.2); }
 .vis-cy { background:linear-gradient(135deg,rgba(0,180,216,0.1),rgba(0,180,216,0.03)); border:1px solid rgba(0,180,216,0.2); }
 .vis-te { background:linear-gradient(135deg,rgba(0,119,182,0.1),rgba(0,119,182,0.03)); border:1px solid rgba(0,119,182,0.2); }
