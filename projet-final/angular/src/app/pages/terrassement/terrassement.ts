@@ -13,9 +13,9 @@ import { CommonModule } from '@angular/common';
 export class Terrassement {
 
   methodes = [
-    { img: 'Generateur-de-frequences.png', titre: 'Générateur de fréquences',  desc: 'Induction électromagnétique haute puissance pour cartographier le tracé exact de votre réseau et en mesurer la profondeur.', tag: 'Méthode 1' },
-    { img: 'fibre-optique.png',       titre: 'Aiguille traçable & sonde',  desc: 'Sonde émettrice introduite dans la gaine TPC pour identifier précisément chaque point de blocage avec marquage au sol.', tag: 'Méthode 2' },
-    { img: 'detection-securite.png',  titre: 'Endoscopie vidéo de gaine',  desc: 'Caméra HD orientable 360° avec 9 LED blanches, compteur odomètre et enregistrement photo/vidéo pour inspection complète.', tag: 'Méthode 3' },
+    { img: 'Pré-câblage_fibre_optique_FttH.png',    titre: 'Pré-fibrage FttH',       desc: 'Adduction et pré-fibrage pour nouvelles constructions selon la législation. Infrastructure complète prête pour le raccordement mutualisé.', tag: 'Nouv. construction' },
+    { img: 'Création_de_réseaux_collectifs.png',     titre: 'Diagnostic territorial', desc: 'Audit complet de votre infrastructure télécom. Cartographie, identification des blocages, plan d\'action pour la connectivité globale.', tag: 'Diagnostic' },
+    { img: 'Etudes_&_maîtrise_d\'ouvrage.png', titre: 'Accompagnement projets', desc: 'Du diagnostic à la mise en conformité. Support technique dédié, liaison avec opérateurs et respect des normes de déploiement.', tag: 'Conseils' },
   ];
 
   normes = [

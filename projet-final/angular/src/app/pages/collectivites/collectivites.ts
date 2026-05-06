@@ -13,9 +13,9 @@ import { CommonModule } from '@angular/common';
 export class Collectivites {
 
   methodes = [
-    { img: 'Generateur-de-frequences.png', titre: 'Pré-fibrage FttH',  desc: 'Adduction et pré-fibrage pour nouvelles constructions selon la législation. Infrastructure complète prête pour le raccordement mutualisé.', tag: 'Nouv. construction' },
-    { img: 'fibre-optique.png',       titre: 'Diagnostic territorial',  desc: 'Audit complet de votre infrastructure télécom. Cartographie, identification des blocages, plan d\'action pour la connectivité globale.', tag: 'Diagnostic' },
-    { img: 'detection-securite.png',  titre: 'Accompagnement projets',  desc: 'Du diagnostic à la mise en conformité. Support technique dédié, liaison avec opérateurs et respect des normes de déploiement.', tag: 'Conseils' },
+    { img: 'Pré-câblage_fibre_optique_FttH.png',    titre: 'Pré-fibrage FttH',       desc: 'Adduction et pré-fibrage pour nouvelles constructions selon la législation. Infrastructure complète prête pour le raccordement mutualisé.', tag: 'Nouv. construction' },
+    { img: 'Création_de_réseaux_collectifs.png',     titre: 'Diagnostic territorial', desc: 'Audit complet de votre infrastructure télécom. Cartographie, identification des blocages, plan d\'action pour la connectivité globale.', tag: 'Diagnostic' },
+    { img: 'Etudes_&_maîtrise_d\'ouvrage.png', titre: 'Accompagnement projets', desc: 'Du diagnostic à la mise en conformité. Support technique dédié, liaison avec opérateurs et respect des normes de déploiement.', tag: 'Conseils' },
   ];
 
   normes = [

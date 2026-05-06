@@ -13,9 +13,9 @@ import { CommonModule } from '@angular/common';
 export class EntreprisesPromoteurs {
 
   methodes = [
-    { img: 'Generateur-de-frequences.png', titre: 'Pré-fibrage FttH',  desc: 'Adduction et pré-fibrage pour nouvelles constructions selon la législation. Infrastructure complète prête pour le raccordement mutualisé.', tag: 'Nouv. construction' },
-    { img: 'fibre-optique.png',       titre: 'Diagnostic territorial',  desc: 'Audit complet de votre infrastructure télécom. Cartographie, identification des blocages, plan d\'action pour la connectivité globale.', tag: 'Diagnostic' },
-    { img: 'detection-securite.png',  titre: 'Accompagnement projets',  desc: 'Du diagnostic à la mise en conformité. Support technique dédié, liaison avec opérateurs et respect des normes de déploiement.', tag: 'Conseils' },
+    { img: 'Pré-câblage_fibre_optique_FttH.png',    titre: 'Pré-fibrage FttH',       desc: 'Adduction et pré-fibrage pour nouvelles constructions selon la législation. Infrastructure complète prête pour le raccordement mutualisé.', tag: 'Nouv. construction' },
+    { img: 'Création_de_réseaux_collectifs.png',     titre: 'Diagnostic territorial', desc: 'Audit complet de votre infrastructure télécom. Cartographie, identification des blocages, plan d\'action pour la connectivité globale.', tag: 'Diagnostic' },
+    { img: 'Etudes_&_maîtrise_d\'ouvrage.png', titre: 'Accompagnement projets', desc: 'Du diagnostic à la mise en conformité. Support technique dédié, liaison avec opérateurs et respect des normes de déploiement.', tag: 'Conseils' },
   ];
 
   normes = [
@@ -26,11 +26,11 @@ export class EntreprisesPromoteurs {
   ];
 
   travaux = [
-    { titre: 'Pré-câblage fibre optique FttH', couleur: 'em', img: 'Generateur-de-frequences.png',
+    { titre: 'Pré-câblage fibre optique FttH', couleur: 'em', img: 'precablage-immeuble.png',
       texte: 'Adduction et pré-fibrage optique pour les nouvelles constructions et rénovations de logements. Préparation complète des infrastructures en conformité avec la loi Avenir, assurant un raccordement mutualisé de qualité à terme.' },
-    { titre: 'Création de réseaux collectifs', couleur: 'cy', img: 'detection-securite.png',
+    { titre: 'Création de réseaux collectifs', couleur: 'cy', img: 'raccordement-fibre.png',
       texte: 'Infrastructure dédiée aux entreprises et promoteurs : immeuble, zone d\'activités ou zone de regroupement. Pose de câbles, création de points de distribution, regards techniques et câblage adaptés aux demandes régaliennes.' },
-    { titre: 'Etudes & maîtrise d\'ouvrage', couleur: 'te', img: 'fibre-optique.png',
+    { titre: 'Etudes & maîtrise d\'ouvrage', couleur: 'te', img: 'diagnostic-monitoring.png',
       texte: 'Accompagnement complet de vos projets : diagnostic initial, consultation opérateurs, dimensionnement d\'infrastructure, suivi de travaux. Expertise garantissant la continuité de service et l\'accès du très haut débit pour tous.' },
   ];
 
