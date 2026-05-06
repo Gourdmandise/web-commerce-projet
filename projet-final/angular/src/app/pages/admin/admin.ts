@@ -233,7 +233,7 @@ export class Admin implements OnInit {
   nouvelleOffre(): void {
     this.modeOffre = 'creation';
     this.editOffre = {
-      nom: '', prix: 0, description: '', surface: '',
+      nom: '', prix: 0, description: '', surface: '', prixsuffix: '',
       populaire: false, features: [], options: [], profil: 'particulier'
     };
     this.editFeature = '';

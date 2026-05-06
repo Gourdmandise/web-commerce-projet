@@ -50,7 +50,7 @@
           <div class="pbadge">★ Le plus populaire</div>
         }
         <h3>{{ o.nom }}</h3>
-        <div class="pnum">{{ o.prix }} <small>€ TTC</small></div>
+        <div class="pnum">{{ o.prix }} <small>{{ o.prixsuffix || '€ TTC' }}</small></div>
         <p class="pdesc">{{ o.description }}</p>
         <ul class="pf">
           @for (f of o.features; track f) {
