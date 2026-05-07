@@ -1053,7 +1053,7 @@ app.get('/commandes/:id/pdf', requireAuth, async (req, res) => {
     // Total TTC
     doc.fontSize(9).fillColor('#ffffff');
     doc.text('Total TTC', 370, totalsBoxY + 44);
-    doc.fontSize(12).fillColor('#00B4D8');
+    doc.fontSize(12).fillColor('#22c55e');
     doc.text(`${montantTTC.toFixed(2)} €`, 470, totalsBoxY + 44);
 
     // Move cursor below the box
@@ -1078,7 +1078,7 @@ app.get('/commandes/:id/pdf', requireAuth, async (req, res) => {
       .text('En cas de retard de paiement une pénalité égale à 3 fois le taux d\'intérêt légal sera exigible (Décret 2009-138). Pour les professionnels, une indemnité minimum forfaitaire de 40 euros pour frais de recouvrement sera exigible (Décret 2012-1115).', 40, doc.y, { width: 515 });
 
     doc.moveDown(0.6);
-    doc.fontSize(8).fillColor('#6b7280').text('Siren : 909959843 - APE : 7112B - N°TVA : FR05909959843', 40, doc.y, { width: 515, align: 'center' });
+    doc.fontSize(8).fillColor('#6b7280').text('Siren : 980277933 - APE : 7112B - N°TVA : FR33980277933', 40, doc.y, { width: 515, align: 'center' });
 
     doc.end();
   } catch (err) {
