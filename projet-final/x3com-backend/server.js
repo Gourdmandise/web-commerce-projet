@@ -929,7 +929,7 @@ app.get('/commandes/:id/pdf', requireAuth, async (req, res) => {
     const notesMatch = commande.notes?.match(/(\d+)\s+logement/i);
     const nombreLogements = notesMatch ? parseInt(notesMatch[1]) : 1;
 
-    const doc = new PDFDocument({ size: 'A4', margin: 25 });
+    const doc = new PDFDocument({ size: 'A4', margin: 28 });
 
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', `attachment; filename="facture-${numeroFacture}.pdf"`);
@@ -952,7 +952,7 @@ app.get('/commandes/:id/pdf', requireAuth, async (req, res) => {
       .text([utilisateur?.codepostal, utilisateur?.ville].filter(Boolean).join(' ') || '—', undefined)
       .text(utilisateur?.email || '—', undefined);
 
-    doc.moveDown(0.8);
+    doc.moveDown(1.2);
 
     // Ligne séparatrice
     doc.moveTo(25, doc.y).lineTo(570, doc.y).stroke('#e5e7eb');
@@ -977,7 +977,7 @@ app.get('/commandes/:id/pdf', requireAuth, async (req, res) => {
       .text(formaterDateFR(commande.datepaiement || commande.datecreation), 100, infosY + 12)
       .text(commande.numero_commande || creerNumeroCommande(commande.id, commande.datepaiement || commande.datecreation || new Date()), 370, infosY);
 
-    doc.moveDown(0.8);
+    doc.moveDown(1.2);
 
     // ═══════════════════════════════════════════════════════
     // TABLEAU DÉTAILS
@@ -1038,29 +1038,30 @@ app.get('/commandes/:id/pdf', requireAuth, async (req, res) => {
       .text('0,00 €', cols.ht + 1, rowY, { width: colWidths.ht, align: 'right' })
       .text('0,00 €', cols.tva + 1, rowY, { width: colWidths.tva, align: 'right' });
 
-    doc.moveDown(1);
+    doc.moveDown(1.2);
 
     // ═══════════════════════════════════════════════════════
     // TOTAUX — GROUPÉS
     // ═══════════════════════════════════════════════════════
 
     const totalsBoxY = doc.y;
-    doc.fontSize(7).fillColor('#ffffff').fillAndStroke('#1a365d');
-    doc.rect(355, totalsBoxY, 210, 52).fill();
+    doc.fontSize(7.5).fillColor('#ffffff').fillAndStroke('#1a365d');
+    doc.rect(355, totalsBoxY, 212, 65).fill();
 
     doc.fillColor('#ffffff')
-      .text('Total HT', 365, totalsBoxY + 2)
-      .text('Total TVA', 365, totalsBoxY + 15)
-      .text('Total TTC', 365, totalsBoxY + 28, { underline: true });
+      .text('Total HT', 365, totalsBoxY + 4)
+      .text('Total TVA', 365, totalsBoxY + 19)
+      .text('Total TTC', 365, totalsBoxY + 34, { underline: true });
 
     doc.fillColor('#ffffff')
-      .text(`${montantHT.toFixed(2)} €`, 515, totalsBoxY + 2, { align: 'right' })
-      .text(`${montantTVA.toFixed(2)} €`, 515, totalsBoxY + 15, { align: 'right' });
+      .fontSize(7.5)
+      .text(`${montantHT.toFixed(2)} €`, 515, totalsBoxY + 4, { align: 'right' })
+      .text(`${montantTVA.toFixed(2)} €`, 515, totalsBoxY + 19, { align: 'right' });
 
-    doc.fontSize(9).fillColor('#00B4D8')
-      .text(`${montantTTC.toFixed(2)} €`, 515, totalsBoxY + 28, { align: 'right' });
+    doc.fontSize(10).fillColor('#00B4D8')
+      .text(`${montantTTC.toFixed(2)} €`, 515, totalsBoxY + 34, { align: 'right' });
 
-    doc.moveDown(2.5);
+    doc.moveDown(3);
 
     // Net à payer
     doc.fontSize(8).fillColor('#111827')
