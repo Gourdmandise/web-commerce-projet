@@ -152,44 +152,34 @@
   </div>
 </section>
 
-<!-- RÉSUMÉ DES OFFRES -->
-<section class="sec collect-space">
-  <div class="tc" style="margin-bottom:40px">
-    <div class="lbl" style="justify-content:center">Nos offres</div>
-    <h2 class="big">Formules <span class="hl">Entreprises & Promoteurs</span></h2>
-    <p class="sub" style="margin:0 auto">Choisissez la formule adaptée à votre projet de construction ou déploiement professionnel.</p>
+<!-- APERÇU DES OFFRES -->
+<section class="sec tc collect-space">
+  <div class="lbl" style="justify-content:center">Offres commerciales</div>
+  <h2 class="big">Tarifs <span class="hl">Entreprises & Promoteurs</span></h2>
+  <p class="sub" style="margin:0 auto 40px">Aperçu synthétique des offres dédiées aux entreprises et promoteurs, avec accès aux détails complets depuis la page Tarifs.</p>
+
+  <div class="tarif-preview">
+    <div class="tp-card">
+      <h3>Pré-fibrage FttH</h3>
+      <div class="tp-prix">Sur <span>devis</span></div>
+      <p>Adduction et pré-fibrage pour nouvelles constructions selon la législation. Infrastructure prête au raccordement.</p>
+    </div>
+
+    <div class="tp-card popular">
+      <div class="tp-badge">★ Le plus populaire</div>
+      <h3>Raccordement professionnel</h3>
+      <div class="tp-prix">Sur <span>devis</span></div>
+      <p>Raccordement fibre pour locaux professionnels et immeubles de bureaux avec accompagnement technique dédié.</p>
+    </div>
+
+    <div class="tp-card">
+      <h3>Infrastructure complète</h3>
+      <div class="tp-prix">Sur <span>devis</span></div>
+      <p>Projet d'envergure : création VRD, câblage, coordination multi-opérateurs et récolement final inclus.</p>
+    </div>
   </div>
 
-  @if (loading()) {
-    <p class="tc sub">Chargement des offres…</p>
-  }
-  @if (erreur()) {
-    <p class="tc sub" style="color:#e74c3c">Impossible de charger les offres — vérifiez la connexion au backend.</p>
-  }
-
-  <div class="pg">
-    @for (o of offresAffichees(); track o.id) {
-      <div class="pc" [class.popular]="o.populaire">
-        @if (o.populaire) {
-          <div class="pbadge">★ Le plus populaire</div>
-        }
-        <h3>{{ o.nom }}</h3>
-        <div class="pnum">{{ o.prix }} <small>{{ o.prixsuffix || '€ TTC' }}</small></div>
-        <p class="pdesc">{{ o.description }}</p>
-        <ul class="pf">
-          @for (f of o.features; track f) {
-            <li><span class="ck">✓</span>{{ f }}</li>
-          }
-          @for (opt of o.options; track opt) {
-            <li><span class="ck opt">+</span>{{ opt }}</li>
-          }
-        </ul>
-        <a routerLink="/tarifs" [queryParams]="{profil: 'entreprise'}" class="bprice" [class.pop]="o.populaire">
-          Voir l'offre complète
-        </a>
-      </div>
-    }
-  </div>
+  <a routerLink="/tarifs" [queryParams]="{profil: 'entreprise'}" class="btn-x1" style="margin-top:32px">Voir les offres complètes →</a>
 </section>
 
 <!-- CTA FINAL -->
