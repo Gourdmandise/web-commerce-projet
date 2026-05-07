@@ -984,8 +984,8 @@ app.get('/commandes/:id/pdf', requireAuth, async (req, res) => {
     // ═══════════════════════════════════════════════════════
 
     const tableTop = doc.y;
-    const cols = { desc: 40, lgt: 365, pu: 410, ht: 460, tva: 520 };
-    const colWidths = { desc: 323, lgt: 43, pu: 48, ht: 58, tva: 35 };
+    const cols = { desc: 40, lgt: 335, pu: 378, ht: 430, tva: 492 };
+    const colWidths = { desc: 293, lgt: 41, pu: 50, ht: 60, tva: 73 };
 
     // En-tête du tableau
     doc.fontSize(9).fillColor('#ffffff').fillAndStroke('#1a365d');
@@ -1022,7 +1022,7 @@ app.get('/commandes/:id/pdf', requireAuth, async (req, res) => {
     doc.rect(40, rowY, 525, 20).stroke();
 
     doc.fillColor('#111827')
-      .text('Partie DOE — Aide pouvant être offerte', cols.desc + 2, rowY + 4, { width: colWidths.desc, lineBreak: false })
+      .text('Partie DOE —  Remise des documents pour l\'exploitation du Réseau', cols.desc + 2, rowY + 4, { width: colWidths.desc, lineBreak: false })
       .text('—', cols.lgt + 2, rowY + 4, { width: colWidths.lgt, align: 'center', lineBreak: false })
       .text('—', cols.pu + 2, rowY + 4, { width: colWidths.pu, align: 'right', lineBreak: false })
       .text('0,00 €', cols.ht + 2, rowY + 4, { width: colWidths.ht, align: 'right', lineBreak: false })
@@ -1075,10 +1075,10 @@ app.get('/commandes/:id/pdf', requireAuth, async (req, res) => {
     doc.moveDown(1);
 
     doc.fontSize(8).fillColor('#6b7280')
-      .text('En cas de retard de paiement une pénalité égale à 3 fois le taux d\'intérêt légal sera exigible (Décret 2009-138). Pour les professionnels, une indemnité minimum forfaitaire de 40 euros pour frais de recouvrement sera exigible (Décret 2012-1115).', { width: 515 });
+      .text('En cas de retard de paiement une pénalité égale à 3 fois le taux d\'intérêt légal sera exigible (Décret 2009-138). Pour les professionnels, une indemnité minimum forfaitaire de 40 euros pour frais de recouvrement sera exigible (Décret 2012-1115).', 40, doc.y, { width: 515 });
 
     doc.moveDown(0.6);
-    doc.fontSize(8).fillColor('#6b7280').text('Siren : 909959843 - APE : 7112B - N°TVA : FR05909959843', { align: 'center' });
+    doc.fontSize(8).fillColor('#6b7280').text('Siren : 909959843 - APE : 7112B - N°TVA : FR05909959843', 40, doc.y, { width: 515, align: 'center' });
 
     doc.end();
   } catch (err) {
