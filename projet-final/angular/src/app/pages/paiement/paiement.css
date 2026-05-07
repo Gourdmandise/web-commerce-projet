@@ -72,6 +72,13 @@
   text-transform: uppercase;
   letter-spacing: .04em;
 }
+.logement-limite {
+  font-size: 11px;
+  font-weight: 500;
+  color: #00B4D8;
+  text-transform: none;
+  letter-spacing: 0;
+}
 .logement-ctrl {
   display: flex;
   align-items: center;

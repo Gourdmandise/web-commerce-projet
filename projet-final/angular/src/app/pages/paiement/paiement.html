@@ -33,11 +33,15 @@
 
         @if (estParLogement) {
           <div class="logement-sel">
-            <p class="logement-titre">Nombre de logements à raccorder</p>
+            <p class="logement-titre">Nombre de logements à raccorder <span class="logement-limite">({{ limiteTexte }})</span></p>
             <div class="logement-ctrl">
-              <button class="log-btn" type="button" (click)="decLogements()" [disabled]="nombreLogements <= 1">−</button>
-              <input class="log-input" type="number" [(ngModel)]="nombreLogements" min="1">
-              <button class="log-btn" type="button" (click)="incLogements()">+</button>
+              <button class="log-btn" type="button" (click)="decLogements()" [disabled]="nombreLogements <= minLogements">−</button>
+              <input class="log-input" type="number"
+                     [(ngModel)]="nombreLogements"
+                     [min]="minLogements"
+                     [max]="maxLogementsAttr"
+                     (ngModelChange)="clampLogements()">
+              <button class="log-btn" type="button" (click)="incLogements()" [disabled]="nombreLogements >= maxLogements">+</button>
             </div>
             <p class="logement-formula">
               {{ prixUnitaire }} € × {{ nombreLogements }} logement(s) = <strong>{{ total }} € TTC</strong>
