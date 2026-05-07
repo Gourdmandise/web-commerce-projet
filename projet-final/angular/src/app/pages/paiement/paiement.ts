@@ -20,9 +20,9 @@ export class Paiement implements OnInit {
   router  = inject(Router);
   route   = inject(ActivatedRoute);
 
-  chargement     = signal(false);
-  annule         = signal(false);
-  nombreLogements = signal<number>(1);
+  chargement      = signal(false);
+  annule          = signal(false);
+  nombreLogements = 1;
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(p => {
@@ -31,23 +31,18 @@ export class Paiement implements OnInit {
   }
 
   get estParLogement(): boolean {
-    return (this.panier.offre()?.prixsuffix ?? '').toLowerCase().includes('logement');
+    const suffix = (this.panier.offre()?.prixsuffix ?? '').toLowerCase();
+    return suffix.includes('lgt') || suffix.includes('logement');
   }
 
-  get prixUnitaire(): number {
-    return this.panier.offre()?.prix ?? 0;
-  }
+  get prixUnitaire(): number { return this.panier.offre()?.prix ?? 0; }
 
   // TVA incluse dans le prix TTC : tva = total × 20/120
   get tva()   { return Math.round(this.total * 20 / 120); }
-  get total() { return this.estParLogement ? this.prixUnitaire * this.nombreLogements() : this.prixUnitaire; }
+  get total() { return this.estParLogement ? this.prixUnitaire * (this.nombreLogements || 1) : this.prixUnitaire; }
 
-  incLogements(): void { this.nombreLogements.update(n => n + 1); }
-  decLogements(): void { this.nombreLogements.update(n => Math.max(1, n - 1)); }
-  setLogements(e: Event): void {
-    const val = parseInt((e.target as HTMLInputElement).value) || 1;
-    this.nombreLogements.set(Math.max(1, val));
-  }
+  incLogements(): void { this.nombreLogements = (this.nombreLogements || 1) + 1; }
+  decLogements(): void { this.nombreLogements = Math.max(1, (this.nombreLogements || 1) - 1); }
 
   payer(): void {
     const offre = this.panier.offre();
@@ -66,7 +61,7 @@ export class Paiement implements OnInit {
     this.chargement.set(true);
 
     const nomFinal = this.estParLogement
-      ? `${offre.nom} — ${this.nombreLogements()} logement(s)`
+      ? `${offre.nom} — ${this.nombreLogements} logement(s)`
       : offre.nom;
 
     this.stripe.createCheckoutSession({

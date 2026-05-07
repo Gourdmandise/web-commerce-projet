@@ -170,7 +170,13 @@
             <div class="tp-badge">★ Le plus populaire</div>
           }
           <h3>{{ o.nom }}</h3>
-          <div class="tp-prix">À partir de <span>{{ o.prix }} €</span> {{ o.prixsuffix || 'TTC' }}</div>
+          <div class="tp-prix">
+            @if (o.prixsuffix) {
+              <span>{{ o.prix }}</span> {{ o.prixsuffix }}
+            } @else {
+              À partir de <span>{{ o.prix }} €</span> TTC
+            }
+          </div>
           <p>{{ o.description }}</p>
         </div>
       }

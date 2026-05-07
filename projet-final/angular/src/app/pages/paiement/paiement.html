@@ -35,12 +35,12 @@
           <div class="logement-sel">
             <p class="logement-titre">Nombre de logements à raccorder</p>
             <div class="logement-ctrl">
-              <button class="log-btn" (click)="decLogements()" [disabled]="nombreLogements() <= 1">−</button>
-              <input class="log-input" type="number" [value]="nombreLogements()" (input)="setLogements($event)" min="1">
-              <button class="log-btn" (click)="incLogements()">+</button>
+              <button class="log-btn" type="button" (click)="decLogements()" [disabled]="nombreLogements <= 1">−</button>
+              <input class="log-input" type="number" [(ngModel)]="nombreLogements" min="1">
+              <button class="log-btn" type="button" (click)="incLogements()">+</button>
             </div>
             <p class="logement-formula">
-              {{ prixUnitaire }} € × {{ nombreLogements() }} logement(s) = <strong>{{ total }} € TTC</strong>
+              {{ prixUnitaire }} € × {{ nombreLogements }} logement(s) = <strong>{{ total }} € TTC</strong>
             </p>
           </div>
         }
@@ -55,7 +55,7 @@
 
       <div class="sr2"><span>{{ panier.offre()?.nom }}</span><span>{{ prixUnitaire }} €</span></div>
       @if (estParLogement) {
-        <div class="sr2"><span>× {{ nombreLogements() }} logement(s)</span><span>= {{ total }} €</span></div>
+        <div class="sr2"><span>× {{ nombreLogements }} logement(s)</span><span>= {{ total }} €</span></div>
       }
       <div class="sr2"><span>TVA incluse (20%)</span><span>{{ tva }} €</span></div>
       <div class="stot"><span>Total TTC</span><span>{{ total }} €</span></div>
