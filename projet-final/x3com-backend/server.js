@@ -914,85 +914,127 @@ app.get('/commandes/:id/pdf', requireAuth, async (req, res) => {
       supabase.from('offres').select('nom, description').eq('id', commande.offreid).single(),
     ]);
 
-    const numeroCommande = commande.numero_commande || creerNumeroCommande(commande.id, commande.datepaiement || commande.datecreation || new Date());
     const numeroFacture = creerNumeroFacture(commande.id);
-    const doc = new PDFDocument({ size: 'A4', margin: 48 });
+    const montantHT = Number(commande.prix || 0) / 1.20;
+    const montantTVA = Number(commande.prix || 0) - montantHT;
+    const doc = new PDFDocument({ size: 'A4', margin: 40 });
 
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', `attachment; filename="facture-${numeroFacture}.pdf"`);
     doc.pipe(res);
 
-    // En-tête
-    doc.fontSize(24).fillColor('#1a365d').text('FACTURE', { align: 'left' });
+    // En-tête entreprise et client
+    doc.fontSize(11).fillColor('#111827')
+      .text('SASU X3COM', 40, 40)
+      .fontSize(10).fillColor('#6b7280')
+      .text('5 IMPASSE DE LA COLOMBETTE', undefined)
+      .text('31000 TOULOUSE', undefined)
+      .text('Tél portable : 0621631141', undefined)
+      .text('Email : ossama.bendriss@gmail.com', undefined);
+
+    // Client
+    doc.fontSize(10).fillColor('#111827').text(`${utilisateur?.prenom || ''} ${utilisateur?.nom || ''}`.trim() || '—', 340, 40);
+    doc.fontSize(10).fillColor('#6b7280')
+      .text(utilisateur?.adresse || '—', 340)
+      .text([utilisateur?.codepostal, utilisateur?.ville].filter(Boolean).join(' ') || '—', undefined);
+
+    doc.moveDown(1.5);
+
+    // Titre FACTURE
+    doc.fontSize(16).fillColor('#111827').text('FACTURE', 40);
     doc.moveDown(0.3);
-    doc.fontSize(11).fillColor('#6b7280')
-      .text(`Numéro de facture : ${numeroFacture}`)
-      .text(`Numéro de commande : ${numeroCommande}`)
-      .text(`Date : ${formaterDateFR(commande.datepaiement || commande.datecreation)}`);
+
+    // Infos facture
+    doc.fontSize(10).fillColor('#374151')
+      .text(`Numéro : ${numeroFacture}`)
+      .text(`Date : ${formaterDateFR(commande.datepaiement || commande.datecreation)}`)
+      .text(`Code client : CLIENT-${commande.id}`)
+      .text(`Mode de règlement : Virement de 50% avant les travaux`);
 
     doc.moveDown(0.8);
 
-    // Informations de l'entreprise et du client en colonnes
-    const leftX = 48;
-    const rightX = 340;
-    const currentY = doc.y;
+    // Tableau des articles
+    const startY = doc.y;
+    const col = { code: 40, desc: 100, qty: 380, pu: 420, ht: 480, tva: 530 };
+    const colWidth = { code: 55, desc: 275, qty: 35, pu: 55, ht: 45, tva: 30 };
 
-    doc.fontSize(11).fillColor('#111827').text('X3COM', leftX, currentY, { width: 200 });
-    doc.fontSize(11).fillColor('#111827').text('FACTURER À :', rightX, currentY, { width: 200 });
+    // En-tête tableau
+    doc.fontSize(9).fillColor('#ffffff').fillAndStroke('#1a365d');
+    doc.rect(40, startY, 552, 18).fill();
+    doc.fillColor('#ffffff')
+      .text('Code', col.code + 3, startY + 3, { width: colWidth.code - 3 })
+      .text('Description', col.desc + 3, startY + 3, { width: colWidth.desc - 3 })
+      .text('Qté', col.qty + 3, startY + 3, { width: colWidth.qty - 3, align: 'center' })
+      .text('P.U. HT', col.pu + 3, startY + 3, { width: colWidth.pu - 3, align: 'right' })
+      .text('Montant HT', col.ht + 3, startY + 3, { width: colWidth.ht - 3, align: 'right' })
+      .text('TVA', col.tva + 3, startY + 3, { width: colWidth.tva - 3, align: 'right' });
 
-    doc.fontSize(10).fillColor('#6b7280')
-      .text('BUREAU 3 5 IMPASSE DE LA COLOMBETTE', leftX, undefined, { width: 200 })
-      .text('31000 TOULOUSE', leftX, undefined, { width: 200 })
-      .text('France', leftX, undefined, { width: 200 })
-      .text('mail@x3com.com', leftX, undefined, { width: 200 });
+    // Ligne produit
+    let rowY = startY + 20;
+    doc.fontSize(9).fillColor('#111827').fillAndStroke('#e5e7eb');
+    doc.rect(40, rowY, 552, 40).stroke();
 
-    doc.fontSize(10).fillColor('#374151')
-      .text(`${utilisateur?.prenom || ''} ${utilisateur?.nom || ''}`.trim() || '—', rightX, currentY + 22, { width: 200 })
-      .text(utilisateur?.email || '—', rightX, undefined, { width: 200 })
-      .text(utilisateur?.adresse || '—', rightX, undefined, { width: 200 })
-      .text([utilisateur?.codepostal, utilisateur?.ville].filter(Boolean).join(' ') || '—', rightX, undefined, { width: 200 });
-
-    doc.moveDown(2);
-
-    // Tableau des prestations
-    doc.fontSize(11).fillColor('#111827').text('DESCRIPTION DES PRESTATIONS', { underline: true });
-    doc.moveDown(0.5);
-
-    const tableTop = doc.y;
-    const col1X = 48;
-    const col2X = 400;
-    const lineHeight = 20;
-
-    // En-tête du tableau
-    doc.fontSize(10).fillColor('#ffffff').fillAndStroke('#1a365d');
-    doc.rect(col1X, tableTop, 310, lineHeight).fill();
-    doc.fillColor('#ffffff').text('Libellé', col1X + 10, tableTop + 4, { width: 250 });
-    doc.text('Montant', col2X + 10, tableTop + 4, { width: 100, align: 'right' });
-
-    // Ligne de prestation
-    const prestationY = tableTop + lineHeight;
-    doc.fillColor('#111827').fillAndStroke('#e2e8f0');
-    doc.rect(col1X, prestationY, 310, lineHeight + 30).stroke();
-
-    doc.fillColor('#111827').fontSize(10).text(offre?.nom || commande.notes || '—', col1X + 10, prestationY + 4, { width: 250 });
-    doc.fontSize(12).fillColor('#00B4D8').text(`${Number(commande.prix || 0).toFixed(2)} €`, col2X + 10, prestationY + 4, { width: 100, align: 'right' });
+    doc.fillColor('#111827')
+      .text(`EL${String(commande.id).padStart(5, '0')}`, col.code + 3, rowY + 3, { width: colWidth.code - 3 })
+      .text(offre?.nom || 'Prestation X3COM', col.desc + 3, rowY + 3, { width: colWidth.desc - 3 })
+      .text('1', col.qty + 3, rowY + 3, { width: colWidth.qty - 3, align: 'center' })
+      .text(`${montantHT.toFixed(2)} €`, col.pu + 3, rowY + 3, { width: colWidth.pu - 3, align: 'right' })
+      .text(`${montantHT.toFixed(2)} €`, col.ht + 3, rowY + 3, { width: colWidth.ht - 3, align: 'right' })
+      .text(`${montantTVA.toFixed(2)} €`, col.tva + 3, rowY + 3, { width: colWidth.tva - 3, align: 'right' });
 
     if (offre?.description) {
-      doc.fontSize(9).fillColor('#6b7280').text(offre.description, col1X + 10, prestationY + 22, { width: 250 });
+      doc.fontSize(8).fillColor('#6b7280').text(offre.description, col.desc + 3, rowY + 20, { width: colWidth.desc - 3 });
     }
 
-    // Total
-    const totalY = prestationY + lineHeight + 40;
-    doc.fontSize(11).fillColor('#111827').text('TOTAL TTC :', col1X, totalY);
-    doc.fontSize(14).fillColor('#00B4D8').text(`${Number(commande.prix || 0).toFixed(2)} €`, col2X + 10, totalY, { width: 100, align: 'right' });
+    rowY += 50;
 
+    // Récapitulatif des échéances
+    doc.fontSize(10).fillColor('#111827').text('Récapitulatif des échéances :', 40, rowY);
+    rowY += 18;
+
+    doc.fontSize(9).fillColor('#111827').fillAndStroke('#e5e7eb');
+    doc.rect(40, rowY, 552, 18).stroke();
+    doc.fillColor('#ffffff').fillAndStroke('#1a365d').rect(40, rowY, 552, 18).fill();
+    doc.fillColor('#ffffff')
+      .text('Date d\'échéance', 43, rowY + 2)
+      .text('Mode de Paiement', 180, rowY + 2)
+      .text('Montant', 400, rowY + 2, { align: 'right' })
+      .text('Solde dû', 500, rowY + 2, { align: 'right' });
+
+    rowY += 20;
+    const echeanceDate = new Date(commande.datecreation);
+    echeanceDate.setMonth(echeanceDate.getMonth() + 3);
+
+    doc.fontSize(9).fillColor('#111827').fillAndStroke('#f3f4f6').rect(40, rowY, 552, 18).stroke();
+    doc.fillColor('#111827')
+      .text(echeanceDate.toLocaleDateString('fr-FR'), 43, rowY + 2)
+      .text('Virement SEPA', 180, rowY + 2)
+      .text(`${Number(commande.prix).toFixed(2)} €`, 400, rowY + 2, { align: 'right' })
+      .text(`${Number(commande.prix).toFixed(2)} €`, 500, rowY + 2, { align: 'right' });
+
+    rowY += 30;
+
+    // Totaux
+    doc.fontSize(9).fillColor('#111827')
+      .text('Total HT', 420, rowY)
+      .text('Total TVA', 420, rowY + 15)
+      .text('Total TTC', 420, rowY + 30, { underline: true });
+
+    doc.fontSize(9).fillColor('#111827', { align: 'right' })
+      .text(`${montantHT.toFixed(2)} €`, 530, rowY, { align: 'right' })
+      .text(`${montantTVA.toFixed(2)} €`, 530, rowY + 15, { align: 'right' })
+      .text(`${Number(commande.prix).toFixed(2)} €`, 530, rowY + 30, { align: 'right' });
+
+    doc.fontSize(10).fillColor('#111827').text(`Net à payer : ${Number(commande.prix).toFixed(2)} €`, 420, rowY + 45, { underline: true });
+
+    // Mentions légales
     doc.moveDown(3);
+    doc.fontSize(8).fillColor('#6b7280')
+      .text('En cas de retard de paiement une pénalité égale à 3 fois le taux d\'intérêt légal sera exigible (Décret 2009-138 du 9 février 2009).', { width: 500 })
+      .text('Pour les professionnels, une indemnité minimum forfaitaire de 40 euros pour frais de recouvrement sera exigible (Décret 2012-1115 du 9 octobre 2012).', { width: 500 });
 
     // Pied de page
-    doc.fontSize(9).fillColor('#6b7280')
-      .text('Conditions de paiement : Facture due à réception', { align: 'center' })
-      .text('Facture générée automatiquement par X3COM', { align: 'center' })
-      .text('© X3COM - Tous droits réservés', { align: 'center' });
+    doc.fontSize(8).fillColor('#6b7280').text('Siren : 909959843 - APE : 7112B - N°TVA intracom - FR05909959843', { align: 'center' });
 
     doc.end();
   } catch (err) {
