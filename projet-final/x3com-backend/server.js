@@ -962,7 +962,7 @@ app.get('/commandes/:id/pdf', requireAuth, async (req, res) => {
     // FACTURE
     // ═══════════════════════════════════════════════════════
 
-    doc.fontSize(24).fillColor('#1a365d').text('Facture', 40);
+    doc.fontSize(24).fillColor('#16a34a').text('Facture', 40);
     doc.moveDown(1);
 
     // Infos facture
@@ -988,7 +988,7 @@ app.get('/commandes/:id/pdf', requireAuth, async (req, res) => {
     const colWidths = { desc: 280, lgt: 40, pu: 48, ht: 58, tva: 79 };
 
     // En-tête du tableau
-    doc.fontSize(9).fillColor('#ffffff').fillAndStroke('#1a365d');
+    doc.fontSize(9).fillColor('#ffffff').fillAndStroke('#16a34a');
     doc.rect(40, tableTop, 515, 20).fill();
 
     doc.fillColor('#ffffff')
@@ -1037,7 +1037,7 @@ app.get('/commandes/:id/pdf', requireAuth, async (req, res) => {
     const totalsBoxY = doc.y;
 
     // Draw background box
-    doc.fillColor('#1a365d').rect(360, totalsBoxY, 205, 75).fill();
+    doc.fillColor('#16a34a').rect(360, totalsBoxY, 205, 75).fill();
 
     // Draw content - using fixed x positions
     doc.fontSize(9).fillColor('#ffffff');
@@ -1053,8 +1053,9 @@ app.get('/commandes/:id/pdf', requireAuth, async (req, res) => {
     // Total TTC
     doc.fontSize(9).fillColor('#ffffff');
     doc.text('Total TTC', 370, totalsBoxY + 44);
-    doc.fontSize(12).fillColor('#22c55e');
+    doc.fontSize(12).font('Helvetica-Bold').fillColor('#111827');
     doc.text(`${montantTTC.toFixed(2)} €`, 470, totalsBoxY + 44);
+    doc.font('Helvetica');
 
     // Move cursor below the box
     doc.y = totalsBoxY + 80;
