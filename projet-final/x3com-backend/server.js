@@ -969,13 +969,13 @@ app.get('/commandes/:id/pdf', requireAuth, async (req, res) => {
     const infosY = doc.y;
     doc.fontSize(9).fillColor('#6b7280')
       .text('Numéro', 40, infosY)
-      .text('Date', 40, infosY + 18)
-      .text('Numéro de commande', 320, infosY);
+      .text('N° Commande', 300, infosY)
+      .text('Date', 40, infosY + 18);
 
     doc.fontSize(9).fillColor('#111827')
       .text(numeroFacture, 130, infosY)
-      .text(formaterDateFR(commande.datepaiement || commande.datecreation), 130, infosY + 18)
-      .text(commande.numero_commande || creerNumeroCommande(commande.id, commande.datepaiement || commande.datecreation || new Date()), 390, infosY);
+      .text(commande.numero_commande || creerNumeroCommande(commande.id, commande.datepaiement || commande.datecreation || new Date()), 390, infosY)
+      .text(formaterDateFR(commande.datepaiement || commande.datecreation), 130, infosY + 18);
 
     doc.moveDown(2);
 
@@ -984,45 +984,36 @@ app.get('/commandes/:id/pdf', requireAuth, async (req, res) => {
     // ═══════════════════════════════════════════════════════
 
     const tableTop = doc.y;
-    const cols = { code: 40, desc: 85, lgt: 365, pu: 410, ht: 460, tva: 520 };
-    const colWidths = { code: 43, desc: 278, lgt: 43, pu: 48, ht: 58, tva: 35 };
+    const cols = { desc: 40, lgt: 365, pu: 410, ht: 460, tva: 520 };
+    const colWidths = { desc: 323, lgt: 43, pu: 48, ht: 58, tva: 35 };
 
     // En-tête du tableau
     doc.fontSize(9).fillColor('#ffffff').fillAndStroke('#1a365d');
     doc.rect(40, tableTop, 525, 20).fill();
 
     doc.fillColor('#ffffff')
-      .text('Code', cols.code + 2, tableTop + 4, { width: colWidths.code })
-      .text('Description', cols.desc + 2, tableTop + 4, { width: colWidths.desc })
-      .text('Lgt', cols.lgt + 2, tableTop + 4, { width: colWidths.lgt, align: 'center' })
-      .text('P.U. HT', cols.pu + 2, tableTop + 4, { width: colWidths.pu, align: 'right' })
-      .text('Montant HT', cols.ht + 2, tableTop + 4, { width: colWidths.ht, align: 'right' })
-      .text('TVA', cols.tva + 2, tableTop + 4, { width: colWidths.tva, align: 'right' });
+      .text('Description', cols.desc + 2, tableTop + 4, { width: colWidths.desc, lineBreak: false })
+      .text('Lgt', cols.lgt + 2, tableTop + 4, { width: colWidths.lgt, align: 'center', lineBreak: false })
+      .text('P.U. HT', cols.pu + 2, tableTop + 4, { width: colWidths.pu, align: 'right', lineBreak: false })
+      .text('Montant HT', cols.ht + 2, tableTop + 4, { width: colWidths.ht, align: 'right', lineBreak: false })
+      .text('TVA', cols.tva + 2, tableTop + 4, { width: colWidths.tva, align: 'right', lineBreak: false });
 
     // Ligne produit
     let rowY = tableTop + 22;
-    const lineHeight = 45;
+    const lineHeight = 24;
 
     doc.fontSize(9).fillColor('#111827').fillAndStroke('#e5e7eb');
     doc.rect(40, rowY, 525, lineHeight).stroke();
 
-    const codeArticle = `EL${String(commande.id).padStart(5, '0')}`;
     const descriptionArticle = offre?.nom || 'Prestation';
     const prixUnitaire = parseFloat((montantTTC / nombreLogements).toFixed(2));
 
     doc.fillColor('#111827')
-      .text(codeArticle, cols.code + 2, rowY + 3, { width: colWidths.code })
-      .text(descriptionArticle, cols.desc + 2, rowY + 3, { width: colWidths.desc })
-      .text(String(nombreLogements), cols.lgt + 2, rowY + 3, { width: colWidths.lgt, align: 'center' })
-      .text(`${prixUnitaire.toFixed(2)} €`, cols.pu + 2, rowY + 3, { width: colWidths.pu, align: 'right' })
-      .text(`${montantHT.toFixed(2)} €`, cols.ht + 2, rowY + 3, { width: colWidths.ht, align: 'right' })
-      .text(`${montantTVA.toFixed(2)} €`, cols.tva + 2, rowY + 3, { width: colWidths.tva, align: 'right' });
-
-    // Description offre
-    if (offre?.description) {
-      doc.fontSize(8).fillColor('#6b7280')
-        .text(offre.description, cols.desc + 2, rowY + 20, { width: colWidths.desc, lineGap: 1 });
-    }
+      .text(descriptionArticle, cols.desc + 2, rowY + 7, { width: colWidths.desc, lineBreak: false })
+      .text(String(nombreLogements), cols.lgt + 2, rowY + 7, { width: colWidths.lgt, align: 'center', lineBreak: false })
+      .text(`${prixUnitaire.toFixed(2)} €`, cols.pu + 2, rowY + 7, { width: colWidths.pu, align: 'right', lineBreak: false })
+      .text(`${montantHT.toFixed(2)} €`, cols.ht + 2, rowY + 7, { width: colWidths.ht, align: 'right', lineBreak: false })
+      .text(`${montantTVA.toFixed(2)} €`, cols.tva + 2, rowY + 7, { width: colWidths.tva, align: 'right', lineBreak: false });
 
     rowY += lineHeight + 2;
 
@@ -1031,12 +1022,11 @@ app.get('/commandes/:id/pdf', requireAuth, async (req, res) => {
     doc.rect(40, rowY, 525, 20).stroke();
 
     doc.fillColor('#111827')
-      .text('DOE', cols.code + 2, rowY + 4, { width: colWidths.code })
-      .text('Partie DOE — Aide pouvant être offerte', cols.desc + 2, rowY + 4, { width: colWidths.desc })
-      .text('—', cols.lgt + 2, rowY + 4, { width: colWidths.lgt, align: 'center' })
-      .text('—', cols.pu + 2, rowY + 4, { width: colWidths.pu, align: 'right' })
-      .text('0,00 €', cols.ht + 2, rowY + 4, { width: colWidths.ht, align: 'right' })
-      .text('0,00 €', cols.tva + 2, rowY + 4, { width: colWidths.tva, align: 'right' });
+      .text('Partie DOE — Aide pouvant être offerte', cols.desc + 2, rowY + 4, { width: colWidths.desc, lineBreak: false })
+      .text('—', cols.lgt + 2, rowY + 4, { width: colWidths.lgt, align: 'center', lineBreak: false })
+      .text('—', cols.pu + 2, rowY + 4, { width: colWidths.pu, align: 'right', lineBreak: false })
+      .text('0,00 €', cols.ht + 2, rowY + 4, { width: colWidths.ht, align: 'right', lineBreak: false })
+      .text('0,00 €', cols.tva + 2, rowY + 4, { width: colWidths.tva, align: 'right', lineBreak: false });
 
     doc.moveDown(2);
 
