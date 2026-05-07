@@ -977,6 +977,13 @@ app.get('/commandes/:id/pdf', requireAuth, async (req, res) => {
       .text(numeroFacture, 120, infosY)
       .text(formaterDateFR(commande.datepaiement || commande.datecreation), 120, infosY + 20);
 
+    // Numéro de commande (à droite)
+    doc.fontSize(9).fillColor('#6b7280')
+      .text('Numéro de commande', 340, infosY);
+
+    doc.fontSize(9).fillColor('#111827')
+      .text(commande.numero_commande || creerNumeroCommande(commande.id, commande.datepaiement || commande.datecreation || new Date()), 340, infosY + 18);
+
     doc.moveDown(1.5);
 
     // ═══════════════════════════════════════════════════════
@@ -987,16 +994,16 @@ app.get('/commandes/:id/pdf', requireAuth, async (req, res) => {
     const cols = {
       code: 35,
       desc: 85,
-      qty: 370,
-      pu: 410,
+      lgt: 365,
+      pu: 405,
       ht: 460,
       tva: 520
     };
     const colWidths = {
       code: 48,
-      desc: 283,
-      qty: 38,
-      pu: 48,
+      desc: 278,
+      lgt: 38,
+      pu: 53,
       ht: 58,
       tva: 40
     };
@@ -1008,7 +1015,7 @@ app.get('/commandes/:id/pdf', requireAuth, async (req, res) => {
     doc.fillColor('#ffffff')
       .text('Code', cols.code + 2, tableTop + 4, { width: colWidths.code })
       .text('Description', cols.desc + 2, tableTop + 4, { width: colWidths.desc })
-      .text('Qté', cols.qty + 2, tableTop + 4, { width: colWidths.qty, align: 'center' })
+      .text('Lgt', cols.lgt + 2, tableTop + 4, { width: colWidths.lgt, align: 'center' })
       .text('P.U. HT', cols.pu + 2, tableTop + 4, { width: colWidths.pu, align: 'right' })
       .text('Montant HT', cols.ht + 2, tableTop + 4, { width: colWidths.ht, align: 'right' })
       .text('TVA', cols.tva + 2, tableTop + 4, { width: colWidths.tva, align: 'right' });
@@ -1021,15 +1028,14 @@ app.get('/commandes/:id/pdf', requireAuth, async (req, res) => {
     doc.rect(35, rowY, 530, lineHeight).stroke();
 
     const codeArticle = `EL${String(commande.id).padStart(5, '0')}`;
-    const descriptionArticle = nombreLogements > 1
-      ? `${offre?.nom || 'Prestation'} × ${nombreLogements} logement(s)`
-      : (offre?.nom || 'Prestation');
+    const descriptionArticle = offre?.nom || 'Prestation';
+    const prixUnitaire = parseFloat((montantTTC / nombreLogements).toFixed(2));
 
     doc.fillColor('#111827')
       .text(codeArticle, cols.code + 2, rowY + 2, { width: colWidths.code })
       .text(descriptionArticle, cols.desc + 2, rowY + 2, { width: colWidths.desc })
-      .text('1', cols.qty + 2, rowY + 2, { width: colWidths.qty, align: 'center' })
-      .text(`${montantHT.toFixed(2)} €`, cols.pu + 2, rowY + 2, { width: colWidths.pu, align: 'right' })
+      .text(String(nombreLogements), cols.lgt + 2, rowY + 2, { width: colWidths.lgt, align: 'center' })
+      .text(`${prixUnitaire.toFixed(2)} €`, cols.pu + 2, rowY + 2, { width: colWidths.pu, align: 'right' })
       .text(`${montantHT.toFixed(2)} €`, cols.ht + 2, rowY + 2, { width: colWidths.ht, align: 'right' })
       .text(`${montantTVA.toFixed(2)} €`, cols.tva + 2, rowY + 2, { width: colWidths.tva, align: 'right' });
 
