@@ -56,6 +56,73 @@
 .recap-features li { font-size: 12px; color: var(--mu); padding: 5px 0; display: flex; gap: 8px; border-bottom: 1px solid #e8f0f5; }
 .recap-features li:last-child { border-bottom: none; }
 
+/* ── Sélecteur logements ── */
+.logement-sel {
+  background: linear-gradient(135deg, rgba(0,212,170,0.05), rgba(0,119,182,0.05));
+  border: 1px solid rgba(0,212,170,0.3);
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 16px;
+}
+.logement-titre {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1A202C;
+  margin: 0 0 14px;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+.logement-ctrl {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  max-width: 200px;
+  border: 1px solid rgba(0,212,170,0.4);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+.log-btn {
+  width: 44px;
+  height: 44px;
+  background: rgba(0,212,170,0.1);
+  border: none;
+  font-size: 20px;
+  font-weight: 700;
+  color: #00D4AA;
+  cursor: pointer;
+  transition: background .2s;
+  flex-shrink: 0;
+}
+.log-btn:hover:not(:disabled) { background: rgba(0,212,170,0.2); }
+.log-btn:disabled { opacity: .4; cursor: default; }
+.log-input {
+  flex: 1;
+  text-align: center;
+  border: none;
+  border-left: 1px solid rgba(0,212,170,0.3);
+  border-right: 1px solid rgba(0,212,170,0.3);
+  padding: 10px 0;
+  font-size: 18px;
+  font-weight: 800;
+  font-family: 'Barlow Condensed', sans-serif;
+  color: #1A202C;
+  background: #fff;
+  outline: none;
+}
+.log-input::-webkit-inner-spin-button,
+.log-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+.logement-formula {
+  font-size: 13px;
+  color: #4A6275;
+  margin: 0;
+}
+.logement-formula strong {
+  color: #00D4AA;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 16px;
+}
+
 .stripe-logos {
   display: flex; align-items: center; gap: 8px;
   margin-top: 16px; flex-wrap: wrap;

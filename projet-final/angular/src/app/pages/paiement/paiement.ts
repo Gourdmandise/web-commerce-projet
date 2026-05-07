@@ -20,8 +20,9 @@ export class Paiement implements OnInit {
   router  = inject(Router);
   route   = inject(ActivatedRoute);
 
-  chargement = signal(false);
-  annule     = signal(false);
+  chargement     = signal(false);
+  annule         = signal(false);
+  nombreLogements = signal<number>(1);
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(p => {
@@ -29,9 +30,24 @@ export class Paiement implements OnInit {
     });
   }
 
-  // TVA incluse dans le prix TTC : tva = prix × 20/120, pas prix × 20%
-  get tva()   { return Math.round((this.panier.offre()?.prix ?? 0) * 20 / 120); }
-  get total() { return this.panier.offre()?.prix ?? 0; }
+  get estParLogement(): boolean {
+    return (this.panier.offre()?.prixsuffix ?? '').toLowerCase().includes('logement');
+  }
+
+  get prixUnitaire(): number {
+    return this.panier.offre()?.prix ?? 0;
+  }
+
+  // TVA incluse dans le prix TTC : tva = total × 20/120
+  get tva()   { return Math.round(this.total * 20 / 120); }
+  get total() { return this.estParLogement ? this.prixUnitaire * this.nombreLogements() : this.prixUnitaire; }
+
+  incLogements(): void { this.nombreLogements.update(n => n + 1); }
+  decLogements(): void { this.nombreLogements.update(n => Math.max(1, n - 1)); }
+  setLogements(e: Event): void {
+    const val = parseInt((e.target as HTMLInputElement).value) || 1;
+    this.nombreLogements.set(Math.max(1, val));
+  }
 
   payer(): void {
     const offre = this.panier.offre();
@@ -49,19 +65,21 @@ export class Paiement implements OnInit {
 
     this.chargement.set(true);
 
+    const nomFinal = this.estParLogement
+      ? `${offre.nom} — ${this.nombreLogements()} logement(s)`
+      : offre.nom;
+
     this.stripe.createCheckoutSession({
       offreId:       offre.id!,
-      prix:          offre.prix,
-      nom:           offre.nom,
+      prix:          this.total,
+      nom:           nomFinal,
       utilisateurId: user.id!,
       emailClient:   user.email,
-      prenom:        user.prenom       || '',
-      nomClient:     user.nom          || '',
-      telephone:     user.telephone    || '',
+      prenom:        user.prenom    || '',
+      nomClient:     user.nom       || '',
+      telephone:     user.telephone || '',
     }).subscribe({
-      next: (session) => {
-        window.location.href = session.url;
-      },
+      next:  (session) => { window.location.href = session.url; },
       error: (err) => {
         this.chargement.set(false);
         console.error(err);
