@@ -962,7 +962,7 @@ app.get('/commandes/:id/pdf', requireAuth, async (req, res) => {
     // FACTURE
     // ═══════════════════════════════════════════════════════
 
-    doc.fontSize(24).fillColor('#16a34a').text('Facture', 40);
+    doc.fontSize(24).fillColor('#1a365d').text('Facture', 40);
     doc.moveDown(1);
 
     // Infos facture
@@ -984,12 +984,12 @@ app.get('/commandes/:id/pdf', requireAuth, async (req, res) => {
     // ═══════════════════════════════════════════════════════
 
     const tableTop = doc.y;
-    const cols = { desc: 40, lgt: 322, pu: 364, ht: 414, tva: 474 };
-    const colWidths = { desc: 280, lgt: 40, pu: 48, ht: 58, tva: 79 };
+    const cols = { desc: 40, lgt: 335, pu: 378, ht: 430, tva: 492 };
+    const colWidths = { desc: 293, lgt: 41, pu: 50, ht: 60, tva: 69 };
 
     // En-tête du tableau
-    doc.fontSize(9).fillColor('#ffffff').fillAndStroke('#16a34a');
-    doc.rect(40, tableTop, 515, 20).fill();
+    doc.fontSize(9).fillColor('#ffffff').fillAndStroke('#1a365d');
+    doc.rect(40, tableTop, 525, 20).fill();
 
     doc.fillColor('#ffffff')
       .text('Description', cols.desc + 2, tableTop + 4, { width: colWidths.desc, lineBreak: false })
@@ -1003,7 +1003,7 @@ app.get('/commandes/:id/pdf', requireAuth, async (req, res) => {
     const lineHeight = 24;
 
     doc.fontSize(9).fillColor('#111827').fillAndStroke('#e5e7eb');
-    doc.rect(40, rowY, 515, lineHeight).stroke();
+    doc.rect(40, rowY, 525, lineHeight).stroke();
 
     const descriptionArticle = offre?.nom || 'Prestation';
     const prixUnitaire = parseFloat((montantTTC / nombreLogements).toFixed(2));
@@ -1019,7 +1019,7 @@ app.get('/commandes/:id/pdf', requireAuth, async (req, res) => {
 
     // Ligne DOE
     doc.fontSize(9).fillColor('#111827').fillAndStroke('#f3f4f6');
-    doc.rect(40, rowY, 515, 20).stroke();
+    doc.rect(40, rowY, 525, 20).stroke();
 
     doc.fillColor('#111827')
       .text('Partie DOE —  Remise des documents pour l\'exploitation du Réseau', cols.desc + 2, rowY + 4, { width: colWidths.desc, lineBreak: false })
@@ -1037,7 +1037,7 @@ app.get('/commandes/:id/pdf', requireAuth, async (req, res) => {
     const totalsBoxY = doc.y;
 
     // Draw background box
-    doc.fillColor('#16a34a').rect(360, totalsBoxY, 205, 75).fill();
+    doc.fillColor('#1a365d').rect(360, totalsBoxY, 205, 75).fill();
 
     // Draw content - using fixed x positions
     doc.fontSize(9).fillColor('#ffffff');
@@ -1053,9 +1053,8 @@ app.get('/commandes/:id/pdf', requireAuth, async (req, res) => {
     // Total TTC
     doc.fontSize(9).fillColor('#ffffff');
     doc.text('Total TTC', 370, totalsBoxY + 44);
-    doc.fontSize(12).font('Helvetica-Bold').fillColor('#111827');
+    doc.fontSize(12).fillColor('#00B4D8');
     doc.text(`${montantTTC.toFixed(2)} €`, 470, totalsBoxY + 44);
-    doc.font('Helvetica');
 
     // Move cursor below the box
     doc.y = totalsBoxY + 80;
@@ -1079,7 +1078,7 @@ app.get('/commandes/:id/pdf', requireAuth, async (req, res) => {
       .text('En cas de retard de paiement une pénalité égale à 3 fois le taux d\'intérêt légal sera exigible (Décret 2009-138). Pour les professionnels, une indemnité minimum forfaitaire de 40 euros pour frais de recouvrement sera exigible (Décret 2012-1115).', 40, doc.y, { width: 515 });
 
     doc.moveDown(0.6);
-    doc.fontSize(8).fillColor('#6b7280').text('Siren : 980277933 - APE : 7112B - N°TVA : FR33980277933', 40, doc.y, { width: 515, align: 'center' });
+    doc.fontSize(8).fillColor('#6b7280').text('Siren : 909959843 - APE : 7112B - N°TVA : FR05909959843', 40, doc.y, { width: 515, align: 'center' });
 
     doc.end();
   } catch (err) {
