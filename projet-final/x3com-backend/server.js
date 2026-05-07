@@ -915,9 +915,15 @@ app.get('/commandes/:id/pdf', requireAuth, async (req, res) => {
     ]);
 
     const numeroFacture = creerNumeroFacture(commande.id);
-    const montantTTC = Number(commande.prix || 0);
-    const montantHT = montantTTC / 1.20;
-    const montantTVA = montantTTC - montantHT;
+    const montantTTC = parseFloat(commande.prix) || 0;
+
+    if (!isFinite(montantTTC)) {
+      console.error(`✗ Prix invalide pour commande ${commande.id}: ${commande.prix}`);
+      return res.status(400).json({ error: `Prix invalide: ${commande.prix}` });
+    }
+
+    const montantHT = parseFloat((montantTTC / 1.20).toFixed(2));
+    const montantTVA = parseFloat((montantTTC - montantHT).toFixed(2));
 
     // Extraire le nombre de logements des notes
     const notesMatch = commande.notes?.match(/(\d+)\s+logement/i);
