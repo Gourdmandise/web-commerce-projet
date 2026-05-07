@@ -985,7 +985,7 @@ app.get('/commandes/:id/pdf', requireAuth, async (req, res) => {
 
     const tableTop = doc.y;
     const cols = { desc: 40, lgt: 335, pu: 378, ht: 430, tva: 492 };
-    const colWidths = { desc: 293, lgt: 41, pu: 50, ht: 60, tva: 73 };
+    const colWidths = { desc: 293, lgt: 41, pu: 50, ht: 60, tva: 69 };
 
     // En-tête du tableau
     doc.fontSize(9).fillColor('#ffffff').fillAndStroke('#1a365d');
@@ -1354,56 +1354,8 @@ app.get('/health', (req, res) => {
 async function nettoyerCommandesAnnulees() {
   const maintenant      = Date.now();
   const il_y_a_3_jours  = new Date(maintenant - 3 * 24 * 60 * 60 * 1000).toISOString();
-  const il_y_a_2_jours  = new Date(maintenant - 2 * 24 * 60 * 60 * 1000).toISOString();
 
-  // ── 1. Avertissement J-1 : commandes annulées depuis 2 jours (suppression demain) ──
-  const { data: aAvertir } = await supabase
-    .from('commandes')
-    .select('id, notes, prix, utilisateurid, dateannulation')
-    .eq('statut', 'annulee')
-    .not('dateannulation', 'is', null)
-    .lt('dateannulation', il_y_a_2_jours)
-    .gte('dateannulation', il_y_a_3_jours);
-
-  for (const commande of aAvertir || []) {
-    try {
-      const { data: users } = await supabase
-        .from('utilisateurs')
-        .select('email, prenom')
-        .eq('id', commande.utilisateurid)
-        .limit(1);
-      const user = users?.[0];
-      if (!user?.email) continue;
-
-      await sendMail({
-        to: user.email,
-        subject: `⚠️ Suppression imminente — ${commande.notes || 'votre commande'}`,
-        html: `
-<div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;border:1px solid #e2e8f0;border-radius:8px;overflow:hidden">
-  <div style="background:#c53030;padding:24px;text-align:center">
-    <h1 style="color:#fff;margin:0;font-size:22px">⚠️ Suppression imminente — X3COM</h1>
-  </div>
-  <div style="padding:28px;background:#f8fafc">
-    <p style="color:#374151;font-size:15px;margin:0 0 16px">Bonjour${user.prenom ? ' <strong>' + user.prenom + '</strong>' : ''},</p>
-    <p style="color:#374151;font-size:15px;margin:0 0 24px">
-      Votre commande annulée sera <strong>définitivement supprimée dans 24h</strong> de nos systèmes.
-    </p>
-    <table style="width:100%;border-collapse:collapse">
-      <tr><td style="padding:8px 0;color:#64748b;width:160px;font-weight:bold">Commande</td><td style="padding:8px 0"><strong>${commande.notes || '—'}</strong></td></tr>
-      <tr style="background:#fff"><td style="padding:8px 0;color:#64748b;font-weight:bold">Montant</td><td style="padding:8px 0">${commande.prix} €</td></tr>
-      <tr><td style="padding:8px 0;color:#64748b;font-weight:bold">Annulée le</td><td style="padding:8px 0">${new Date(commande.dateannulation).toLocaleDateString('fr-FR')}</td></tr>
-    </table>
-    <hr style="border:none;border-top:1px solid #e2e8f0;margin:20px 0">
-    <p style="color:#374151;font-size:13px;margin:0">Si vous avez des questions, contactez-nous à <a href="mailto:contact@x3com.com">contact@x3com.com</a>.</p>
-    <p style="margin-top:24px;font-size:12px;color:#94a3b8;text-align:center">X3COM — ${new Date().toLocaleString('fr-FR')}</p>
-  </div>
-</div>`,
-      });
-      console.log(`📧 Avertissement suppression envoyé à ${user.email} (commande #${commande.id})`);
-    } catch (e) { console.error('✗ Mail avertissement:', e.message); }
-  }
-
-  // ── 2. Suppression : commandes annulées depuis plus de 3 jours ──
+  // Suppression : commandes annulées depuis plus de 3 jours
   const { data, error } = await supabase
     .from('commandes').delete()
     .eq('statut', 'annulee')
