@@ -929,7 +929,7 @@ app.get('/commandes/:id/pdf', requireAuth, async (req, res) => {
     const notesMatch = commande.notes?.match(/(\d+)\s+logement/i);
     const nombreLogements = notesMatch ? parseInt(notesMatch[1]) : 1;
 
-    const doc = new PDFDocument({ size: 'A4', margin: 28 });
+    const doc = new PDFDocument({ size: 'A4', margin: 35 });
 
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', `attachment; filename="facture-${numeroFacture}.pdf"`);
@@ -940,14 +940,14 @@ app.get('/commandes/:id/pdf', requireAuth, async (req, res) => {
     // ═══════════════════════════════════════════════════════
 
     // Infos entreprise (gauche)
-    doc.fontSize(10).fillColor('#111827').text('SASU X3COM', 25, 25);
-    doc.fontSize(8).fillColor('#6b7280')
+    doc.fontSize(11).fillColor('#111827').text('SASU X3COM', 35, 25);
+    doc.fontSize(11).fillColor('#6b7280')
       .text('5 IMPASSE DE LA COLOMBETTE, 31000 TOULOUSE', undefined)
       .text('Tél : 0621631141 | Email : ossama.bendriss@gmail.com', undefined);
 
     // Infos client (droite)
-    doc.fontSize(10).fillColor('#111827').text(`${utilisateur?.prenom || ''} ${utilisateur?.nom || ''}`.trim() || '—', 350, 25);
-    doc.fontSize(8).fillColor('#6b7280')
+    doc.fontSize(11).fillColor('#111827').text(`${utilisateur?.prenom || ''} ${utilisateur?.nom || ''}`.trim() || '—', 350, 25);
+    doc.fontSize(11).fillColor('#6b7280')
       .text(utilisateur?.adresse || '—', 350)
       .text([utilisateur?.codepostal, utilisateur?.ville].filter(Boolean).join(' ') || '—', undefined)
       .text(utilisateur?.email || '—', undefined);
@@ -955,24 +955,24 @@ app.get('/commandes/:id/pdf', requireAuth, async (req, res) => {
     doc.moveDown(1.2);
 
     // Ligne séparatrice
-    doc.moveTo(25, doc.y).lineTo(570, doc.y).stroke('#e5e7eb');
-    doc.moveDown(0.3);
+    doc.moveTo(35, doc.y).lineTo(570, doc.y).stroke('#e5e7eb');
+    doc.moveDown(0.8);
 
     // ═══════════════════════════════════════════════════════
     // FACTURE
     // ═══════════════════════════════════════════════════════
 
     doc.fontSize(18).fillColor('#1a365d').text('Facture', 25);
-    doc.moveDown(0.3);
+    doc.moveDown(0.8);
 
     // Infos facture
     const infosY = doc.y;
-    doc.fontSize(8).fillColor('#6b7280')
-      .text('Numéro', 25, infosY)
-      .text('Date', 25, infosY + 12)
+    doc.fontSize(11).fillColor('#6b7280')
+      .text('Numéro', 35, infosY)
+      .text('Date', 35, infosY + 12)
       .text('Numéro de commande', 295, infosY);
 
-    doc.fontSize(8).fillColor('#111827')
+    doc.fontSize(11).fillColor('#111827')
       .text(numeroFacture, 100, infosY)
       .text(formaterDateFR(commande.datepaiement || commande.datecreation), 100, infosY + 12)
       .text(commande.numero_commande || creerNumeroCommande(commande.id, commande.datepaiement || commande.datecreation || new Date()), 370, infosY);
@@ -984,12 +984,12 @@ app.get('/commandes/:id/pdf', requireAuth, async (req, res) => {
     // ═══════════════════════════════════════════════════════
 
     const tableTop = doc.y;
-    const cols = { code: 25, desc: 65, lgt: 355, pu: 395, ht: 440, tva: 510 };
+    const cols = { code: 35, desc: 65, lgt: 355, pu: 395, ht: 440, tva: 510 };
     const colWidths = { code: 38, desc: 288, lgt: 38, pu: 43, ht: 68, tva: 35 };
 
     // En-tête du tableau
-    doc.fontSize(7).fillColor('#ffffff').fillAndStroke('#1a365d');
-    doc.rect(25, tableTop, 540, 14).fill();
+    doc.fontSize(11).fillColor('#ffffff').fillAndStroke('#1a365d');
+    doc.rect(35, tableTop, 540, 14).fill();
 
     doc.fillColor('#ffffff')
       .text('Code', cols.code + 1, tableTop + 1, { width: colWidths.code })
@@ -1000,11 +1000,11 @@ app.get('/commandes/:id/pdf', requireAuth, async (req, res) => {
       .text('TVA', cols.tva + 1, tableTop + 1, { width: colWidths.tva, align: 'right' });
 
     // Ligne produit
-    let rowY = tableTop + 16;
-    const lineHeight = 30;
+    let rowY = tableTop + 20;
+    const lineHeight = 40;
 
-    doc.fontSize(7).fillColor('#111827').fillAndStroke('#e5e7eb');
-    doc.rect(25, rowY, 540, lineHeight).stroke();
+    doc.fontSize(11).fillColor('#111827').fillAndStroke('#e5e7eb');
+    doc.rect(35, rowY, 540, lineHeight).stroke();
 
     const codeArticle = `EL${String(commande.id).padStart(5, '0')}`;
     const descriptionArticle = offre?.nom || 'Prestation';
@@ -1027,8 +1027,8 @@ app.get('/commandes/:id/pdf', requireAuth, async (req, res) => {
     rowY += lineHeight + 1;
 
     // Ligne DOE
-    doc.fontSize(7).fillColor('#111827').fillAndStroke('#f3f4f6');
-    doc.rect(25, rowY, 540, 14).stroke();
+    doc.fontSize(11).fillColor('#111827').fillAndStroke('#f3f4f6');
+    doc.rect(35, rowY, 540, 14).stroke();
 
     doc.fillColor('#111827')
       .text('DOE', cols.code + 1, rowY, { width: colWidths.code })
@@ -1045,7 +1045,7 @@ app.get('/commandes/:id/pdf', requireAuth, async (req, res) => {
     // ═══════════════════════════════════════════════════════
 
     const totalsBoxY = doc.y;
-    doc.fontSize(7.5).fillColor('#ffffff').fillAndStroke('#1a365d');
+    doc.fontSize(11).fillColor('#ffffff').fillAndStroke('#1a365d');
     doc.rect(355, totalsBoxY, 212, 65).fill();
 
     doc.fillColor('#ffffff')
@@ -1058,23 +1058,23 @@ app.get('/commandes/:id/pdf', requireAuth, async (req, res) => {
       .text(`${montantHT.toFixed(2)} €`, 515, totalsBoxY + 4, { align: 'right' })
       .text(`${montantTVA.toFixed(2)} €`, 515, totalsBoxY + 19, { align: 'right' });
 
-    doc.fontSize(10).fillColor('#00B4D8')
+    doc.fontSize(11).fillColor('#00B4D8')
       .text(`${montantTTC.toFixed(2)} €`, 515, totalsBoxY + 34, { align: 'right' });
 
     doc.moveDown(3);
 
     // Net à payer
-    doc.fontSize(8).fillColor('#111827')
+    doc.fontSize(11).fillColor('#111827')
       .text(`Net à payer : ${montantTTC.toFixed(2)} €`, 355);
 
-    doc.moveDown(0.5);
+    doc.moveDown(0.8);
 
     // ═══════════════════════════════════════════════════════
     // MENTIONS LÉGALES
     // ═══════════════════════════════════════════════════════
 
-    doc.moveTo(25, doc.y).lineTo(570, doc.y).stroke('#e5e7eb');
-    doc.moveDown(0.3);
+    doc.moveTo(35, doc.y).lineTo(570, doc.y).stroke('#e5e7eb');
+    doc.moveDown(0.8);
 
     doc.fontSize(6.5).fillColor('#6b7280')
       .text('En cas de retard de paiement une pénalité égale à 3 fois le taux d\'intérêt légal sera exigible (Décret 2009-138). Pour les professionnels, une indemnité minimum forfaitaire de 40 euros pour frais de recouvrement sera exigible (Décret 2012-1115).', { width: 520 });
