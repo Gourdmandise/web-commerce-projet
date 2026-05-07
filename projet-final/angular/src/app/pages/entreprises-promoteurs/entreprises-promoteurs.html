@@ -158,26 +158,24 @@
   <h2 class="big">Tarifs <span class="hl">Entreprises & Promoteurs</span></h2>
   <p class="sub" style="margin:0 auto 40px">Aperçu synthétique des offres dédiées aux entreprises et promoteurs, avec accès aux détails complets depuis la page Tarifs.</p>
 
-  <div class="tarif-preview">
-    <div class="tp-card">
-      <h3>Pré-fibrage FttH</h3>
-      <div class="tp-prix">Sur <span>devis</span></div>
-      <p>Adduction et pré-fibrage pour nouvelles constructions selon la législation. Infrastructure prête au raccordement.</p>
-    </div>
+  @if (loading()) {
+    <p class="sub" style="margin-bottom:32px">Chargement des offres…</p>
+  }
 
-    <div class="tp-card popular">
-      <div class="tp-badge">★ Le plus populaire</div>
-      <h3>Raccordement professionnel</h3>
-      <div class="tp-prix">Sur <span>devis</span></div>
-      <p>Raccordement fibre pour locaux professionnels et immeubles de bureaux avec accompagnement technique dédié.</p>
+  @if (!loading() && !erreur()) {
+    <div class="tarif-preview">
+      @for (o of offresAffichees(); track o.id) {
+        <div class="tp-card" [class.popular]="o.populaire">
+          @if (o.populaire) {
+            <div class="tp-badge">★ Le plus populaire</div>
+          }
+          <h3>{{ o.nom }}</h3>
+          <div class="tp-prix">À partir de <span>{{ o.prix }} €</span> {{ o.prixsuffix || 'TTC' }}</div>
+          <p>{{ o.description }}</p>
+        </div>
+      }
     </div>
-
-    <div class="tp-card">
-      <h3>Infrastructure complète</h3>
-      <div class="tp-prix">Sur <span>devis</span></div>
-      <p>Projet d'envergure : création VRD, câblage, coordination multi-opérateurs et récolement final inclus.</p>
-    </div>
-  </div>
+  }
 
   <a routerLink="/tarifs" [queryParams]="{profil: 'entreprise'}" class="btn-x1" style="margin-top:32px">Voir les offres complètes →</a>
 </section>

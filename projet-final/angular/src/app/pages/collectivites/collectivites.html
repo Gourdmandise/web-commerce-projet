@@ -158,26 +158,24 @@
   <h2 class="big">Tarifs <span class="hl">Collectivités</span></h2>
   <p class="sub" style="margin:0 auto 40px">Aperçu synthétique des offres dédiées aux collectivités, avec accès aux détails complets depuis la page Tarifs.</p>
 
-  <div class="tarif-preview">
-    <div class="tp-card">
-      <h3>Diagnostic territorial</h3>
-      <div class="tp-prix">Sur <span>devis</span></div>
-      <p>Audit complet de l'infrastructure télécom du territoire. Cartographie et plan d'action pour la connectivité globale.</p>
-    </div>
+  @if (loading()) {
+    <p class="sub" style="margin-bottom:32px">Chargement des offres…</p>
+  }
 
-    <div class="tp-card popular">
-      <div class="tp-badge">★ Le plus populaire</div>
-      <h3>Pré-fibrage collectif</h3>
-      <div class="tp-prix">Sur <span>devis</span></div>
-      <p>Infrastructure complète pour zones résidentielles et bâtiments publics. Conformité loi Avenir incluse.</p>
+  @if (!loading() && !erreur()) {
+    <div class="tarif-preview">
+      @for (o of offresAffichees(); track o.id) {
+        <div class="tp-card" [class.popular]="o.populaire">
+          @if (o.populaire) {
+            <div class="tp-badge">★ Le plus populaire</div>
+          }
+          <h3>{{ o.nom }}</h3>
+          <div class="tp-prix">À partir de <span>{{ o.prix }} €</span> {{ o.prixsuffix || 'TTC' }}</div>
+          <p>{{ o.description }}</p>
+        </div>
+      }
     </div>
-
-    <div class="tp-card">
-      <h3>Déploiement FttH mutualisé</h3>
-      <div class="tp-prix">Sur <span>devis</span></div>
-      <p>Projet complet de déploiement fibre optique mutualisé jusqu'aux points de terminaison optique.</p>
-    </div>
-  </div>
+  }
 
   <a routerLink="/tarifs" [queryParams]="{profil: 'collectivite'}" class="btn-x1" style="margin-top:32px">Voir les offres complètes →</a>
 </section>
