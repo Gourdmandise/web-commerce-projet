@@ -1,5 +1,5 @@
 import { Component, ViewEncapsulation, inject, signal, OnInit, effect } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { PanierService } from '../../services/panier.service';
 import { OffreService } from '../../services/offre.service';
@@ -15,6 +15,7 @@ import { Offre, ProfilOffre } from '../../models/offre.model';
 })
 export class Tarifs implements OnInit {
   private router       = inject(Router);
+  private route        = inject(ActivatedRoute);
   private offreService = inject(OffreService);
   panier               = inject(PanierService);
 
@@ -29,7 +30,12 @@ export class Tarifs implements OnInit {
     });
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    const profil = this.route.snapshot.queryParamMap.get('profil') as ProfilOffre | null;
+    if (profil && ['particulier', 'collectivite', 'entreprise'].includes(profil)) {
+      this.profilSelectionne.set(profil);
+    }
+  }
 
   changerProfil(profil: ProfilOffre): void {
     this.profilSelectionne.set(profil);

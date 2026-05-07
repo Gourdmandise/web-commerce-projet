@@ -185,6 +185,7 @@
 .bprice:hover { background:rgba(0,212,170,.1); }
 .bprice.pop { background:linear-gradient(90deg,#00B4D8,#0077B6); color:#fff; border:none; }
 .bprice.pop:hover { transform:translateY(-1px); box-shadow:0 6px 20px rgba(0,180,216,.35); }
+a.bprice { display:block; text-align:center; text-decoration:none; }
 
 .ctab { max-width:600px; margin:0 auto; }
 .ctab h2 { font-size:32px; margin-bottom:16px; }

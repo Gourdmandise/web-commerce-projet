@@ -1,8 +1,7 @@
 import { Component, ViewEncapsulation, inject, signal } from '@angular/core';
-import { RouterLink, Router } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { OffreService } from '../../services/offre.service';
-import { PanierService } from '../../services/panier.service';
 import { Offre } from '../../models/offre.model';
 
 @Component({
@@ -15,8 +14,6 @@ import { Offre } from '../../models/offre.model';
 })
 export class EntreprisesPromoteurs {
   private offreService = inject(OffreService);
-  private router       = inject(Router);
-  panier               = inject(PanierService);
 
   offresAffichees = signal<Offre[]>([]);
   loading         = signal(true);
@@ -27,12 +24,6 @@ export class EntreprisesPromoteurs {
       next: (data: Offre[]) => { this.offresAffichees.set(data); this.loading.set(false); },
       error: ()              => { this.erreur.set(true);          this.loading.set(false); },
     });
-  }
-
-  choisir(offre: Offre): void {
-    this.panier.choisir(offre);
-    this.panier.notify('✓', 'Offre sélectionnée !', offre.nom);
-    this.router.navigateByUrl('/paiement');
   }
 
   methodes = [

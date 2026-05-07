@@ -184,9 +184,9 @@
             <li><span class="ck opt">+</span>{{ opt }}</li>
           }
         </ul>
-        <button class="bprice" [class.pop]="o.populaire" (click)="choisir(o)">
-          Choisir cette offre
-        </button>
+        <a routerLink="/tarifs" [queryParams]="{profil: 'entreprise'}" class="bprice" [class.pop]="o.populaire">
+          Voir l'offre complète
+        </a>
       </div>
     }
   </div>
