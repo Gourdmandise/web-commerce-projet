@@ -984,12 +984,12 @@ app.get('/commandes/:id/pdf', requireAuth, async (req, res) => {
     // ═══════════════════════════════════════════════════════
 
     const tableTop = doc.y;
-    const cols = { desc: 40, lgt: 335, pu: 378, ht: 430, tva: 492 };
-    const colWidths = { desc: 293, lgt: 41, pu: 50, ht: 60, tva: 69 };
+    const cols = { desc: 40, lgt: 322, pu: 364, ht: 414, tva: 474 };
+    const colWidths = { desc: 280, lgt: 40, pu: 48, ht: 58, tva: 79 };
 
     // En-tête du tableau
     doc.fontSize(9).fillColor('#ffffff').fillAndStroke('#1a365d');
-    doc.rect(40, tableTop, 525, 20).fill();
+    doc.rect(40, tableTop, 515, 20).fill();
 
     doc.fillColor('#ffffff')
       .text('Description', cols.desc + 2, tableTop + 4, { width: colWidths.desc, lineBreak: false })
@@ -1003,7 +1003,7 @@ app.get('/commandes/:id/pdf', requireAuth, async (req, res) => {
     const lineHeight = 24;
 
     doc.fontSize(9).fillColor('#111827').fillAndStroke('#e5e7eb');
-    doc.rect(40, rowY, 525, lineHeight).stroke();
+    doc.rect(40, rowY, 515, lineHeight).stroke();
 
     const descriptionArticle = offre?.nom || 'Prestation';
     const prixUnitaire = parseFloat((montantTTC / nombreLogements).toFixed(2));
@@ -1019,7 +1019,7 @@ app.get('/commandes/:id/pdf', requireAuth, async (req, res) => {
 
     // Ligne DOE
     doc.fontSize(9).fillColor('#111827').fillAndStroke('#f3f4f6');
-    doc.rect(40, rowY, 525, 20).stroke();
+    doc.rect(40, rowY, 515, 20).stroke();
 
     doc.fillColor('#111827')
       .text('Partie DOE —  Remise des documents pour l\'exploitation du Réseau', cols.desc + 2, rowY + 4, { width: colWidths.desc, lineBreak: false })
