@@ -40,6 +40,8 @@
                      [(ngModel)]="nombreLogements"
                      [min]="minLogements"
                      [max]="maxLogementsAttr"
+                     inputmode="numeric"
+                     (keydown)="filtreChiffres($event)"
                      (ngModelChange)="clampLogements()">
               <button class="log-btn" type="button" (click)="incLogements()" [disabled]="nombreLogements >= maxLogements">+</button>
             </div>

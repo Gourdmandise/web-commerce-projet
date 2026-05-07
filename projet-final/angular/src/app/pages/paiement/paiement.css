@@ -117,8 +117,9 @@
   background: #fff;
   outline: none;
 }
+.log-input { -moz-appearance: textfield; }
 .log-input::-webkit-inner-spin-button,
-.log-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+.log-input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
 .logement-formula {
   font-size: 13px;
   color: #4A6275;

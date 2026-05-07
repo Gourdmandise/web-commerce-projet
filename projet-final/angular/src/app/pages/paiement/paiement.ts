@@ -80,6 +80,12 @@ export class Paiement implements OnInit {
   decLogements(): void {
     if (this.nombreLogements > this.minLogements) this.nombreLogements--;
   }
+  filtreChiffres(e: KeyboardEvent): void {
+    const autorise = ['Backspace','Delete','Tab','ArrowLeft','ArrowRight','Home','End'];
+    if (autorise.includes(e.key)) return;
+    if (!/^\d$/.test(e.key)) e.preventDefault();
+  }
+
   clampLogements(): void {
     const val = this.nombreLogements || this.minLogements;
     const max = isFinite(this.maxLogements) ? this.maxLogements : val;
