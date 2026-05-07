@@ -1047,6 +1047,23 @@ app.get('/commandes/:id/pdf', requireAuth, async (req, res) => {
 
     rowY += lineHeight + 2;
 
+    // Ligne "Partie DOE" / Aide (si applicable)
+    doc.fontSize(9).fillColor('#111827').fillAndStroke('#f3f4f6');
+    doc.rect(35, rowY, 530, 24).stroke();
+
+    doc.fillColor('#111827')
+      .text('DOE', cols.code + 2, rowY + 2, { width: colWidths.code })
+      .text('Partie DOE — Aide pouvant être offerte', cols.desc + 2, rowY + 2, { width: colWidths.desc })
+      .text('—', cols.lgt + 2, rowY + 2, { width: colWidths.lgt, align: 'center' })
+      .text('—', cols.pu + 2, rowY + 2, { width: colWidths.pu, align: 'right' })
+      .text('0,00 €', cols.ht + 2, rowY + 2, { width: colWidths.ht, align: 'right' })
+      .text('0,00 €', cols.tva + 2, rowY + 2, { width: colWidths.tva, align: 'right' });
+
+    doc.fontSize(8).fillColor('#6b7280')
+      .text('Cette aide peut être offerte selon les conditions de l\'ASP', cols.desc + 2, rowY + 14, { width: colWidths.desc });
+
+    rowY += 28;
+
     // ═══════════════════════════════════════════════════════
     // TOTAUX
     // ═══════════════════════════════════════════════════════
@@ -1055,31 +1072,38 @@ app.get('/commandes/:id/pdf', requireAuth, async (req, res) => {
 
     const totalLabelX = 370;
     const totalValueX = 520;
-    const totalRowHeight = 16;
+
+    // Ligne Total HT
+    doc.fontSize(9).fillColor('#111827')
+      .text('Total HT', totalLabelX);
 
     doc.fontSize(9).fillColor('#111827')
-      .text('Total HT', totalLabelX, doc.y)
-      .fontSize(9).fillColor('#111827').text(`${montantHT.toFixed(2)} €`, totalValueX, doc.y - totalRowHeight, { align: 'right' });
+      .text(`${montantHT.toFixed(2)} €`, totalValueX - 60, doc.y - 16, { align: 'right', width: 60 });
 
-    doc.moveDown(totalRowHeight);
+    // Ligne Total TVA
+    doc.moveDown(14);
+    doc.fontSize(9).fillColor('#111827')
+      .text('Total TVA', totalLabelX);
 
     doc.fontSize(9).fillColor('#111827')
-      .text('Total TVA', totalLabelX, doc.y)
-      .fontSize(9).fillColor('#111827').text(`${montantTVA.toFixed(2)} €`, totalValueX, doc.y - totalRowHeight, { align: 'right' });
+      .text(`${montantTVA.toFixed(2)} €`, totalValueX - 60, doc.y - 14, { align: 'right', width: 60 });
 
-    doc.moveDown(totalRowHeight + 2);
-
-    // Ligne séparatrice avant total TTC
+    // Ligne Total TTC (mise en évidence)
+    doc.moveDown(14);
     doc.moveTo(370, doc.y).lineTo(560, doc.y).stroke('#111827');
     doc.moveDown(6);
 
-    doc.fontSize(11).fillColor('#1a365d').text('Total TTC', totalLabelX)
-      .fontSize(12).fillColor('#00B4D8').text(`${montantTTC.toFixed(2)} €`, totalValueX, doc.y - 16, { align: 'right' });
+    doc.fontSize(11).fillColor('#1a365d')
+      .text('Total TTC', totalLabelX);
+
+    doc.fontSize(12).fillColor('#00B4D8')
+      .text(`${montantTTC.toFixed(2)} €`, totalValueX - 60, doc.y - 16, { align: 'right', width: 60 });
 
     doc.moveDown(1.5);
 
     // Net à payer
-    doc.fontSize(10).fillColor('#111827').text(`Net à payer : ${montantTTC.toFixed(2)} €`, totalLabelX, doc.y);
+    doc.fontSize(10).fillColor('#111827')
+      .text(`Net à payer : ${montantTTC.toFixed(2)} €`, totalLabelX);
 
     doc.moveDown(2);
 
