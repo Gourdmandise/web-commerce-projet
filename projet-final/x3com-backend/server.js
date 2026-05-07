@@ -927,7 +927,7 @@ app.get('/commandes/:id/pdf', requireAuth, async (req, res) => {
 
     // Extraire le nombre de logements des notes
     const notesMatch = commande.notes?.match(/(\d+)\s+logement/i);
-    const nombreLogements = notesMatch ? parseInt(notesMatch[1]) : null;
+    const nombreLogements = notesMatch ? parseInt(notesMatch[1]) : 1;
 
     const doc = new PDFDocument({ size: 'A4', margin: 35 });
 
@@ -939,130 +939,161 @@ app.get('/commandes/:id/pdf', requireAuth, async (req, res) => {
     // EN-TÊTE — ENTREPRISE ET CLIENT
     // ═══════════════════════════════════════════════════════
 
-    // Infos entreprise
-    doc.fontSize(12).fillColor('#111827').text('SASU X3COM', 35, 35);
-    doc.fontSize(10).fillColor('#6b7280')
+    // Infos entreprise (gauche)
+    doc.fontSize(11).fillColor('#111827').text('SASU X3COM', 35, 35);
+    doc.fontSize(9).fillColor('#6b7280')
       .text('5 IMPASSE DE LA COLOMBETTE', undefined)
       .text('31000 TOULOUSE', undefined)
       .text('Tél : 0621631141', undefined)
       .text('Email : ossama.bendriss@gmail.com', undefined);
 
-    // Infos client (à droite)
-    doc.fontSize(10).fillColor('#111827').text(`${utilisateur?.prenom || ''} ${utilisateur?.nom || ''}`.trim() || '—', 340, 35);
-    doc.fontSize(10).fillColor('#6b7280')
+    // Infos client (droite)
+    doc.fontSize(11).fillColor('#111827').text(`${utilisateur?.prenom || ''} ${utilisateur?.nom || ''}`.trim() || '—', 340, 35);
+    doc.fontSize(9).fillColor('#6b7280')
       .text(utilisateur?.adresse || '—', 340)
       .text([utilisateur?.codepostal, utilisateur?.ville].filter(Boolean).join(' ') || '—', undefined)
       .text(utilisateur?.email || '—', undefined);
 
-    doc.moveDown(2);
-    doc.moveTo(35, doc.y).lineTo(560, doc.y).stroke();
-    doc.moveDown(1);
+    doc.moveDown(2.5);
+
+    // Ligne séparatrice
+    doc.moveTo(35, doc.y).lineTo(560, doc.y).stroke('#e5e7eb');
+    doc.moveDown(0.8);
 
     // ═══════════════════════════════════════════════════════
     // FACTURE
     // ═══════════════════════════════════════════════════════
 
-    doc.fontSize(20).fillColor('#1a365d').text('FACTURE', 35);
-    doc.moveDown(0.5);
+    doc.fontSize(20).fillColor('#1a365d').text('Facture', 35);
+    doc.moveDown(0.8);
 
-    // Infos facture
-    doc.fontSize(10).fillColor('#374151')
-      .text(`Numéro de facture : ${numeroFacture}`)
-      .text(`Date : ${formaterDateFR(commande.datepaiement || commande.datecreation)}`)
-      .text(`Code client : CLI-${String(commande.id).padStart(6, '0')}`);
+    // Infos facture (gauche et droite)
+    const infosY = doc.y;
+    doc.fontSize(9).fillColor('#6b7280')
+      .text('Numéro', 35, infosY)
+      .text('Date', 35, infosY + 20);
 
-    doc.moveDown(1);
+    doc.fontSize(9).fillColor('#111827')
+      .text(numeroFacture, 120, infosY)
+      .text(formaterDateFR(commande.datepaiement || commande.datecreation), 120, infosY + 20);
 
-    // ═══════════════════════════════════════════════════════
-    // DÉTAILS OFFRE
-    // ═══════════════════════════════════════════════════════
-
-    doc.fontSize(11).fillColor('#111827').text('OFFRE SÉLECTIONNÉE', { underline: true });
-    doc.moveDown(0.3);
-
-    doc.fontSize(11).fillColor('#111827').text(offre?.nom || 'Prestation X3COM');
-
-    if (nombreLogements) {
-      doc.fontSize(10).fillColor('#6b7280')
-        .text(`Nombre de logements : ${nombreLogements}`);
-    }
-
-    doc.moveDown(0.5);
-    if (offre?.description) {
-      doc.fontSize(9).fillColor('#374151')
-        .text(offre.description, { width: 500, align: 'justify' });
-    }
-
-    doc.moveDown(1);
+    doc.moveDown(1.5);
 
     // ═══════════════════════════════════════════════════════
     // TABLEAU DÉTAILS
     // ═══════════════════════════════════════════════════════
 
     const tableTop = doc.y;
-    const col = { label: 35, montant: 450 };
-    const colWidth = { label: 415, montant: 95 };
+    const cols = {
+      code: 35,
+      desc: 85,
+      qty: 370,
+      pu: 410,
+      ht: 460,
+      tva: 520
+    };
+    const colWidths = {
+      code: 48,
+      desc: 283,
+      qty: 38,
+      pu: 48,
+      ht: 58,
+      tva: 40
+    };
 
     // En-tête du tableau
     doc.fontSize(9).fillColor('#ffffff').fillAndStroke('#1a365d');
-    doc.rect(col.label, tableTop, 530, 18).fill();
+    doc.rect(35, tableTop, 530, 20).fill();
+
     doc.fillColor('#ffffff')
-      .text('Description', col.label + 8, tableTop + 3, { width: colWidth.label - 8 })
-      .text('Montant', col.montant + 5, tableTop + 3, { width: colWidth.montant - 5, align: 'right' });
+      .text('Code', cols.code + 2, tableTop + 4, { width: colWidths.code })
+      .text('Description', cols.desc + 2, tableTop + 4, { width: colWidths.desc })
+      .text('Qté', cols.qty + 2, tableTop + 4, { width: colWidths.qty, align: 'center' })
+      .text('P.U. HT', cols.pu + 2, tableTop + 4, { width: colWidths.pu, align: 'right' })
+      .text('Montant HT', cols.ht + 2, tableTop + 4, { width: colWidths.ht, align: 'right' })
+      .text('TVA', cols.tva + 2, tableTop + 4, { width: colWidths.tva, align: 'right' });
 
-    // Ligne détail
-    let rowY = tableTop + 20;
+    // Ligne produit
+    let rowY = tableTop + 22;
+    const lineHeight = 50;
+
     doc.fontSize(9).fillColor('#111827').fillAndStroke('#e5e7eb');
-    doc.rect(col.label, rowY, 530, 50).stroke();
+    doc.rect(35, rowY, 530, lineHeight).stroke();
 
-    const descriptionText = nombreLogements
+    const codeArticle = `EL${String(commande.id).padStart(5, '0')}`;
+    const descriptionArticle = nombreLogements > 1
       ? `${offre?.nom || 'Prestation'} × ${nombreLogements} logement(s)`
       : (offre?.nom || 'Prestation');
 
     doc.fillColor('#111827')
-      .text(descriptionText, col.label + 8, rowY + 3, { width: colWidth.label - 8 });
+      .text(codeArticle, cols.code + 2, rowY + 2, { width: colWidths.code })
+      .text(descriptionArticle, cols.desc + 2, rowY + 2, { width: colWidths.desc })
+      .text('1', cols.qty + 2, rowY + 2, { width: colWidths.qty, align: 'center' })
+      .text(`${montantHT.toFixed(2)} €`, cols.pu + 2, rowY + 2, { width: colWidths.pu, align: 'right' })
+      .text(`${montantHT.toFixed(2)} €`, cols.ht + 2, rowY + 2, { width: colWidths.ht, align: 'right' })
+      .text(`${montantTVA.toFixed(2)} €`, cols.tva + 2, rowY + 2, { width: colWidths.tva, align: 'right' });
 
-    doc.fontSize(11).fillColor('#00B4D8').text(`${montantHT.toFixed(2)} €`, col.montant + 5, rowY + 3, { align: 'right' });
+    // Description offre en petit
+    if (offre?.description) {
+      doc.fontSize(8).fillColor('#6b7280')
+        .text(offre.description, cols.desc + 2, rowY + 18, { width: colWidths.desc });
+    }
 
-    rowY += 55;
+    rowY += lineHeight + 2;
 
     // ═══════════════════════════════════════════════════════
     // TOTAUX
     // ═══════════════════════════════════════════════════════
 
-    doc.fontSize(10).fillColor('#111827');
-    const labelWidth = 320;
-    const totalCol = 450;
+    doc.moveDown(1.5);
 
-    doc.text('Sous-total HT', col.label, rowY);
-    doc.fontSize(10).fillColor('#111827').text(`${montantHT.toFixed(2)} €`, totalCol, rowY, { align: 'right', width: 105 });
+    const totalLabelX = 370;
+    const totalValueX = 520;
+    const totalRowHeight = 16;
 
-    rowY += 18;
-    doc.fontSize(10).fillColor('#111827').text('TVA (20%)', col.label, rowY);
-    doc.text(`${montantTVA.toFixed(2)} €`, totalCol, rowY, { align: 'right', width: 105 });
+    doc.fontSize(9).fillColor('#111827')
+      .text('Total HT', totalLabelX, doc.y)
+      .fontSize(9).fillColor('#111827').text(`${montantHT.toFixed(2)} €`, totalValueX, doc.y - totalRowHeight, { align: 'right' });
 
-    rowY += 18;
-    doc.fontSize(11).fillColor('#1a365d').text('Total TTC', col.label, rowY);
-    doc.fontSize(12).fillColor('#00B4D8').text(`${montantTTC.toFixed(2)} €`, totalCol, rowY, { align: 'right', width: 105 });
+    doc.moveDown(totalRowHeight);
 
-    doc.moveDown(3);
+    doc.fontSize(9).fillColor('#111827')
+      .text('Total TVA', totalLabelX, doc.y)
+      .fontSize(9).fillColor('#111827').text(`${montantTVA.toFixed(2)} €`, totalValueX, doc.y - totalRowHeight, { align: 'right' });
+
+    doc.moveDown(totalRowHeight + 2);
+
+    // Ligne séparatrice avant total TTC
+    doc.moveTo(370, doc.y).lineTo(560, doc.y).stroke('#111827');
+    doc.moveDown(6);
+
+    doc.fontSize(11).fillColor('#1a365d').text('Total TTC', totalLabelX)
+      .fontSize(12).fillColor('#00B4D8').text(`${montantTTC.toFixed(2)} €`, totalValueX, doc.y - 16, { align: 'right' });
+
+    doc.moveDown(1.5);
+
+    // Net à payer
+    doc.fontSize(10).fillColor('#111827').text(`Net à payer : ${montantTTC.toFixed(2)} €`, totalLabelX, doc.y);
+
+    doc.moveDown(2);
 
     // ═══════════════════════════════════════════════════════
     // MENTIONS LÉGALES
     // ═══════════════════════════════════════════════════════
 
-    doc.moveTo(35, doc.y).lineTo(560, doc.y).stroke();
-    doc.moveDown(0.5);
+    doc.moveTo(35, doc.y).lineTo(560, doc.y).stroke('#e5e7eb');
+    doc.moveDown(0.8);
 
     doc.fontSize(8).fillColor('#6b7280')
       .text('En cas de retard de paiement une pénalité égale à 3 fois le taux d\'intérêt légal sera exigible (Décret 2009-138 du 9 février 2009).', { width: 500 })
       .text('Pour les professionnels, une indemnité minimum forfaitaire de 40 euros pour frais de recouvrement sera exigible (Décret 2012-1115 du 9 octobre 2012).', { width: 500 });
 
-    doc.moveDown(0.8);
-    doc.fontSize(8).fillColor('#6b7280').text('SIREN : 909959843 - APE : 7112B - N°TVA intracom : FR05909959843', { align: 'center' });
+    doc.moveDown(1);
+    doc.fontSize(8).fillColor('#6b7280').text('Siren : 909959843 - APE : 7112B - N°TVA intracom : FR05909959843', { align: 'center' });
 
     doc.end();
   } catch (err) {
+    console.error('✗ Erreur PDF:', err.message);
     res.status(500).json({ error: err.message });
   }
 });
