@@ -152,6 +152,46 @@
   </div>
 </section>
 
+<!-- RÉSUMÉ DES OFFRES -->
+<section class="sec collect-space">
+  <div class="tc" style="margin-bottom:40px">
+    <div class="lbl" style="justify-content:center">Nos offres</div>
+    <h2 class="big">Formules <span class="hl">Collectivités</span></h2>
+    <p class="sub" style="margin:0 auto">Choisissez la formule adaptée à votre territoire et votre projet d'aménagement numérique.</p>
+  </div>
+
+  @if (loading()) {
+    <p class="tc sub">Chargement des offres…</p>
+  }
+  @if (erreur()) {
+    <p class="tc sub" style="color:#e74c3c">Impossible de charger les offres — vérifiez la connexion au backend.</p>
+  }
+
+  <div class="pg">
+    @for (o of offresAffichees(); track o.id) {
+      <div class="pc" [class.popular]="o.populaire">
+        @if (o.populaire) {
+          <div class="pbadge">★ Le plus populaire</div>
+        }
+        <h3>{{ o.nom }}</h3>
+        <div class="pnum">{{ o.prix }} <small>{{ o.prixsuffix || '€ TTC' }}</small></div>
+        <p class="pdesc">{{ o.description }}</p>
+        <ul class="pf">
+          @for (f of o.features; track f) {
+            <li><span class="ck">✓</span>{{ f }}</li>
+          }
+          @for (opt of o.options; track opt) {
+            <li><span class="ck opt">+</span>{{ opt }}</li>
+          }
+        </ul>
+        <button class="bprice" [class.pop]="o.populaire" (click)="choisir(o)">
+          Choisir cette offre
+        </button>
+      </div>
+    }
+  </div>
+</section>
+
 <!-- CTA FINAL -->
 <section class="sec tc collect-space">
   <div class="ctab">

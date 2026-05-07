@@ -163,6 +163,29 @@
 .region-card h3 { font-family:'Barlow Condensed',sans-serif; font-size:20px; font-weight:800; color:#1A202C; margin-bottom:6px; text-transform:uppercase; }
 .region-card p { font-size:12px; color:#4A6275; line-height:1.6; margin:0; }
 
+/* OFFRES */
+.pg { display:grid; grid-template-columns:repeat(3,1fr); gap:22px; max-width:1100px; margin:0 auto; }
+.pc { background:#fff; border:1px solid rgba(0,212,170,0.3); border-radius:16px; padding:30px; position:relative; display:flex; flex-direction:column; transition:all .3s; box-shadow:0 2px 16px rgba(0,212,170,0.06); }
+.pc.popular { background:linear-gradient(160deg,rgba(0,180,216,0.06),#fff); border:2px solid rgba(0,180,216,0.45); box-shadow:0 4px 24px rgba(0,180,216,0.12); }
+.pbadge { position:absolute; top:-13px; left:50%; transform:translateX(-50%); font-size:10px; font-weight:900; padding:4px 16px; border-radius:100px; letter-spacing:.1em; text-transform:uppercase; white-space:nowrap; background:linear-gradient(90deg,#00B4D8,#0077B6); color:#fff; }
+.pc h3 { font-family:'Barlow Condensed',sans-serif; font-size:18px; font-weight:800; text-transform:uppercase; letter-spacing:.04em; margin-bottom:8px; color:#00D4AA; }
+.pc.popular h3 { color:#00B4D8; }
+.pnum { font-family:'Barlow Condensed',sans-serif; font-size:42px; font-weight:900; margin-bottom:6px; line-height:1; color:#00D4AA; }
+.pc.popular .pnum { color:#00B4D8; }
+.pnum small { font-size:15px; color:#4A6275; font-weight:500; }
+.pdesc { font-size:12px; color:#4A6275; margin-bottom:18px; padding-bottom:18px; line-height:1.65; border-bottom:1px solid rgba(0,212,170,0.2); }
+.pc.popular .pdesc { border-bottom-color:rgba(0,180,216,0.2); }
+.pf { list-style:none; padding:0; flex:1; }
+.pf li { font-size:12px; color:#4A6275; padding:6px 0; display:flex; gap:10px; align-items:flex-start; line-height:1.55; border-bottom:1px solid #e8f0f5; }
+.pf li:last-child { border-bottom:none; }
+.ck { flex-shrink:0; font-weight:900; font-size:13px; color:#00D4AA; }
+.pc.popular .ck { color:#00B4D8; }
+.ck.opt { color:rgba(0,212,170,.7); }
+.bprice { margin-top:22px; width:100%; padding:13px; border-radius:8px; font-size:13px; font-weight:900; cursor:pointer; transition:all .2s; font-family:'Barlow',sans-serif; letter-spacing:.06em; text-transform:uppercase; background:transparent; color:#00D4AA; border:2px solid #00D4AA; }
+.bprice:hover { background:rgba(0,212,170,.1); }
+.bprice.pop { background:linear-gradient(90deg,#00B4D8,#0077B6); color:#fff; border:none; }
+.bprice.pop:hover { transform:translateY(-1px); box-shadow:0 6px 20px rgba(0,180,216,.35); }
+
 .ctab { max-width:600px; margin:0 auto; }
 .ctab h2 { font-size:32px; margin-bottom:16px; }
 .ctab p { font-size:14px; color:#4A6275; margin-bottom:28px; }
@@ -175,7 +198,7 @@
   .provided-calendar-layout { grid-template-columns:1fr; gap:16px; }
   .provided-description-card,
   .provided-schema-card { padding:14px; }
-  .mg,.ng,.avantages-grid,.regions-box { grid-template-columns:1fr; }
+  .mg,.ng,.avantages-grid,.regions-box,.pg { grid-template-columns:1fr; }
   .travaux-item { grid-template-columns:1fr; direction:ltr !important; }
   .travaux-vis { height:220px; }
 }

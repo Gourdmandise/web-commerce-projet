@@ -1,6 +1,9 @@
-import { Component, ViewEncapsulation } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, ViewEncapsulation, inject, signal } from '@angular/core';
+import { RouterLink, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { OffreService } from '../../services/offre.service';
+import { PanierService } from '../../services/panier.service';
+import { Offre } from '../../models/offre.model';
 
 @Component({
   selector: 'app-entreprises-promoteurs',
@@ -11,6 +14,26 @@ import { CommonModule } from '@angular/common';
   encapsulation: ViewEncapsulation.None,
 })
 export class EntreprisesPromoteurs {
+  private offreService = inject(OffreService);
+  private router       = inject(Router);
+  panier               = inject(PanierService);
+
+  offresAffichees = signal<Offre[]>([]);
+  loading         = signal(true);
+  erreur          = signal(false);
+
+  constructor() {
+    this.offreService.getByProfil('entreprise').subscribe({
+      next: (data: Offre[]) => { this.offresAffichees.set(data); this.loading.set(false); },
+      error: ()              => { this.erreur.set(true);          this.loading.set(false); },
+    });
+  }
+
+  choisir(offre: Offre): void {
+    this.panier.choisir(offre);
+    this.panier.notify('✓', 'Offre sélectionnée !', offre.nom);
+    this.router.navigateByUrl('/paiement');
+  }
 
   methodes = [
     { img: 'Generateur-de-frequences.png', titre: 'Pré-fibrage FttH',  desc: 'Adduction et pré-fibrage pour nouvelles constructions selon la législation. Infrastructure complète prête pour le raccordement mutualisé.', tag: 'Nouv. construction' },
