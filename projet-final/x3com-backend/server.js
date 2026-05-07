@@ -202,7 +202,6 @@ const limiterContact = rateLimit({
 // ══════════════════════════════════════════════════════════
 // MIDDLEWARES JWT
 // ══════════════════════════════════════════════════════════
-
 /**
  * Vérifie le token Bearer dans Authorization.
  * Injecte req.user = { id, role } si valide.
